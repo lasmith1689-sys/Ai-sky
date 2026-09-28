@@ -142,3 +142,35 @@ final class InsightsTests: XCTestCase {
         XCTAssertGreaterThan(totals.nextHour ?? 0, 0)
     }
 }
+
+final class AlertPlannerTests: XCTestCase {
+    let now = Fixtures.now
+
+    func testRainAlertWhenRainStartsSoon() throws {
+        let forecast = minuteForecast(start: now, chance: 0.8) { $0 >= 10 ? 0.8 : 0 }
+        let notification = try XCTUnwrap(AlertPlanner.rainNotification(for: Fixtures.location, forecast: forecast, lastNotified: nil, now: now))
+        XCTAssertEqual(notification.title, "Rain soon · Chicago")
+        XCTAssertEqual(notification.body, "Light rain starting in 10 min.")
+    }
+
+    func testNoRainAlertDuringCooldownOrWhenUnlikely() {
+        let forecast = minuteForecast(start: now, chance: 0.8) { $0 >= 10 ? 0.8 : 0 }
+        XCTAssertNil(AlertPlanner.rainNotification(for: Fixtures.location, forecast: forecast, lastNotified: now.addingTimeInterval(-1800), now: now))
+        let unlikely = minuteForecast(start: now, chance: 0.3) { $0 >= 10 ? 0.8 : 0 }
+        XCTAssertNil(AlertPlanner.rainNotification(for: Fixtures.location, forecast: unlikely, lastNotified: nil, now: now))
+        let far = minuteForecast(start: now, chance: 0.9) { $0 >= 45 ? 0.8 : 0 }
+        XCTAssertNil(AlertPlanner.rainNotification(for: Fixtures.location, forecast: far, lastNotified: nil, now: now))
+        let raining = minuteForecast(start: now, chance: 0.9) { _ in 0.8 }
+        XCTAssertNil(AlertPlanner.rainNotification(for: Fixtures.location, forecast: raining, lastNotified: nil, now: now))
+    }
+
+    func testSevereAlertsAreNotifiedOnce() throws {
+        let alerts = try NWSAlertsClient.parse(Fixtures.data("nws-alerts"), now: now)
+        let first = AlertPlanner.severeNotifications(for: Fixtures.location, alerts: alerts, alreadyNotified: [], now: now)
+        XCTAssertEqual(first.count, 2)
+        let ids = Set(alerts.map(\.id))
+        XCTAssertTrue(AlertPlanner.severeNotifications(for: Fixtures.location, alerts: alerts, alreadyNotified: ids, now: now).isEmpty)
+        let severeOnly = AlertPlanner.severeNotifications(for: Fixtures.location, alerts: alerts, alreadyNotified: [], minimumSeverity: .severe, now: now)
+        XCTAssertEqual(severeOnly.map(\.title), ["Severe Thunderstorm Warning · Chicago"])
+    }
+}

@@ -12,11 +12,11 @@ concurrency:
 
 jobs:
   package:
-    name: AiSkyKit (tests + iOS build)
+    name: AiSkyKit (unit tests + iOS build)
     runs-on: macos-26
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Show toolchain
         run: |
@@ -34,4 +34,62 @@ jobs:
             -scheme AiSkyKit \
             -destination 'generic/platform=iOS Simulator' \
             -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO | tail -n 200
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
+          grep -E "(error|warning): " build.log | sort -u | head -100 || true
+          tail -n 5 build.log
+          exit ${status:-0}
+
+  app:
+    name: iOS app + widgets (Simulator build & tests)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Pick a simulator
+        id: sim
+        run: |
+          xcrun simctl list devices available
+          # Prefer an iPhone 17; otherwise take the first available iPhone (full name, e.g. "iPhone 16e").
+          if xcrun simctl list devices available | grep -q "iPhone 17 ("; then
+            name="iPhone 17"
+          else
+            name=$(xcrun simctl list devices available | awk -F' [(]' '/iPhone/ { sub(/^ +/, "", $1); print $1; exit }')
+          fi
+          echo "Using simulator: $name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - name: Build app, widget extension and tests
+        run: |
+          xcodebuild build-for-testing \
+            -project AiSky.xcodeproj \
+            -scheme AiSky \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -derivedDataPath DerivedData \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
+          echo "::group::Errors and warnings"
+          grep -E "(error|warning): " build.log | sort -u | head -200 || true
+          echo "::endgroup::"
+          tail -n 30 build.log
+          exit ${status:-0}
+
+      - name: Verify widget extension is embedded
+        run: |
+          app=$(find DerivedData/Build/Products -maxdepth 2 -name "AiSky.app" -type d | head -1)
+          echo "App bundle: $app"
+          ls "$app/PlugIns"
+          test -d "$app/PlugIns/AiSkyWidgetsExtension.appex"
+          plutil -p "$app/Info.plist" | grep -E "CFBundleIdentifier|AiSkyAppGroup|BGTaskScheduler|NSLocationWhenInUse" -A1
+          plutil -p "$app/PlugIns/AiSkyWidgetsExtension.appex/Info.plist" | grep -E "CFBundleIdentifier|NSExtensionPointIdentifier|NSWidgetWantsLocation"
+
+      - name: Run tests on the simulator
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building \
+            -project AiSky.xcodeproj \
+            -scheme AiSky \
+            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Suite|Test Case.*failed|error:|Executed|TEST (SUCCEEDED|FAILED)" | tail -n 80

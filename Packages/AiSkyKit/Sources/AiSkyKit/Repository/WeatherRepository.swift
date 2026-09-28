@@ -57,11 +57,14 @@ public struct WeatherRepository: Sendable {
     /// Message explaining why Apple Weather isn't being used, if the user asked for it.
     public func weatherKitStatusMessage(_ settings: AppSettings) -> String? {
         guard settings.dataSource != .openMeteo else { return nil }
-        if !weatherKitAvailable {
+        if !BuildConfiguration.isWeatherKitEnabled {
             return settings.dataSource == .appleWeather
                 ? "Apple Weather isn't enabled in this build. See the README to turn on WeatherKit."
                 : nil
         }
+        // Widgets never call WeatherKit themselves (they reuse the app's data), so they have
+        // nothing to report here.
+        guard weatherKitAvailable else { return nil }
         if let failure = store.value(WeatherKitFailure.self, forKey: .weatherKitFailure),
            Date().timeIntervalSince(failure.date) < Self.weatherKitBackoff {
             return "Apple Weather is temporarily unavailable (\(failure.message)). Using Open-Meteo."
