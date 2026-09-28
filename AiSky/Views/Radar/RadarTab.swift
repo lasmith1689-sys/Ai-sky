@@ -8,6 +8,9 @@ struct RadarTab: View {
     @State private var radar = RadarViewModel()
     @State private var focus: MapFocus?
     @State private var center: CLLocationCoordinate2D?
+    @State private var spot: RadarSpot?
+    @State private var spotSheet: ForecastSheet?
+    @AppStorage("radarSpotHintSeen") private var spotHintSeen = false
 
     var body: some View {
         ZStack {
@@ -18,12 +21,16 @@ struct RadarTab: View {
                 mapStyle: model.settings.radarMapStyle,
                 pins: pins,
                 focus: focus,
+                spot: spot?.coordinate,
                 onRegionChange: { coordinate in
                     center = coordinate
                     Task { await reloadIfSourceChanged(for: coordinate) }
                 },
                 onSelectPin: { id in
                     model.select(locationID: id)
+                },
+                onLongPress: { coordinate in
+                    dropSpot(at: coordinate)
                 }
             )
             .ignoresSafeArea(edges: .top)
@@ -37,6 +44,21 @@ struct RadarTab: View {
                         .padding(10)
                         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
                 }
+                if let spot {
+                    SpotCard(
+                        spot: spot,
+                        onShow: { spotSheet = $0 },
+                        onClose: { withAnimation { self.spot = nil } }
+                    )
+                    .id(spot.id)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                } else if !spotHintSeen {
+                    Label("Touch and hold the map for rainfall history anywhere", systemImage: "hand.tap")
+                        .font(.caption)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.regularMaterial, in: Capsule())
+                }
                 RadarControls(radar: radar, speed: model.settings.radarSpeed)
             }
             .padding(12)
@@ -46,6 +68,11 @@ struct RadarTab: View {
             if focus == nil {
                 focus = MapFocus(coordinate: start, span: 4)
             }
+            #if DEBUG
+            if Self.debugDropsSpot, spot == nil {
+                dropSpot(at: start)
+            }
+            #endif
             await radar.load(preference: model.settings.radarSource, latitude: start.latitude, longitude: start.longitude)
             radar.startAutoRefresh { [model] in
                 let point = center ?? start
@@ -55,6 +82,16 @@ struct RadarTab: View {
         .onDisappear {
             radar.pause()
             radar.stopAutoRefresh()
+        }
+        .sheet(item: $spotSheet) { sheet in
+            if let spot {
+                switch sheet {
+                case .rainHistory:
+                    RainHistoryView(location: spot.weatherLocation, snapshot: nil)
+                case .timeMachine:
+                    TimeMachineSheet(location: spot.weatherLocation, timeZone: spot.timeZone, date: spot.yesterday)
+                }
+            }
         }
         .onChange(of: model.settings.radarSource) { _, newValue in
             let point = center ?? startingCoordinate
@@ -138,6 +175,28 @@ struct RadarTab: View {
                 temperatureText: summary.map { formatter.temperature($0.temperature) },
                 tintHex: location.isCurrentLocation ? 0x0A84FF : 0x5E5CE6
             )
+        }
+    }
+
+    #if DEBUG
+    /// CI smoke test: `-AiSkyScreen radarSpot` opens the radar with a spot dropped on the selected place.
+    private static var debugDropsSpot: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-AiSkyScreen"), arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "radarSpot"
+    }
+    #endif
+
+    /// Precip-style "rain totals anywhere on the map": touch and hold to inspect a spot.
+    private func dropSpot(at coordinate: CLLocationCoordinate2D) {
+        let dropped = RadarSpot(coordinate: coordinate)
+        spotHintSeen = true
+        withAnimation { spot = dropped }
+        Task {
+            let resolved = await dropped.resolvingPlace()
+            if spot?.id == dropped.id {
+                spot = resolved
+            }
         }
     }
 

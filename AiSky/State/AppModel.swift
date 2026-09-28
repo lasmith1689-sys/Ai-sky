@@ -84,7 +84,7 @@ final class AppModel {
     #if DEBUG
     /// Debug-only launch arguments used by the CI smoke test (handy in the Simulator too):
     /// `-AiSkyDemoLibrary` fills an empty library with sample places;
-    /// `-AiSkyScreen radar|locations|settings|<forecast section>|rainHistory|timeMachine` opens that screen.
+    /// `-AiSkyScreen radar|radarSpot|locations|settings|<forecast section>|rainHistory|timeMachine` opens that screen.
     private func applyDebugLaunchArguments() {
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty {
@@ -93,7 +93,7 @@ final class AppModel {
         }
         if let index = arguments.firstIndex(of: "-AiSkyScreen"), arguments.indices.contains(index + 1) {
             switch arguments[index + 1] {
-            case "radar": selectedTab = .radar
+            case "radar", "radarSpot": selectedTab = .radar
             case "locations": selectedTab = .locations
             case "settings": selectedTab = .settings
             default:

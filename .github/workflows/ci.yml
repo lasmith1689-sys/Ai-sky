@@ -98,7 +98,7 @@ jobs:
       - name: Preview images for review (base64 JPEG)
         if: always()
         run: |
-          for name in 01-forecast 04-daily 05-precipitation 08-radar 11-rain-history 12-time-machine; do
+          for name in 01-forecast 04-daily 05-precipitation 11-rain-history 12-time-machine 13-radar-spot; do
             [ -f "screenshots/$name.png" ] || continue
             sips -Z 700 -s format jpeg -s formatOptions 40 "screenshots/$name.png" --out "/tmp/$name.jpg" >/dev/null
             echo "=====BEGIN $name.jpg====="

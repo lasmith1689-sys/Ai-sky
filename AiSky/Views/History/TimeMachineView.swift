@@ -49,24 +49,27 @@ struct TimeMachineView: View {
     private var latest: Date { WeatherHistoryClient.latestDate(today: Date(), calendar: calendar) }
 
     private var dateControls: some View {
-        HStack(spacing: 10) {
-            stepButton(systemImage: "chevron.left", days: -1)
-                .disabled(date <= earliest)
+        VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(model.formatter.longDate(date, timeZone: calendar.timeZone))
-                    .font(.headline)
+                    .font(.title3.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(relativeDescription)
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.75))
             }
-            Spacer(minLength: 4)
-            DatePicker("Date", selection: dateBinding, in: earliest...latest, displayedComponents: .date)
-                .labelsHidden()
-                .environment(\.timeZone, calendar.timeZone)
-            stepButton(systemImage: "chevron.right", days: 1)
-                .disabled(date >= latest)
+            HStack(spacing: 10) {
+                stepButton(systemImage: "chevron.left", days: -1)
+                    .disabled(date <= earliest)
+                Spacer(minLength: 0)
+                DatePicker("Date", selection: dateBinding, in: earliest...latest, displayedComponents: .date)
+                    .labelsHidden()
+                    .environment(\.timeZone, calendar.timeZone)
+                Spacer(minLength: 0)
+                stepButton(systemImage: "chevron.right", days: 1)
+                    .disabled(date >= latest)
+            }
         }
         .padding(12)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))

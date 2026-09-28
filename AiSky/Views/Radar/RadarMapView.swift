@@ -35,8 +35,11 @@ struct RadarMapView: UIViewRepresentable {
     var mapStyle: MapStylePreference
     var pins: [RadarPin]
     var focus: MapFocus?
+    /// A touched-and-held spot, shown with its own marker.
+    var spot: CLLocationCoordinate2D?
     var onRegionChange: (CLLocationCoordinate2D) -> Void
     var onSelectPin: (String) -> Void
+    var onLongPress: (CLLocationCoordinate2D) -> Void
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
@@ -50,6 +53,10 @@ struct RadarMapView: UIViewRepresentable {
         mapView.showsScale = true
         mapView.pointOfInterestFilter = .excludingAll
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: Coordinator.pinReuseID)
+        mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: Coordinator.spotReuseID)
+        let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
+        longPress.minimumPressDuration = 0.45
+        mapView.addGestureRecognizer(longPress)
         context.coordinator.apply(style: mapStyle, to: mapView)
         if let focus {
             mapView.setRegion(Self.region(for: focus), animated: false)
@@ -65,6 +72,7 @@ struct RadarMapView: UIViewRepresentable {
         coordinator.syncOverlays(frames: frames, on: mapView)
         coordinator.showFrame(id: currentFrameID, opacity: opacity)
         coordinator.syncPins(pins, on: mapView)
+        coordinator.syncSpot(spot, on: mapView)
         if let focus, focus.id != coordinator.lastFocusID {
             coordinator.lastFocusID = focus.id
             mapView.setRegion(Self.region(for: focus), animated: true)
@@ -77,6 +85,7 @@ struct RadarMapView: UIViewRepresentable {
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         static let pinReuseID = "pin"
+        static let spotReuseID = "spot"
 
         var parent: RadarMapView
         var lastFocusID: UUID?
@@ -86,6 +95,7 @@ struct RadarMapView: UIViewRepresentable {
         private var visibleFrameID: String?
         private var visibleOpacity: Double = 0
         private var annotations: [String: PinAnnotation] = [:]
+        private var spotAnnotation: MKPointAnnotation?
 
         init(parent: RadarMapView) {
             self.parent = parent
@@ -157,6 +167,32 @@ struct RadarMapView: UIViewRepresentable {
             }
         }
 
+        func syncSpot(_ coordinate: CLLocationCoordinate2D?, on mapView: MKMapView) {
+            guard let coordinate else {
+                if let spotAnnotation {
+                    mapView.removeAnnotation(spotAnnotation)
+                    self.spotAnnotation = nil
+                }
+                return
+            }
+            if let spotAnnotation {
+                if spotAnnotation.coordinate.latitude != coordinate.latitude || spotAnnotation.coordinate.longitude != coordinate.longitude {
+                    spotAnnotation.coordinate = coordinate
+                }
+            } else {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                spotAnnotation = annotation
+                mapView.addAnnotation(annotation)
+            }
+        }
+
+        @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+            guard gesture.state == .began, let mapView = gesture.view as? MKMapView else { return }
+            let point = gesture.location(in: mapView)
+            parent.onLongPress(mapView.convert(point, toCoordinateFrom: mapView))
+        }
+
         // MARK: MKMapViewDelegate
 
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -174,6 +210,17 @@ struct RadarMapView: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            if annotation === spotAnnotation {
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: Self.spotReuseID, for: annotation)
+                if let marker = view as? MKMarkerAnnotationView {
+                    marker.markerTintColor = .systemOrange
+                    marker.glyphImage = UIImage(systemName: "drop.fill")
+                    marker.displayPriority = .required
+                    marker.canShowCallout = false
+                    marker.animatesWhenAdded = true
+                }
+                return view
+            }
             guard let annotation = annotation as? PinAnnotation else { return nil }
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: Self.pinReuseID, for: annotation)
             if let marker = view as? MKMarkerAnnotationView {

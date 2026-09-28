@@ -46,6 +46,7 @@ capture 09-locations locations 10
 capture 10-settings settings 5
 capture 11-rain-history rainHistory 25
 capture 12-time-machine timeMachine 20
+capture 13-radar-spot radarSpot 20
 
 if [ "$failures" -gt 0 ]; then
   find ~/Library/Logs/DiagnosticReports -name "AiSky*" -mmin -20 -print -exec head -120 {} \; 2>/dev/null
