@@ -52,17 +52,26 @@ jobs:
               hourly = d.get("hourly", {})
               print(f"{label}: {len(daily.get('time', []))} days, {len(hourly.get('time', []))} hours, first hour {hourly.get('time', [None])[0]}")
               return values
+          core = {"latitude": "41.8781", "longitude": "-87.6298", "timezone": "auto", "past_days": "31", "forecast_days": "1"}
           variants = {
               "app": app,
-              "no past/forecast_hours": {k: v for k, v in app.items() if k not in ("past_hours", "forecast_hours")},
-              "no minutely": {k: v for k, v in app.items() if not k.endswith("minutely_15")},
-              "daily only": {k: v for k, v in app.items() if k in ("latitude", "longitude", "timezone", "timeformat", "past_days", "forecast_days")} | {"daily": "precipitation_sum"},
+              "daily only": core | {"daily": "precipitation_sum"},
+              "daily+hourly precip": core | {"daily": "precipitation_sum", "hourly": "precipitation"},
+              "all daily vars": core | {"daily": app["daily"]},
+              "daily+prob max": core | {"daily": "precipitation_sum,precipitation_probability_max"},
+              "daily+weather code": core | {"daily": "precipitation_sum,weather_code"},
+              "daily+current": core | {"daily": "precipitation_sum", "current": "temperature_2m"},
+              "hrrr": core | {"daily": "precipitation_sum", "models": "ncep_hrrr_conus"},
+              "gfs_seamless": core | {"daily": "precipitation_sum", "models": "gfs_seamless"},
+              "nbm": core | {"daily": "precipitation_sum", "models": "ncep_nbm_conus"},
+              "icon_seamless": core | {"daily": "precipitation_sum", "models": "icon_seamless"},
+              "ecmwf_ifs025": core | {"daily": "precipitation_sum", "models": "ecmwf_ifs025"},
           }
           results = {name: fetch(name, params) for name, params in variants.items()}
-          days = sorted(results["daily only"])[-34:-9]
-          print("date        " + "  ".join(f"{n[:14]:>14}" for n in results))
-          for day in days:
-              print(day + "  " + "  ".join(f"{results[n].get(day)!s:>14}" for n in results))
+          days = [d for d in sorted(results["daily only"]) if "2026-09-14" <= d <= "2026-09-21"]
+          for name, values in results.items():
+              print(f"{name:>20}: " + " ".join(f"{values.get(day)!s:>6}" for day in days))
+          print(" " * 22 + " ".join(day[5:] for day in days))
           EOF
 
       - name: Unit tests (macOS)
