@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: AiSkyKit (tests + iOS build)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Unit tests (macOS)
+        run: swift test --package-path Packages/AiSkyKit
+
+      - name: Build for iOS Simulator
+        working-directory: Packages/AiSkyKit
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme AiSkyKit \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO | tail -n 200
