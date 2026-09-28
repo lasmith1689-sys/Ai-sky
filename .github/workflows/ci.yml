@@ -23,6 +23,35 @@ jobs:
           xcodebuild -version
           swift --version
 
+      - name: Open-Meteo history consistency (temporary diagnostic)
+        continue-on-error: true
+        run: |
+          base="https://api.open-meteo.com/v1/forecast?latitude=41.8781&longitude=-87.6298&timezone=auto"
+          today=$(TZ=America/Chicago date +%Y-%m-%d)
+          start85=$(TZ=America/Chicago date -v-85d +%Y-%m-%d)
+          yesterday=$(TZ=America/Chicago date -v-1d +%Y-%m-%d)
+          start10=$(TZ=America/Chicago date -v-40d +%Y-%m-%d)
+          curl -sS "$base&daily=precipitation_sum&past_days=31&forecast_days=1" -o pastdays.json
+          curl -sS "$base&daily=precipitation_sum,snowfall_sum&start_date=$start85&end_date=$yesterday" -o range85.json
+          curl -sS "$base&daily=precipitation_sum&start_date=$start10&end_date=$yesterday" -o range40.json
+          curl -sS "https://archive-api.open-meteo.com/v1/archive?latitude=41.8781&longitude=-87.6298&timezone=auto&daily=precipitation_sum&start_date=$start10&end_date=$yesterday" -o archive.json
+          python3 - <<'EOF'
+          import json
+          def load(name):
+              d = json.load(open(name))
+              if "daily" not in d:
+                  print(name, "ERROR", d)
+                  return {}
+              return dict(zip(d["daily"]["time"], d["daily"]["precipitation_sum"]))
+          a, b, c, e = load("pastdays.json"), load("range85.json"), load("range40.json"), load("archive.json")
+          print("date        past_days  range85  range40  archive   (mm)")
+          for day in sorted(set(a) | set(c)):
+              print(f"{day}  {a.get(day)!s:>9}  {b.get(day)!s:>7}  {c.get(day)!s:>7}  {e.get(day)!s:>7}")
+          for name in ("pastdays.json", "range85.json"):
+              d = json.load(open(name))
+              print(name, {k: d.get(k) for k in ("timezone", "utc_offset_seconds", "latitude", "longitude")})
+          EOF
+
       - name: Unit tests (macOS)
         run: swift test --package-path Packages/AiSkyKit
 
