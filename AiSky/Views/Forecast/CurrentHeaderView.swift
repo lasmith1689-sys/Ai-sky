@@ -53,12 +53,14 @@ struct CurrentHeaderView: View {
                         .foregroundStyle(.white.opacity(0.9))
                 }
 
-                Text(headline(snapshot))
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(.top, 6)
-                    .padding(.horizontal, 12)
+                if let headline = headline(snapshot) {
+                    Text(headline)
+                        .font(.callout)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(.top, 6)
+                        .padding(.horizontal, 12)
+                }
             } else {
                 Text("--°")
                     .font(.system(size: 96, weight: .thin))
@@ -69,12 +71,13 @@ struct CurrentHeaderView: View {
         .padding(.bottom, 8)
     }
 
-    /// Dark Sky style: lead with imminent precipitation, otherwise summarize the day.
-    private func headline(_ snapshot: WeatherSnapshot) -> String {
+    /// Dark Sky style: lead with imminent precipitation; otherwise compare with yesterday
+    /// (the day's summary is shown in the hourly card just below).
+    private func headline(_ snapshot: WeatherSnapshot) -> String? {
         let nextHour = NextHourSummarizer.summarize(snapshot.nextHour, now: now)
         if nextHour.isPrecipitationExpected {
             return nextHour.text
         }
-        return ForecastNarrator.daySummary(hours: snapshot.hourly, now: now, timeZone: snapshot.timeZone, formatter: model.formatter)
+        return YesterdayComparison.text(for: snapshot, now: now, formatter: model.formatter)
     }
 }

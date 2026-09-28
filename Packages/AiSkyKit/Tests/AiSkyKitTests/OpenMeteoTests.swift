@@ -36,7 +36,7 @@ final class OpenMeteoTests: XCTestCase {
 
     func testHourlyKeepsOnlyTheLastDayOfHistory() throws {
         let snapshot = try Fixtures.snapshot()
-        XCTAssertTrue(snapshot.hourly.allSatisfy { $0.date >= Fixtures.now.addingTimeInterval(-24 * 3600) })
+        XCTAssertTrue(snapshot.hourly.allSatisfy { $0.date >= Fixtures.now.addingTimeInterval(-25 * 3600) })
         XCTAssertEqual(snapshot.upcomingHours(from: Fixtures.now, limit: 5).first?.date, Date(timeIntervalSince1970: 1_790_614_800))
     }
 

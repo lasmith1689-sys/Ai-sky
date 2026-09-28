@@ -28,7 +28,32 @@ enum NotificationManager {
         content.body = notification.body
         content.sound = .default
         content.threadIdentifier = notification.threadID
+        if let deepLink = notification.deepLink {
+            content.userInfo = ["url": deepLink]
+        }
         let request = UNNotificationRequest(identifier: notification.id, content: content, trigger: nil)
         try? await UNUserNotificationCenter.current().add(request)
+    }
+}
+
+/// Shows alerts while the app is open and routes taps to the matching forecast.
+@MainActor
+final class NotificationRouter: NSObject, UNUserNotificationCenterDelegate {
+    var onOpenURL: ((URL) -> Void)?
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        guard let link = response.notification.request.content.userInfo["url"] as? String,
+              let url = URL(string: link) else { return }
+        onOpenURL?(url)
     }
 }

@@ -13,6 +13,8 @@ final class CurrentLocationManager {
 
     /// Called with each new fix after the place name has been resolved.
     @ObservationIgnored var onUpdate: ((CurrentLocationSnapshot) -> Void)?
+    /// Called when the user turns location access off.
+    @ObservationIgnored var onAuthorizationRevoked: (() -> Void)?
 
     private let manager = CLLocationManager()
     private let delegate = LocationDelegate()
@@ -29,6 +31,8 @@ final class CurrentLocationManager {
             self.authorizationStatus = status
             if self.isAuthorized && !wasAuthorized {
                 Task { await self.refresh() }
+            } else if self.isDenied {
+                self.onAuthorizationRevoked?()
             }
         }
         delegate.onLocations = { [weak self] locations in

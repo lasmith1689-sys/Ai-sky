@@ -2,6 +2,7 @@ import AiSkyKit
 import Foundation
 import Observation
 import SwiftUI
+import UserNotifications
 import WidgetKit
 
 enum AppTab: Hashable {
@@ -44,6 +45,7 @@ final class AppModel {
     var pendingSection: ForecastSection?
 
     @ObservationIgnored private var lastActiveRefresh: Date?
+    private let notificationRouter = NotificationRouter()
 
     init(store: SharedStore = .shared, repository: WeatherRepository = .shared) {
         self.store = store
@@ -57,18 +59,38 @@ final class AppModel {
         locationManager.onUpdate = { [weak self] snapshot in
             self?.currentLocationUpdated(snapshot)
         }
+        locationManager.onAuthorizationRevoked = { [weak self] in
+            self?.forgetCurrentLocation()
+        }
+        notificationRouter.onOpenURL = { [weak self] url in
+            self?.handle(url: url)
+        }
+        UNUserNotificationCenter.current().delegate = notificationRouter
         #if DEBUG
-        seedDemoLibraryIfRequested()
+        applyDebugLaunchArguments()
         #endif
     }
 
     #if DEBUG
-    /// `-AiSkyDemoLibrary` launch argument: fills an empty library with sample places
-    /// (used by CI screenshots and handy in the Simulator).
-    private func seedDemoLibraryIfRequested() {
-        guard ProcessInfo.processInfo.arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty else { return }
-        savedLocations = Array(SampleData.savedLocations.dropFirst())
-        store.saveSavedLocations(savedLocations)
+    /// Debug-only launch arguments used by the CI smoke test (handy in the Simulator too):
+    /// `-AiSkyDemoLibrary` fills an empty library with sample places;
+    /// `-AiSkyScreen radar|locations|settings|<forecast section>` opens that screen.
+    private func applyDebugLaunchArguments() {
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty {
+            savedLocations = Array(SampleData.savedLocations.dropFirst())
+            store.saveSavedLocations(savedLocations)
+        }
+        if let index = arguments.firstIndex(of: "-AiSkyScreen"), arguments.indices.contains(index + 1) {
+            switch arguments[index + 1] {
+            case "radar": selectedTab = .radar
+            case "locations": selectedTab = .locations
+            case "settings": selectedTab = .settings
+            default:
+                selectedTab = .forecast
+                pendingSection = ForecastSection(rawValue: arguments[index + 1])
+            }
+        }
     }
     #endif
 
@@ -234,6 +256,18 @@ final class AppModel {
         if selectedLocationID == nil {
             selectedLocationID = WeatherLocation.currentLocationID
         }
+    }
+
+    /// Location access was turned off: stop showing (and sharing with widgets) the old position.
+    private func forgetCurrentLocation() {
+        guard currentLocation != nil else { return }
+        currentLocation = nil
+        store.saveCurrentLocation(nil)
+        weather.remove(locationID: WeatherLocation.currentLocationID)
+        if selectedLocationID == WeatherLocation.currentLocationID {
+            selectedLocationID = nil
+        }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // MARK: Settings

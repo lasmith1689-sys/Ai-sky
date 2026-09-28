@@ -29,7 +29,7 @@ enum OpenMeteoMapper {
             timeZoneIdentifier: timeZoneID,
             current: current,
             nextHour: nextHour,
-            hourly: allHours.filter { $0.date >= now.addingTimeInterval(-24 * 3600) },
+            hourly: allHours.filter { $0.date >= now.addingTimeInterval(-25 * 3600) },
             daily: days,
             precipitationHistory: history
         )

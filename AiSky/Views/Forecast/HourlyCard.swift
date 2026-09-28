@@ -31,12 +31,7 @@ struct HourlyCard: View {
 
             Divider().overlay(.white.opacity(0.2))
 
-            Picker("Metric", selection: $metric) {
-                ForEach(HourlyMetric.allCases) { metric in
-                    Text(metric.title).tag(metric)
-                }
-            }
-            .pickerStyle(.segmented)
+            MetricChips(selection: $metric)
 
             HourlyMetricChart(hours: Array(hours.prefix(24)), metric: metric, formatter: formatter, timeZone: snapshot.timeZone)
                 .frame(height: 150)
@@ -132,10 +127,38 @@ private struct HourColumn: View {
     }
 }
 
+/// Horizontally scrolling metric selector (seven options don't fit a segmented control).
+private struct MetricChips: View {
+    @Binding var selection: HourlyMetric
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(HourlyMetric.allCases) { option in
+                    let selected = option == selection
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { selection = option }
+                    } label: {
+                        Text(option.title)
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(selected ? Color.white.opacity(0.9) : Color.white.opacity(0.12), in: Capsule())
+                            .foregroundStyle(selected ? Color.black : Color.white)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selected ? .isSelected : [])
+                }
+            }
+        }
+    }
+}
+
 enum HourlyMetric: String, CaseIterable, Identifiable {
     case temperature
     case feelsLike
     case precipitation
+    case amount
     case wind
     case uv
     case humidity
@@ -146,10 +169,11 @@ enum HourlyMetric: String, CaseIterable, Identifiable {
         switch self {
         case .temperature: return "Temp"
         case .feelsLike: return "Feels"
-        case .precipitation: return "Precip"
+        case .precipitation: return "Chance"
+        case .amount: return "Amount"
         case .wind: return "Wind"
         case .uv: return "UV"
-        case .humidity: return "Humid"
+        case .humidity: return "Humidity"
         }
     }
 }
@@ -202,6 +226,13 @@ struct HourlyMetricChart: View {
             )
             .foregroundStyle(Palette.precipitation(hour.precipitationKind).opacity(0.85))
             .cornerRadius(2)
+        } else if metric == .amount {
+            BarMark(
+                x: .value("Time", hour.date, unit: .hour),
+                y: .value("Amount", formatter.precipitationValue(hour.precipitationAmount ?? 0))
+            )
+            .foregroundStyle(Palette.precipitation(hour.precipitationKind))
+            .cornerRadius(2)
         } else if metric == .uv {
             BarMark(
                 x: .value("Time", hour.date, unit: .hour),
@@ -234,6 +265,7 @@ struct HourlyMetricChart: View {
         case .wind: return formatter.windSpeedValue(hour.windSpeed ?? 0)
         case .humidity: return (hour.humidity ?? 0) * 100
         case .precipitation: return (hour.precipitationChance ?? 0) * 100
+        case .amount: return formatter.precipitationValue(hour.precipitationAmount ?? 0)
         case .uv: return hour.uvIndex ?? 0
         }
     }
@@ -248,7 +280,7 @@ struct HourlyMetricChart: View {
             return [Palette.temperature(high), Palette.temperature((high + low) / 2), Palette.temperature(low)]
         case .wind: return [.teal, .teal]
         case .humidity: return [.cyan, .cyan]
-        case .precipitation: return [Palette.rain, Palette.rain]
+        case .precipitation, .amount: return [Palette.rain, Palette.rain]
         case .uv: return [.yellow, .yellow]
         }
     }
@@ -267,6 +299,10 @@ struct HourlyMetricChart: View {
             return 0...100
         case .uv:
             return 0...max(11, hours.compactMap(\.uvIndex).max() ?? 0)
+        case .amount:
+            // At least 0.1 in / 2.5 mm so light rain doesn't look torrential.
+            let floor = formatter.units.precipitation == .inches ? 0.1 : 2.5
+            return 0...max(floor, (hours.map { value(for: $0) }.max() ?? 0) * 1.2)
         case .wind:
             return 0...max(10, (hours.map { value(for: $0) }.max() ?? 0) * 1.2)
         case .temperature, .feelsLike:
@@ -281,6 +317,7 @@ struct HourlyMetricChart: View {
         switch metric {
         case .temperature, .feelsLike: return "\(Int(value.rounded()))°"
         case .precipitation, .humidity: return "\(Int(value))%"
+        case .amount: return String(format: formatter.units.precipitation == .inches ? "%.2f" : "%.1f", value)
         case .wind: return "\(Int(value))"
         case .uv: return "\(Int(value))"
         }

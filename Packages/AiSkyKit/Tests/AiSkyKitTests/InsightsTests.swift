@@ -151,6 +151,7 @@ final class AlertPlannerTests: XCTestCase {
         let notification = try XCTUnwrap(AlertPlanner.rainNotification(for: Fixtures.location, forecast: forecast, lastNotified: nil, now: now))
         XCTAssertEqual(notification.title, "Rain soon · Chicago")
         XCTAssertEqual(notification.body, "Light rain starting in 10 min.")
+        XCTAssertEqual(notification.deepLink, "aisky://forecast/test?section=nextHour")
     }
 
     func testNoRainAlertDuringCooldownOrWhenUnlikely() {
@@ -172,5 +173,27 @@ final class AlertPlannerTests: XCTestCase {
         XCTAssertTrue(AlertPlanner.severeNotifications(for: Fixtures.location, alerts: alerts, alreadyNotified: ids, now: now).isEmpty)
         let severeOnly = AlertPlanner.severeNotifications(for: Fixtures.location, alerts: alerts, alreadyNotified: [], minimumSeverity: .severe, now: now)
         XCTAssertEqual(severeOnly.map(\.title), ["Severe Thunderstorm Warning · Chicago"])
+    }
+}
+
+final class YesterdayComparisonTests: XCTestCase {
+    func testComparesWithSameHourYesterday() throws {
+        var snapshot = SampleData.snapshot(now: Fixtures.now)
+        snapshot.current.temperature = 25
+        // Make the hour 24h ago clearly colder.
+        let target = Fixtures.now.addingTimeInterval(-24 * 3600)
+        for index in snapshot.hourly.indices where abs(snapshot.hourly[index].date.timeIntervalSince(target)) <= 90 * 60 {
+            snapshot.hourly[index].temperature = 20
+        }
+        let text = try XCTUnwrap(YesterdayComparison.text(for: snapshot, now: Fixtures.now, formatter: Fixtures.imperial))
+        XCTAssertEqual(text, "9° warmer than yesterday at this time.")
+        let metric = try XCTUnwrap(YesterdayComparison.text(for: snapshot, now: Fixtures.now, formatter: Fixtures.metric))
+        XCTAssertEqual(metric, "5° warmer than yesterday at this time.")
+    }
+
+    func testNilWithoutHistory() {
+        var snapshot = SampleData.snapshot(now: Fixtures.now)
+        snapshot.hourly = snapshot.hourly.filter { $0.date > Fixtures.now }
+        XCTAssertNil(YesterdayComparison.text(for: snapshot, now: Fixtures.now, formatter: Fixtures.imperial))
     }
 }

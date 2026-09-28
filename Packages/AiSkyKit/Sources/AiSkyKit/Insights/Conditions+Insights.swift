@@ -110,3 +110,21 @@ public enum VisibilityInsight {
         }
     }
 }
+
+/// "4° warmer than yesterday at this time" — handy context when nothing dramatic is happening.
+public enum YesterdayComparison {
+    public static func text(for snapshot: WeatherSnapshot, now: Date = Date(), formatter: WeatherFormatter) -> String? {
+        let target = now.addingTimeInterval(-24 * 3600)
+        guard let past = snapshot.hourly.min(by: {
+            abs($0.date.timeIntervalSince(target)) < abs($1.date.timeIntervalSince(target))
+        }), abs(past.date.timeIntervalSince(target)) <= 90 * 60 else {
+            return nil
+        }
+        let current = snapshot.conditions(at: now).temperature
+        let delta = Int(formatter.units.temperature.convertDelta(celsius: current - past.temperature).rounded())
+        if abs(delta) < 2 {
+            return "About the same temperature as yesterday at this time."
+        }
+        return "\(abs(delta))° \(delta > 0 ? "warmer" : "colder") than yesterday at this time."
+    }
+}

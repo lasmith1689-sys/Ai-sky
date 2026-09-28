@@ -6,12 +6,15 @@ public struct PlannedNotification: Sendable, Equatable {
     public var title: String
     public var body: String
     public var threadID: String
+    /// Opened when the notification is tapped, e.g. `aisky://forecast/<id>?section=nextHour`.
+    public var deepLink: String?
 
-    public init(id: String, title: String, body: String, threadID: String) {
+    public init(id: String, title: String, body: String, threadID: String, deepLink: String? = nil) {
         self.id = id
         self.title = title
         self.body = body
         self.threadID = threadID
+        self.deepLink = deepLink
     }
 }
 
@@ -44,7 +47,8 @@ public enum AlertPlanner {
             id: "rain-\(location.id)-\(Int(now.timeIntervalSince1970))",
             title: "\(noun) soon · \(location.name)",
             body: summary.text,
-            threadID: "rain-\(location.id)"
+            threadID: "rain-\(location.id)",
+            deepLink: "aisky://forecast/\(location.id)?section=nextHour"
         )
     }
 
@@ -63,7 +67,8 @@ public enum AlertPlanner {
                     id: "alert-\(alert.id)",
                     title: "\(alert.title) · \(location.name)",
                     body: alert.headline ?? alert.region ?? "Tap for details from \(alert.source).",
-                    threadID: "alerts-\(location.id)"
+                    threadID: "alerts-\(location.id)",
+                    deepLink: "aisky://forecast/\(location.id)"
                 )
             }
     }

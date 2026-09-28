@@ -87,7 +87,14 @@ struct WelcomeView: View {
                     .padding(.horizontal, 32)
                 Spacer()
                 VStack(spacing: 12) {
-                    if model.locationManager.isDenied {
+                    if model.locationManager.isAuthorized {
+                        HStack(spacing: 10) {
+                            ProgressView().tint(.white)
+                            Text("Finding your location…")
+                        }
+                        .font(.headline)
+                        .padding(.bottom, 8)
+                    } else if model.locationManager.isDenied {
                         Text("Location access is off. Enable it in Settings to see weather where you are.")
                             .font(.footnote)
                             .multilineTextAlignment(.center)
