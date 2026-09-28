@@ -183,6 +183,31 @@ public struct WeatherFormatter: Sendable {
         FormatterCache.shared.string(from: date, template: "EEEEMMMMd", timeZone: timeZone, locale: locale)
     }
 
+    /// "Thursday, July 4, 1940"
+    public func longDate(_ date: Date, timeZone: TimeZone) -> String {
+        FormatterCache.shared.string(from: date, template: "EEEEMMMMdy", timeZone: timeZone, locale: locale)
+    }
+
+    /// "Jul 4, 2024"
+    public func mediumDate(_ date: Date, timeZone: TimeZone) -> String {
+        FormatterCache.shared.string(from: date, template: "yMMMd", timeZone: timeZone, locale: locale)
+    }
+
+    /// "Sep"
+    public func monthShort(_ date: Date, timeZone: TimeZone) -> String {
+        FormatterCache.shared.string(from: date, template: "MMM", timeZone: timeZone, locale: locale)
+    }
+
+    /// "Sep 2025"
+    public func monthYear(_ date: Date, timeZone: TimeZone) -> String {
+        FormatterCache.shared.string(from: date, template: "MMMy", timeZone: timeZone, locale: locale)
+    }
+
+    /// "2025"
+    public func year(_ date: Date, timeZone: TimeZone) -> String {
+        FormatterCache.shared.string(from: date, template: "y", timeZone: timeZone, locale: locale)
+    }
+
     /// "Today", "Tomorrow", or "Tue".
     public func dayLabel(_ date: Date, timeZone: TimeZone, now: Date = Date()) -> String {
         var calendar = Calendar(identifier: .gregorian)

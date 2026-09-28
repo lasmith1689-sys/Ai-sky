@@ -7,6 +7,7 @@ struct DailyCard: View {
     let snapshot: WeatherSnapshot
     let now: Date
     let onSelect: (DailyForecast) -> Void
+    var onTimeMachine: (() -> Void)?
 
     var body: some View {
         let formatter = model.formatter
@@ -36,6 +37,26 @@ struct DailyCard: View {
                     }
                     .buttonStyle(.plain)
                 }
+            }
+
+            if let onTimeMachine {
+                Divider().overlay(.white.opacity(0.15))
+                Button(action: onTimeMachine) {
+                    HStack {
+                        Label("Time Machine", systemImage: "clock.arrow.circlepath")
+                            .font(.body.weight(.semibold))
+                        Spacer()
+                        Text("Any date since 1940")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                    .padding(.top, 4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
         }
     }

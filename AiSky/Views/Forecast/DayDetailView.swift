@@ -2,7 +2,7 @@ import AiSkyKit
 import Charts
 import SwiftUI
 
-/// Everything about one day: hourly chart, summary and statistics.
+/// Everything about one forecast day: hourly chart, summary and statistics.
 struct DayDetailView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -10,47 +10,17 @@ struct DayDetailView: View {
     let day: DailyForecast
 
     var body: some View {
-        let formatter = model.formatter
         let timeZone = snapshot.timeZone
-        let hours = hoursOfDay
         NavigationStack {
             ZStack {
                 SkyBackground(condition: day.condition, isDaylight: true).ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
-                        HStack(spacing: 12) {
-                            ConditionIcon(day.condition)
-                                .font(.system(size: 44))
-                            VStack(alignment: .leading) {
-                                Text(day.condition.description)
-                                    .font(.title2.weight(.semibold))
-                                Text("High \(formatter.temperature(day.high)) · Low \(formatter.temperature(day.low))")
-                                    .font(.headline)
-                                    .foregroundStyle(.white.opacity(0.85))
-                            }
-                        }
-                        if !hours.isEmpty {
-                            Text(ForecastNarrator.daySummary(hours: hours, now: hours[0].date, timeZone: timeZone, formatter: formatter))
-                                .font(.callout)
-
-                            WeatherCard(title: "Temperature", systemImage: "thermometer.medium") {
-                                HourlyMetricChart(hours: hours, metric: .temperature, formatter: formatter, timeZone: timeZone)
-                                    .frame(height: 150)
-                            }
-                            WeatherCard(title: "Chance of Precipitation", systemImage: "drop.fill") {
-                                HourlyMetricChart(hours: hours, metric: .precipitation, formatter: formatter, timeZone: timeZone)
-                                    .frame(height: 120)
-                            }
-                        }
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                            stats(formatter: formatter, timeZone: timeZone)
-                        }
-                    }
-                    .padding(16)
+                    DayDetailContent(day: day, hours: hoursOfDay, timeZone: timeZone)
+                        .padding(16)
                 }
             }
             .foregroundStyle(.white)
-            .navigationTitle(formatter.fullDay(day.date, timeZone: timeZone))
+            .navigationTitle(model.formatter.fullDay(day.date, timeZone: timeZone))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -67,9 +37,76 @@ struct DayDetailView: View {
         calendar.timeZone = snapshot.timeZone
         return snapshot.hourly.filter { calendar.isDate($0.date, inSameDayAs: day.date) }
     }
+}
+
+/// A day's summary, hourly charts and statistics; shared by forecast days and the Time Machine.
+struct DayDetailContent: View {
+    @Environment(AppModel.self) private var model
+    let day: DailyForecast?
+    let hours: [HourlyForecast]
+    let timeZone: TimeZone
+    /// Past days chart what fell rather than the chance of precipitation.
+    var isPast = false
+
+    var body: some View {
+        let formatter = model.formatter
+        VStack(alignment: .leading, spacing: 14) {
+            if let day {
+                HStack(spacing: 12) {
+                    ConditionIcon(day.condition)
+                        .font(.system(size: 44))
+                    VStack(alignment: .leading) {
+                        Text(day.condition.description)
+                            .font(.title2.weight(.semibold))
+                        Text("High \(formatter.temperature(day.high)) · Low \(formatter.temperature(day.low))")
+                            .font(.headline)
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
+                }
+            }
+            if !hours.isEmpty {
+                Text(ForecastNarrator.daySummary(hours: hours, now: hours[0].date, timeZone: timeZone, formatter: formatter))
+                    .font(.callout)
+
+                WeatherCard(title: "Temperature", systemImage: "thermometer.medium") {
+                    HourlyMetricChart(hours: hours, metric: .temperature, formatter: formatter, timeZone: timeZone)
+                        .frame(height: 150)
+                }
+                if isPast {
+                    WeatherCard(title: "Precipitation", systemImage: "drop.fill", accessory: totalText(formatter: formatter)) {
+                        HourlyMetricChart(hours: hours, metric: .amount, formatter: formatter, timeZone: timeZone)
+                            .frame(height: 120)
+                    }
+                } else {
+                    WeatherCard(title: "Chance of Precipitation", systemImage: "drop.fill") {
+                        HourlyMetricChart(hours: hours, metric: .precipitation, formatter: formatter, timeZone: timeZone)
+                            .frame(height: 120)
+                    }
+                }
+                WeatherCard(title: "Wind", systemImage: "wind") {
+                    HourlyMetricChart(hours: hours, metric: .wind, formatter: formatter, timeZone: timeZone)
+                        .frame(height: 110)
+                }
+            }
+            if let day {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    stats(day: day, formatter: formatter)
+                }
+            }
+        }
+    }
+
+    private func totalText(formatter: WeatherFormatter) -> String? {
+        guard let total = day?.precipitationAmount ?? optionalSum(hours.compactMap(\.precipitationAmount)) else { return nil }
+        return "\(formatter.precipitation(total)) total"
+    }
+
+    private func optionalSum(_ values: [Double]) -> Double? {
+        values.isEmpty ? nil : values.reduce(0, +)
+    }
 
     @ViewBuilder
-    private func stats(formatter: WeatherFormatter, timeZone: TimeZone) -> some View {
+    private func stats(day: DailyForecast, formatter: WeatherFormatter) -> some View {
         if let high = day.apparentHigh, let low = day.apparentLow {
             DetailTile(title: "Feels Like", systemImage: "thermometer.sun.fill",
                        value: "\(formatter.temperature(high)) / \(formatter.temperature(low))",
@@ -77,11 +114,16 @@ struct DayDetailView: View {
         }
         DetailTile(title: "Precipitation", systemImage: "cloud.rain.fill",
                    value: formatter.precipitation(day.precipitationAmount ?? 0),
-                   detail: precipitationDetail(formatter: formatter))
+                   detail: precipitationDetail(day: day, formatter: formatter))
         if let wind = day.windSpeedMax {
             DetailTile(title: "Wind", systemImage: "wind",
                        value: formatter.windSpeed(wind),
-                       detail: windDetail(formatter: formatter))
+                       detail: windDetail(day: day, formatter: formatter))
+        }
+        if let humidity = averageHumidity {
+            DetailTile(title: "Humidity", systemImage: "humidity.fill",
+                       value: formatter.percent(humidity),
+                       detail: "Average for the day.")
         }
         if let uv = day.uvIndexMax {
             DetailTile(title: "UV Index", systemImage: "sun.max.fill",
@@ -99,7 +141,12 @@ struct DayDetailView: View {
                    detail: "\(Int((moon.illumination * 100).rounded()))% illuminated")
     }
 
-    private func precipitationDetail(formatter: WeatherFormatter) -> String {
+    private var averageHumidity: Double? {
+        let values = hours.compactMap(\.humidity)
+        return values.isEmpty ? nil : values.reduce(0, +) / Double(values.count)
+    }
+
+    private func precipitationDetail(day: DailyForecast, formatter: WeatherFormatter) -> String {
         var parts: [String] = []
         if let chance = day.precipitationChance {
             parts.append("\(formatter.percent(chance)) chance")
@@ -113,7 +160,7 @@ struct DayDetailView: View {
         return parts.joined(separator: " · ")
     }
 
-    private func windDetail(formatter: WeatherFormatter) -> String? {
+    private func windDetail(day: DailyForecast, formatter: WeatherFormatter) -> String? {
         var parts: [String] = []
         if let gust = day.windGustMax {
             parts.append("Gusts \(formatter.windSpeed(gust))")

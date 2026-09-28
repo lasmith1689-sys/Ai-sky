@@ -22,6 +22,14 @@ enum ForecastSection: String, Hashable {
     case details
 }
 
+/// Screens presented over the forecast that deep links can open.
+enum ForecastSheet: String, Hashable, Identifiable {
+    case rainHistory
+    case timeMachine
+
+    var id: String { rawValue }
+}
+
 /// Root app state: settings, the 20-location library, the device location and weather data.
 @MainActor
 @Observable
@@ -43,6 +51,8 @@ final class AppModel {
     var isAddingLocation = false
     /// Forecast section to scroll to (set by deep links, consumed by `ForecastView`).
     var pendingSection: ForecastSection?
+    /// Sheet to open over the forecast (set by deep links, consumed by `ForecastView`).
+    var pendingSheet: ForecastSheet?
 
     @ObservationIgnored private var lastActiveRefresh: Date?
     private let notificationRouter = NotificationRouter()
@@ -74,7 +84,7 @@ final class AppModel {
     #if DEBUG
     /// Debug-only launch arguments used by the CI smoke test (handy in the Simulator too):
     /// `-AiSkyDemoLibrary` fills an empty library with sample places;
-    /// `-AiSkyScreen radar|locations|settings|<forecast section>` opens that screen.
+    /// `-AiSkyScreen radar|locations|settings|<forecast section>|rainHistory|timeMachine` opens that screen.
     private func applyDebugLaunchArguments() {
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty {
@@ -89,6 +99,7 @@ final class AppModel {
             default:
                 selectedTab = .forecast
                 pendingSection = ForecastSection(rawValue: arguments[index + 1])
+                pendingSheet = ForecastSheet(rawValue: arguments[index + 1])
             }
         }
     }
@@ -178,9 +189,9 @@ final class AppModel {
             } else {
                 selectedTab = .forecast
             }
-            let section = URLComponents(url: url, resolvingAgainstBaseURL: false)?
-                .queryItems?.first { $0.name == "section" }?.value
-            pendingSection = section.flatMap(ForecastSection.init(rawValue:))
+            let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+            pendingSection = items.first { $0.name == "section" }?.value.flatMap(ForecastSection.init(rawValue:))
+            pendingSheet = items.first { $0.name == "show" }?.value.flatMap(ForecastSheet.init(rawValue:))
         case "radar":
             selectedTab = .radar
         case "locations":

@@ -7,6 +7,7 @@ struct PrecipitationCard: View {
     @Environment(AppModel.self) private var model
     let snapshot: WeatherSnapshot
     let now: Date
+    var onShowHistory: (() -> Void)?
 
     var body: some View {
         let formatter = model.formatter
@@ -46,6 +47,26 @@ struct PrecipitationCard: View {
                 }
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.7))
+            }
+
+            if let onShowHistory {
+                Divider().overlay(.white.opacity(0.15))
+                Button(action: onShowHistory) {
+                    HStack {
+                        Label("Rainfall History", systemImage: "chart.bar.xaxis")
+                            .font(.body.weight(.semibold))
+                        Spacer()
+                        Text("Any dates · vs. normal")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                    .padding(.top, 4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -121,7 +142,8 @@ struct PrecipitationHistoryChart: View {
         }
         .chartXAxis {
             AxisMarks(values: axisLabels) { value in
-                AxisValueLabel {
+                // Edge labels grow inward so they aren't clipped to "…".
+                AxisValueLabel(anchor: labelAnchor(value.as(String.self))) {
                     if let text = value.as(String.self) {
                         Text(text)
                             .foregroundStyle(Color.white.opacity(0.7))
@@ -129,6 +151,7 @@ struct PrecipitationHistoryChart: View {
                 }
             }
         }
+        .chartYScale(domain: 0...yMaximum)
         .chartYAxis {
             AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { value in
                 AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
@@ -153,5 +176,18 @@ struct PrecipitationHistoryChart: View {
         if let today = bars.first(where: \.isToday) { labels.append(label(today)) }
         labels.append(label(last))
         return labels
+    }
+
+    private func labelAnchor(_ text: String?) -> UnitPoint {
+        if text == axisLabels.first { return .topLeading }
+        if text == axisLabels.last { return .topTrailing }
+        return .top
+    }
+
+    /// Room above the tallest bar, and never less than a light shower so dry weeks stay flat.
+    private var yMaximum: Double {
+        let tallest = bars.map { formatter.precipitationValue($0.total) }.max() ?? 0
+        let minimum = formatter.units.precipitation == .inches ? 0.25 : 5
+        return max(tallest * 1.15, minimum)
     }
 }

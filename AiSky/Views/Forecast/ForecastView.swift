@@ -8,6 +8,7 @@ struct ForecastView: View {
 
     @State private var selectedDay: DailyForecast?
     @State private var selectedAlert: WeatherAlertInfo?
+    @State private var presentedSheet: ForecastSheet?
 
     var body: some View {
         let snapshot = model.weather.snapshot(for: location.id)
@@ -37,9 +38,14 @@ struct ForecastView: View {
                 }
                 .onChange(of: snapshot == nil) { _, _ in
                     scrollToPendingSection(proxy, snapshotLoaded: snapshot != nil)
+                    presentPendingSheet(snapshotLoaded: snapshot != nil)
+                }
+                .onChange(of: model.pendingSheet) { _, _ in
+                    presentPendingSheet(snapshotLoaded: snapshot != nil)
                 }
                 .onAppear {
                     scrollToPendingSection(proxy, snapshotLoaded: snapshot != nil)
+                    presentPendingSheet(snapshotLoaded: snapshot != nil)
                 }
             }
         }
@@ -56,6 +62,30 @@ struct ForecastView: View {
         .sheet(item: $selectedAlert) { alert in
             AlertDetailView(alert: alert)
         }
+        .sheet(item: $presentedSheet) { sheet in
+            let snapshot = model.weather.snapshot(for: location.id)
+            switch sheet {
+            case .rainHistory:
+                RainHistoryView(location: location, snapshot: snapshot)
+            case .timeMachine:
+                TimeMachineSheet(location: location, timeZone: snapshot?.timeZone ?? .current, date: oneYearAgo(snapshot))
+            }
+        }
+    }
+
+    /// The Time Machine opens on this day last year.
+    private func oneYearAgo(_ snapshot: WeatherSnapshot?) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = snapshot?.timeZone ?? .current
+        return calendar.date(byAdding: .year, value: -1, to: Date()) ?? Date()
+    }
+
+    /// Honors deep links like `aisky://forecast/<id>?show=rainHistory`.
+    private func presentPendingSheet(snapshotLoaded: Bool) {
+        guard let sheet = model.pendingSheet, snapshotLoaded,
+              model.selectedLocation?.id == location.id else { return }
+        model.pendingSheet = nil
+        presentedSheet = sheet
     }
 
     /// Honors deep links like `aisky://forecast/<id>?section=airQuality` (used by widgets).
@@ -85,9 +115,14 @@ struct ForecastView: View {
                     .id(ForecastSection.nextHour)
                 HourlyCard(snapshot: snapshot, now: now)
                     .id(ForecastSection.hourly)
-                DailyCard(snapshot: snapshot, now: now) { selectedDay = $0 }
-                    .id(ForecastSection.daily)
-                PrecipitationCard(snapshot: snapshot, now: now)
+                DailyCard(
+                    snapshot: snapshot,
+                    now: now,
+                    onSelect: { selectedDay = $0 },
+                    onTimeMachine: { presentedSheet = .timeMachine }
+                )
+                .id(ForecastSection.daily)
+                PrecipitationCard(snapshot: snapshot, now: now) { presentedSheet = .rainHistory }
                     .id(ForecastSection.precipitation)
                 if snapshot.airQuality != nil {
                     AirQualityCard(snapshot: snapshot, now: now)

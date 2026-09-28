@@ -14,6 +14,16 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 - Details: humidity and dew point, wind with a compass and gusts, UV index with sun-protection hours, sunrise/sunset arc, pressure trend, visibility, cloud cover, and moon phase
 - Government weather alerts (NWS for U.S. places, or worldwide with Apple Weather)
 
+**Rainfall history** (Precip-style; tap *Rainfall History* on the Precipitation card)
+- Totals for the past 7 days, 30 days, this month, this year, 12 months, or **any date range back to 1940**
+- Compared with the **1991–2020 normal** for the same days, and with the same days last year
+- Daily, weekly, or monthly bars with normal markers, and a running-total chart against normal
+- Wet days, the wettest day, and the longest dry spell. Tap any wet day to see it hour by hour.
+
+**Time Machine** (Dark Sky-style; tap *Time Machine* on the 10-day forecast)
+- The weather on **any date since 1940**, or up to two weeks ahead: conditions, high/low, feels-like, hourly temperature, precipitation, and wind, humidity, sunrise/sunset, and moon phase
+- Step day by day, pick a date, or jump to this day 1, 10, 25, or 50 years ago
+
 **Radar** (its own tab)
 - Animated precipitation radar with play/pause, a timeline scrubber, and a color legend
 - High-resolution **NOAA NEXRAD** over the U.S. and **RainViewer** everywhere else (chosen automatically, or pick one)
@@ -78,6 +88,7 @@ You can switch sources any time in **Settings ▸ Weather Data ▸ Forecast Sour
 | Forecasts, feels-like, 15-minute precipitation, rainfall history | [Open-Meteo](https://open-meteo.com/) | Free, no API key, CC BY 4.0, for non-commercial use |
 | Minute-by-minute forecasts, alerts (optional) | Apple Weather (WeatherKit) | Paid developer account |
 | Air quality and pollen | Open-Meteo (Copernicus CAMS models) | Pollen covers Europe only |
+| Weather history (Time Machine, rainfall history, normals) | Open-Meteo [forecast](https://open-meteo.com/en/docs) (last 3 months) and [historical](https://open-meteo.com/en/docs/historical-weather-api) APIs (ERA5, ERA5-Land, ECMWF IFS reanalysis) | 1940 onwards; values are averages over a 9–25 km grid, not a local station's readings |
 | U.S. alerts | [National Weather Service](https://www.weather.gov/) | Used when Apple Weather is off |
 | Radar (U.S.) | NOAA NEXRAD via [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/) | Updated every 5 minutes, past 50 minutes |
 | Radar (worldwide) | [RainViewer](https://www.rainviewer.com/api.html) | Free tier: past 2 hours, native zoom up to 7 (the app enlarges tiles when you zoom in further) |
@@ -85,7 +96,8 @@ You can switch sources any time in **Settings ▸ Weather Data ▸ Forecast Sour
 Known limits:
 - **Background alerts are best-effort.** iOS decides how often apps refresh in the background (usually every 15–60 minutes), so a "rain soon" alert can arrive late. Keep **Background App Refresh** on for Ai Sky.
 - **Widgets refresh roughly every 20–60 minutes**, as iOS allows. They reuse the app's latest forecast when it's recent, and otherwise download fresh data from Open-Meteo.
-- **Past rainfall totals are estimates.** Open-Meteo derives them from weather-model analyses, not rain gauges.
+- **Past rainfall totals are estimates.** Open-Meteo derives them from weather-model analyses and reanalysis, not rain gauges, so a local downpour can be under- or over-counted.
+- **Normals are downloaded once per place** (30 years of daily data, about 150 KB) and kept on your phone.
 
 ## Project layout
 

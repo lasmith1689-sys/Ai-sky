@@ -147,32 +147,42 @@ enum OpenMeteoMapper {
                 }
                 continue
             }
-            guard let high = d.temperatureMax.value(at: index), let low = d.temperatureMin.value(at: index) else { continue }
-            let code = d.weatherCode.value(at: index).map { Int($0) }
-            let precipitation = d.precipitationSum.value(at: index)
-            let snowfall = d.snowfallSum.value(at: index)
-            let condition = SkyCondition(wmoCode: code ?? 3, windSpeedKmh: nil)
-            days.append(DailyForecast(
-                date: date,
-                condition: condition,
-                high: high,
-                low: low,
-                apparentHigh: d.apparentTemperatureMax.value(at: index),
-                apparentLow: d.apparentTemperatureMin.value(at: index),
-                precipitationChance: d.precipitationProbabilityMax.value(at: index).map { $0 / 100 },
-                precipitationAmount: precipitation,
-                snowfallAmount: snowfall,
-                precipitationHours: d.precipitationHours.value(at: index),
-                precipitationKind: precipitationKind(code: code, snowfall: snowfall, precipitation: precipitation),
-                sunrise: d.sunrise.value(at: index).map { Date(timeIntervalSince1970: $0) },
-                sunset: d.sunset.value(at: index).map { Date(timeIntervalSince1970: $0) },
-                uvIndexMax: d.uvIndexMax.value(at: index),
-                windSpeedMax: d.windSpeedMax.value(at: index),
-                windGustMax: d.windGustsMax.value(at: index),
-                windDirectionDominant: d.windDirectionDominant.value(at: index)
-            ))
+            if let day = day(from: d, at: index) {
+                days.append(day)
+            }
         }
         return (days, past)
+    }
+
+    /// One day of `d`, or `nil` when its temperatures are missing.
+    static func day(from d: OMDaily, at index: Int) -> DailyForecast? {
+        guard let time = d.time[safe: index],
+              let high = d.temperatureMax.value(at: index),
+              let low = d.temperatureMin.value(at: index) else {
+            return nil
+        }
+        let code = d.weatherCode.value(at: index).map { Int($0) }
+        let precipitation = d.precipitationSum.value(at: index)
+        let snowfall = d.snowfallSum.value(at: index)
+        return DailyForecast(
+            date: Date(timeIntervalSince1970: time),
+            condition: SkyCondition(wmoCode: code ?? 3, windSpeedKmh: nil),
+            high: high,
+            low: low,
+            apparentHigh: d.apparentTemperatureMax.value(at: index),
+            apparentLow: d.apparentTemperatureMin.value(at: index),
+            precipitationChance: d.precipitationProbabilityMax.value(at: index).map { $0 / 100 },
+            precipitationAmount: precipitation,
+            snowfallAmount: snowfall,
+            precipitationHours: d.precipitationHours.value(at: index),
+            precipitationKind: precipitationKind(code: code, snowfall: snowfall, precipitation: precipitation),
+            sunrise: d.sunrise.value(at: index).map { Date(timeIntervalSince1970: $0) },
+            sunset: d.sunset.value(at: index).map { Date(timeIntervalSince1970: $0) },
+            uvIndexMax: d.uvIndexMax.value(at: index),
+            windSpeedMax: d.windSpeedMax.value(at: index),
+            windGustMax: d.windGustsMax.value(at: index),
+            windDirectionDominant: d.windDirectionDominant.value(at: index)
+        )
     }
 
     // MARK: Next hour (15-minute data)
