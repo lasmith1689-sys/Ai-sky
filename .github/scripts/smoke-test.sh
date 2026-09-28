@@ -27,7 +27,14 @@ capture() {
   xcrun simctl launch "$UDID" "$BUNDLE" -AiSkyDemoLibrary -AiSkyScreen "$2" >/dev/null
   sleep "$3"
   if alive; then
-    xcrun simctl io "$UDID" screenshot --type=png "$OUT/$1.png" >/dev/null 2>&1 && echo "captured $1"
+    # A slow runner can still be showing the plain launch screen (a tiny PNG); give it more time.
+    for attempt in 1 2 3 4; do
+      xcrun simctl io "$UDID" screenshot --type=png "$OUT/$1.png" >/dev/null 2>&1
+      [ "$(stat -f%z "$OUT/$1.png" 2>/dev/null || echo 0)" -gt 150000 ] && break
+      echo "… $1 still loading (attempt $attempt)"
+      sleep 5
+    done
+    echo "captured $1"
   else
     echo "❌ Ai Sky is not running on screen '$2'"
     failures=$((failures + 1))
