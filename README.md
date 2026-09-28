@@ -28,6 +28,7 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 - Animated precipitation radar with play/pause, a timeline scrubber, and a color legend
 - High-resolution **NOAA NEXRAD** over the U.S. and **RainViewer** everywhere else (chosen automatically, or pick one)
 - Your saved places are pinned with their current temperatures. Tap a pin to open its forecast.
+- **Touch and hold anywhere on the map** to see that spot's rainfall history or open it in the Time Machine, or to save it to your places.
 
 **Location library**
 - Save **up to 20 places** (your current location doesn't count toward the 20). Search by city, address, ZIP code, or landmark.

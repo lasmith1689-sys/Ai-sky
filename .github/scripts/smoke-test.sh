@@ -18,7 +18,11 @@ xcrun simctl privacy "$UDID" grant location "$BUNDLE" || true
 xcrun simctl location "$UDID" set 41.8781,-87.6298 || true   # Chicago
 
 alive() {
-  xcrun simctl spawn "$UDID" launchctl list | grep -q "UIKitApplication:$BUNDLE"
+  # Read the whole list first: `| grep -q` exits early, launchctl dies of SIGPIPE, and with
+  # pipefail that reads as "not running" even when the app is.
+  local services
+  services=$(xcrun simctl spawn "$UDID" launchctl list 2>/dev/null)
+  [[ "$services" == *"UIKitApplication:$BUNDLE"* ]]
 }
 
 # capture <file> <screen> <seconds to wait>
