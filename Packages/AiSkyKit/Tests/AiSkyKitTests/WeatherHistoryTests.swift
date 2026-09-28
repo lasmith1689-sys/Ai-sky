@@ -66,6 +66,20 @@ final class WeatherHistoryClientTests: XCTestCase {
         XCTAssertEqual(query(future)["start_date"], query(future)["end_date"], "never asks beyond the forecast range")
     }
 
+    func testForecastRequestsUseTheSameModelBlendAsTheMainForecast() throws {
+        // Open-Meteo only blends 15-minute models into past values when current data is requested.
+        let today = calendar.startOfDay(for: Fixtures.now)
+        let segments = WeatherHistoryClient.segments(from: day(2026, 1, 1), to: today, today: Fixtures.now, calendar: calendar)
+        let archive = try XCTUnwrap(segments.first { $0.endpoint == .archive })
+        let forecast = try XCTUnwrap(segments.first { $0.endpoint == .forecast })
+        let forecastURL = WeatherHistoryClient.url(for: forecast, latitude: 41.8781, longitude: -87.6298, calendar: calendar, daily: ["precipitation_sum"])
+        let archiveURL = WeatherHistoryClient.url(for: archive, latitude: 41.8781, longitude: -87.6298, calendar: calendar, daily: ["precipitation_sum"])
+        XCTAssertEqual(query(forecastURL)["current"], "temperature_2m")
+        XCTAssertNil(query(archiveURL)["current"])
+        XCTAssertFalse(query(OpenMeteoClient.forecastURL(latitude: 41.8781, longitude: -87.6298))["current"]?.isEmpty ?? true,
+                       "the main forecast asks for current conditions, which is what switches the blend")
+    }
+
     func testNormalsRequestCoversTheClimatePeriod() {
         let items = query(WeatherHistoryClient.normalsURL(latitude: 41.8781, longitude: -87.6298))
         XCTAssertEqual(items["start_date"], "1991-01-01")

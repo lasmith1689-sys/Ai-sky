@@ -206,6 +206,12 @@ public struct WeatherHistoryClient: Sendable {
         if !daily.isEmpty {
             items.append(URLQueryItem(name: "daily", value: daily.joined(separator: ",")))
         }
+        if endpoint == .forecast {
+            // Open-Meteo blends 15-minute models (HRRR, ICON-D2, AROME) into past values only when
+            // current or 15-minute data is requested, as the main forecast does. Ask for it too so
+            // the same day never shows two different totals.
+            items.append(URLQueryItem(name: "current", value: "temperature_2m"))
+        }
         items.append(URLQueryItem(name: "timezone", value: "auto"))
         items.append(URLQueryItem(name: "timeformat", value: "unixtime"))
         components.queryItems = items
