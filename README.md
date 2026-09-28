@@ -48,6 +48,10 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 
 ## What you need
 
+> **No Mac?** GitHub can build Ai Sky for you and deliver it through Apple's TestFlight app. This
+> needs the paid Apple Developer Program ($99/year). Follow **[TESTFLIGHT.md](TESTFLIGHT.md)**
+> instead of the steps below.
+
 - A **Mac with Xcode 16 or newer** (Xcode 26 recommended)
 - An **iPhone running iOS 17 or newer**
 - An **Apple ID**. A free one works. The paid [Apple Developer Program](https://developer.apple.com/programs/) ($99/year) is recommended: apps you install with a free Apple ID expire after 7 days, and only paid accounts can turn on Apple Weather (see below).
@@ -120,7 +124,7 @@ Packages/AiSkyKit/       Shared Swift package: models, API clients, caching, sum
 swift test --package-path Packages/AiSkyKit
 ```
 
-GitHub Actions runs these tests on every push, builds the app and widgets for the iOS Simulator, and runs the tests there too.
+GitHub Actions runs these tests on every push, builds the app and widgets for the iOS Simulator, and runs the tests there too. The **TestFlight** workflow also builds the App Store version on every push, and uploads it to TestFlight once the App Store Connect secrets from [TESTFLIGHT.md](TESTFLIGHT.md) are added.
 
 ## Troubleshooting
 
