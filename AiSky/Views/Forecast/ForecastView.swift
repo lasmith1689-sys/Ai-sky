@@ -18,18 +18,29 @@ struct ForecastView: View {
             )
             .ignoresSafeArea()
 
-            ScrollView {
-                // Re-render every minute so "now" based content (next hour, updated time) stays current.
-                TimelineView(.everyMinute) { context in
-                    content(snapshot: snapshot, now: context.date)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    // Re-render every minute so "now" based content (next hour, updated time) stays current.
+                    TimelineView(.everyMinute) { context in
+                        content(snapshot: snapshot, now: context.date)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 28)
+                    .padding(.bottom, 32)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 28)
-                .padding(.bottom, 32)
-            }
-            .scrollIndicators(.hidden)
-            .refreshable {
-                await model.refresh(location, force: true)
+                .scrollIndicators(.hidden)
+                .refreshable {
+                    await model.refresh(location, force: true)
+                }
+                .onChange(of: model.pendingSection) { _, _ in
+                    scrollToPendingSection(proxy, snapshotLoaded: snapshot != nil)
+                }
+                .onChange(of: snapshot == nil) { _, _ in
+                    scrollToPendingSection(proxy, snapshotLoaded: snapshot != nil)
+                }
+                .onAppear {
+                    scrollToPendingSection(proxy, snapshotLoaded: snapshot != nil)
+                }
             }
         }
         .foregroundStyle(.white)
@@ -47,6 +58,20 @@ struct ForecastView: View {
         }
     }
 
+    /// Honors deep links like `aisky://forecast/<id>?section=airQuality` (used by widgets).
+    private func scrollToPendingSection(_ proxy: ScrollViewProxy, snapshotLoaded: Bool) {
+        guard let section = model.pendingSection, snapshotLoaded,
+              model.selectedLocation?.id == location.id else { return }
+        model.pendingSection = nil
+        Task { @MainActor in
+            // Let the page settle before scrolling.
+            try? await Task.sleep(for: .milliseconds(300))
+            withAnimation(.easeInOut) {
+                proxy.scrollTo(section, anchor: .top)
+            }
+        }
+    }
+
     @ViewBuilder
     private func content(snapshot: WeatherSnapshot?, now: Date) -> some View {
         VStack(spacing: 14) {
@@ -57,13 +82,19 @@ struct ForecastView: View {
                     AlertBanner(alert: alert) { selectedAlert = alert }
                 }
                 NextHourCard(snapshot: snapshot, now: now)
+                    .id(ForecastSection.nextHour)
                 HourlyCard(snapshot: snapshot, now: now)
+                    .id(ForecastSection.hourly)
                 DailyCard(snapshot: snapshot, now: now) { selectedDay = $0 }
+                    .id(ForecastSection.daily)
                 PrecipitationCard(snapshot: snapshot, now: now)
+                    .id(ForecastSection.precipitation)
                 if snapshot.airQuality != nil {
                     AirQualityCard(snapshot: snapshot, now: now)
+                        .id(ForecastSection.airQuality)
                 }
                 DetailsGrid(snapshot: snapshot, now: now)
+                    .id(ForecastSection.details)
                 AttributionFooter(snapshot: snapshot, now: now)
             } else if let error = model.weather.error(for: location.id) {
                 ErrorCard(message: error) {

@@ -23,7 +23,7 @@ struct PrecipitationWidgetView: View {
 
     var body: some View {
         content
-            .widgetURL(entry.deepLink)
+            .widgetURL(entry.deepLink(section: "precipitation"))
             .containerBackground(for: .widget) {
                 WidgetBackground(entry: entry)
             }

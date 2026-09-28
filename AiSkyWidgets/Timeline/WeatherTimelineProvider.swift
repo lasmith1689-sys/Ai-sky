@@ -20,8 +20,18 @@ struct WeatherEntry: TimelineEntry {
 
     var today: DailyForecast? { snapshot?.day(containing: date) }
 
-    var deepLink: URL {
-        URL(string: "aisky://forecast/\(location?.id ?? "")") ?? URL(string: "aisky://forecast")!
+    var deepLink: URL { deepLink(section: nil) }
+
+    /// Opens the app on this place, optionally scrolled to a forecast section.
+    func deepLink(section: String?) -> URL {
+        var components = URLComponents()
+        components.scheme = "aisky"
+        components.host = "forecast"
+        components.path = "/" + (location?.id ?? "")
+        if let section {
+            components.queryItems = [URLQueryItem(name: "section", value: section)]
+        }
+        return components.url ?? URL(string: "aisky://forecast")!
     }
 
     static func preview(date: Date = Date()) -> WeatherEntry {

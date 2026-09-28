@@ -30,16 +30,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AiSkyKitTests"
-               BuildableName = "AiSkyKitTests"
-               BlueprintName = "AiSkyKitTests"
-               ReferencedContainer = "container:Packages/AiSkyKit">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

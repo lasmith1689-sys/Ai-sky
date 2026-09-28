@@ -89,7 +89,9 @@ final class WidgetLocationFetcher: NSObject, CLLocationManagerDelegate {
             manager.delegate = self
             manager.desiredAccuracy = kCLLocationAccuracyKilometer
             manager.requestLocation()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in
+            // Widgets have a tight time budget; give up on a slow fix and use the cached location.
+            Task { [weak self] in
+                try? await Task.sleep(for: .seconds(6))
                 self?.finish(nil)
             }
         }

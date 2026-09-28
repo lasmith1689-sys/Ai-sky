@@ -21,7 +21,7 @@ struct AirQualityWidgetView: View {
 
     var body: some View {
         content
-            .widgetURL(entry.deepLink)
+            .widgetURL(entry.deepLink(section: "airQuality"))
             .containerBackground(for: .widget) {
                 WidgetBackground(entry: entry)
             }

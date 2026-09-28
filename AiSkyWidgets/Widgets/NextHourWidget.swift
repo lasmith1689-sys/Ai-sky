@@ -22,7 +22,7 @@ struct NextHourWidgetView: View {
 
     var body: some View {
         content
-            .widgetURL(entry.deepLink)
+            .widgetURL(entry.deepLink(section: "nextHour"))
             .containerBackground(for: .widget) {
                 WidgetBackground(entry: entry)
             }

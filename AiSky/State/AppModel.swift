@@ -11,6 +11,16 @@ enum AppTab: Hashable {
     case settings
 }
 
+/// Sections of the forecast that deep links (e.g. from widgets) can scroll to.
+enum ForecastSection: String, Hashable {
+    case nextHour
+    case hourly
+    case daily
+    case precipitation
+    case airQuality
+    case details
+}
+
 /// Root app state: settings, the 20-location library, the device location and weather data.
 @MainActor
 @Observable
@@ -30,6 +40,8 @@ final class AppModel {
     var selectedLocationID: String?
     /// Set to open the "Add Location" sheet from anywhere.
     var isAddingLocation = false
+    /// Forecast section to scroll to (set by deep links, consumed by `ForecastView`).
+    var pendingSection: ForecastSection?
 
     @ObservationIgnored private var lastActiveRefresh: Date?
 
@@ -45,7 +57,20 @@ final class AppModel {
         locationManager.onUpdate = { [weak self] snapshot in
             self?.currentLocationUpdated(snapshot)
         }
+        #if DEBUG
+        seedDemoLibraryIfRequested()
+        #endif
     }
+
+    #if DEBUG
+    /// `-AiSkyDemoLibrary` launch argument: fills an empty library with sample places
+    /// (used by CI screenshots and handy in the Simulator).
+    private func seedDemoLibraryIfRequested() {
+        guard ProcessInfo.processInfo.arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty else { return }
+        savedLocations = Array(SampleData.savedLocations.dropFirst())
+        store.saveSavedLocations(savedLocations)
+    }
+    #endif
 
     // MARK: Derived data
 
@@ -120,7 +145,7 @@ final class AppModel {
         }
     }
 
-    /// `aisky://forecast/<id>`, `aisky://radar`, `aisky://locations`
+    /// `aisky://forecast/<id>?section=airQuality`, `aisky://radar`, `aisky://locations`, `aisky://settings`
     func handle(url: URL) {
         guard url.scheme == "aisky" else { return }
         switch url.host {
@@ -131,10 +156,15 @@ final class AppModel {
             } else {
                 selectedTab = .forecast
             }
+            let section = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first { $0.name == "section" }?.value
+            pendingSection = section.flatMap(ForecastSection.init(rawValue:))
         case "radar":
             selectedTab = .radar
         case "locations":
             selectedTab = .locations
+        case "settings":
+            selectedTab = .settings
         default:
             break
         }

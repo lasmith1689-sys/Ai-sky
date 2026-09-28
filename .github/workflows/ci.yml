@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   package:
-    name: AiSkyKit (unit tests + iOS build)
+    name: AiSkyKit (unit tests on macOS + iOS Simulator)
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -26,21 +26,22 @@ jobs:
       - name: Unit tests (macOS)
         run: swift test --package-path Packages/AiSkyKit
 
-      - name: Build for iOS Simulator
+      - name: Unit tests (iOS Simulator)
         working-directory: Packages/AiSkyKit
         run: |
-          set -o pipefail
-          xcodebuild build \
+          sim=$(../../.github/scripts/pick-simulator.sh)
+          echo "Simulator: $sim"
+          xcodebuild test \
             -scheme AiSkyKit \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "platform=iOS Simulator,id=${sim##*|}" \
             -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
-          grep -E "(error|warning): " build.log | sort -u | head -100 || true
-          tail -n 5 build.log
+            CODE_SIGNING_ALLOWED=NO > test.log 2>&1 || status=$?
+          grep -E "(error|warning): |Executed [0-9]+ tests|TEST (SUCCEEDED|FAILED)|failed \(" test.log | sort -u | head -100 || true
+          tail -n 5 test.log
           exit ${status:-0}
 
   app:
-    name: iOS app + widgets (Simulator build & tests)
+    name: iOS app + widgets (build & Simulator smoke test)
     runs-on: macos-26
     timeout-minutes: 45
     steps:
@@ -49,47 +50,58 @@ jobs:
       - name: Pick a simulator
         id: sim
         run: |
-          xcrun simctl list devices available
-          # Prefer an iPhone 17; otherwise take the first available iPhone (full name, e.g. "iPhone 16e").
-          if xcrun simctl list devices available | grep -q "iPhone 17 ("; then
-            name="iPhone 17"
-          else
-            name=$(xcrun simctl list devices available | awk -F' [(]' '/iPhone/ { sub(/^ +/, "", $1); print $1; exit }')
-          fi
-          echo "Using simulator: $name"
-          echo "name=$name" >> "$GITHUB_OUTPUT"
+          sim=$(.github/scripts/pick-simulator.sh)
+          echo "Using simulator: $sim"
+          echo "name=${sim%%|*}" >> "$GITHUB_OUTPUT"
+          echo "udid=${sim##*|}" >> "$GITHUB_OUTPUT"
 
-      - name: Build app, widget extension and tests
+      - name: Build app and widget extension
         run: |
-          xcodebuild build-for-testing \
+          xcodebuild build \
             -project AiSky.xcodeproj \
             -scheme AiSky \
             -configuration Debug \
-            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             -derivedDataPath DerivedData \
             -skipPackagePluginValidation \
             CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
           echo "::group::Errors and warnings"
           grep -E "(error|warning): " build.log | sort -u | head -200 || true
           echo "::endgroup::"
-          tail -n 30 build.log
+          tail -n 5 build.log
           exit ${status:-0}
 
       - name: Verify widget extension is embedded
         run: |
-          app=$(find DerivedData/Build/Products -maxdepth 2 -name "AiSky.app" -type d | head -1)
-          echo "App bundle: $app"
-          ls "$app/PlugIns"
+          app=DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app
           test -d "$app/PlugIns/AiSkyWidgetsExtension.appex"
-          plutil -p "$app/Info.plist" | grep -E "CFBundleIdentifier|AiSkyAppGroup|BGTaskScheduler|NSLocationWhenInUse" -A1
+          plutil -p "$app/Info.plist" | grep -E "CFBundleIdentifier|AiSkyAppGroup|com.lasmith|NSLocationWhenInUse"
           plutil -p "$app/PlugIns/AiSkyWidgetsExtension.appex/Info.plist" | grep -E "CFBundleIdentifier|NSExtensionPointIdentifier|NSWidgetWantsLocation"
 
-      - name: Run tests on the simulator
+      - name: Smoke test in the Simulator
+        run: .github/scripts/smoke-test.sh "${{ steps.sim.outputs.udid }}" DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app screenshots
+
+      - name: Read screenshots (OCR)
+        if: always()
         run: |
-          set -o pipefail
-          xcodebuild test-without-building \
-            -project AiSky.xcodeproj \
-            -scheme AiSky \
-            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
-            -derivedDataPath DerivedData \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Suite|Test Case.*failed|error:|Executed|TEST (SUCCEEDED|FAILED)" | tail -n 80
+          ls screenshots/*.png >/dev/null 2>&1 || exit 0
+          swift .github/scripts/ocr.swift screenshots/*.png
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: screenshots
+          if-no-files-found: ignore
+
+      - name: Preview images for review (base64 JPEG)
+        if: always()
+        run: |
+          for name in 01-forecast 08-radar; do
+            [ -f "screenshots/$name.png" ] || continue
+            sips -Z 700 -s format jpeg -s formatOptions 40 "screenshots/$name.png" --out "/tmp/$name.jpg" >/dev/null
+            echo "=====BEGIN $name.jpg====="
+            base64 -i "/tmp/$name.jpg" | fold -w 180
+            echo "=====END $name.jpg====="
+          done
