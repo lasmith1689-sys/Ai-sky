@@ -56,6 +56,10 @@ In [App Store Connect](https://appstoreconnect.apple.com), open **Apps**, click 
 - **SKU:** `aisky`
 - **User Access:** Full Access
 
+Then set up TestFlight now, so you don't have to come back later: open the new app's **TestFlight**
+tab, click **+** next to **Internal Testing**, name the group `Me`, turn on automatic distribution,
+and add yourself as a tester. Every build will then reach you by itself.
+
 ## 4. Create an API key
 
 GitHub uses this key to sign and upload builds for you.
@@ -111,11 +115,12 @@ is built and uploaded the same way.
 
 ## 7. Install on your iPhone
 
-1. In App Store Connect, open your app ▸ **TestFlight** ▸ **Internal Testing** and click **+**.
-   Name the group `Me`, add yourself, and turn on automatic distribution so new builds reach
-   you by themselves.
-2. On your iPhone, install **TestFlight** from the App Store and sign in with the same Apple Account.
-3. Tap **Install** next to Ai Sky. Later builds show up as updates in TestFlight.
+1. On your iPhone, install **TestFlight** from the App Store and sign in with the same Apple Account.
+2. Open the TestFlight invitation email on your iPhone and tap **View in TestFlight** (or just
+   open TestFlight), then tap **Install** next to Ai Sky. Later builds show up as updates in
+   TestFlight.
+
+If Ai Sky doesn't show up, check that you added yourself to the `Me` group (end of step 3).
 
 Each TestFlight build works for 90 days, and every new build starts a fresh 90 days.
 
