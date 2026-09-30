@@ -1,0 +1,24 @@
+// Ai Sky build configuration — the only file you need to edit to build on your iPhone.
+//
+// 1. DEVELOPMENT_TEAM: your Apple Developer Team ID (Xcode ▸ Settings ▸ Accounts, or leave empty
+//    and pick your team in the target's Signing & Capabilities tab).
+// 2. AISKY_BUNDLE_ID_PREFIX: any reverse-DNS prefix that is unique to you. The app becomes
+//    <prefix>.AiSky, the widgets <prefix>.AiSky.Widgets, and the App Group group.<prefix>.AiSky.
+// 3. AISKY_ENABLE_WEATHERKIT: set to YES if you have a paid Apple Developer Program membership
+//    and want Apple Weather's minute-by-minute (Dark Sky) forecasts. See README.md.
+
+DEVELOPMENT_TEAM =
+AISKY_BUNDLE_ID_PREFIX = com.lasmith1689
+AISKY_ENABLE_WEATHERKIT = NO
+
+// ---- Derived values (no need to edit below) ----
+AISKY_APP_BUNDLE_ID = $(AISKY_BUNDLE_ID_PREFIX).AiSky
+AISKY_WIDGET_BUNDLE_ID = $(AISKY_APP_BUNDLE_ID).Widgets
+AISKY_APP_GROUP = group.$(AISKY_BUNDLE_ID_PREFIX).AiSky
+
+AISKY_APP_ENTITLEMENTS_NO = Config/AiSky.entitlements
+AISKY_APP_ENTITLEMENTS_YES = Config/AiSky-WeatherKit.entitlements
+AISKY_APP_ENTITLEMENTS = $(AISKY_APP_ENTITLEMENTS_$(AISKY_ENABLE_WEATHERKIT))
+
+MARKETING_VERSION = 1.0
+CURRENT_PROJECT_VERSION = 1

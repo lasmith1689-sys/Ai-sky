@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AiSkyAppGroup</key>
+	<string>$(AISKY_APP_GROUP)</string>
+	<key>AiSkyWeatherKitEnabled</key>
+	<string>$(AISKY_ENABLE_WEATHERKIT)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Barlow-Light.ttf</string>
+		<string>Barlow-Regular.ttf</string>
+		<string>BarlowCondensed-SemiBold.ttf</string>
+		<string>Geist-ExtraLight.ttf</string>
+		<string>Geist-Regular.ttf</string>
+		<string>GeistMono-Regular.ttf</string>
+		<string>NewsreaderDisplay-Light.ttf</string>
+		<string>NewsreaderText-Regular.ttf</string>
+		<string>NewsreaderText-Italic.ttf</string>
+		<string>InstrumentSans-Regular.ttf</string>
+		<string>InstrumentSans-SemiBold.ttf</string>
+		<string>Manrope-Light.ttf</string>
+		<string>Manrope-Regular.ttf</string>
+		<string>Manrope-SemiBold.ttf</string>
+		<string>Manrope-Bold.ttf</string>
+		<string>BricolageGrotesqueDisplay-Medium.ttf</string>
+		<string>BricolageGrotesque-SemiBold.ttf</string>
+		<string>BricolageGrotesque-Regular.ttf</string>
+		<string>DMMono-Regular.ttf</string>
+		<string>Barlow-SemiBold.ttf</string>
+		<string>Geist-Medium.ttf</string>
+		<string>Manrope-Medium.ttf</string>
+	</array>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.widgetkit-extension</string>
+	</dict>
+	<key>NSWidgetWantsLocation</key>
+	<true/>
+</dict>
+</plist>

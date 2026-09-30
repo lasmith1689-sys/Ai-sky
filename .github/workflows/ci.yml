@@ -1,0 +1,204 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: AiSkyKit (unit tests on macOS + iOS Simulator)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Unit tests (macOS)
+        run: |
+          swift test --package-path Packages/AiSkyKit > test-macos.log 2>&1 || status=$?
+          grep -E "Executed [0-9]+ tests|error:|failed \(" test-macos.log | sort -u | head -80 || true
+          if [ -n "${status:-}" ]; then
+            bash .github/scripts/annotate-errors.sh test-macos.log "swift test"
+            exit "$status"
+          fi
+          echo "::notice title=Unit tests (macOS)::$(grep -E "Executed [0-9]+ tests" test-macos.log | tail -1 | sed 's/^ *//')"
+
+      - name: Unit tests (iOS Simulator)
+        working-directory: Packages/AiSkyKit
+        run: |
+          sim=$(../../.github/scripts/pick-simulator.sh)
+          echo "Simulator: $sim"
+          xcodebuild test \
+            -scheme AiSkyKit \
+            -destination "platform=iOS Simulator,id=${sim##*|}" \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO > test.log 2>&1 || status=$?
+          grep -E "(error|warning): |Executed [0-9]+ tests|TEST (SUCCEEDED|FAILED)|failed \(" test.log | sort -u | head -100 || true
+          tail -n 5 test.log
+          if [ -n "${status:-}" ]; then
+            bash ../../.github/scripts/annotate-errors.sh test.log "iOS Simulator tests"
+            exit "$status"
+          fi
+          echo "::notice title=Unit tests (iOS Simulator)::$(grep -E "Executed [0-9]+ tests" test.log | tail -1 | sed 's/^ *//')"
+
+  app:
+    name: iOS app + widgets (build & Simulator smoke test)
+    runs-on: macos-26
+    timeout-minutes: 75 # about a hundred captures, each a fresh launch
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Pick a simulator
+        id: sim
+        run: |
+          sim=$(.github/scripts/pick-simulator.sh)
+          echo "Using simulator: $sim"
+          echo "name=${sim%%|*}" >> "$GITHUB_OUTPUT"
+          echo "udid=${sim##*|}" >> "$GITHUB_OUTPUT"
+
+      - name: Build app and widget extension
+        run: |
+          xcodebuild build \
+            -project AiSky.xcodeproj \
+            -scheme AiSky \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath DerivedData \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
+          if [ -n "${status:-}" ]; then
+            bash .github/scripts/annotate-errors.sh build.log "Simulator build"
+            exit "$status"
+          fi
+          echo "::group::Warnings"
+          grep -E "warning: " build.log | grep -v "/DerivedData/" | sort -u | head -80 || true
+          echo "::endgroup::"
+          tail -n 3 build.log
+
+      - name: Verify widget extension and fonts are embedded
+        run: |
+          app=DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app
+          widget="$app/PlugIns/AiSkyWidgetsExtension.appex"
+          test -d "$widget"
+          plutil -p "$app/Info.plist" | grep -E "CFBundleIdentifier|AiSkyAppGroup|com.lasmith|NSLocationWhenInUse"
+          plutil -p "$widget/Info.plist" | grep -E "CFBundleIdentifier|NSExtensionPointIdentifier|NSWidgetWantsLocation"
+          for bundle in "$app" "$widget"; do
+            fonts=$(/usr/libexec/PlistBuddy -c "Print :UIAppFonts" "$bundle/Info.plist" 2>/dev/null | sed -n 's/^ *\([^ ].*\.ttf\)$/\1/p')
+            [ -z "$fonts" ] && continue
+            for font in $fonts; do
+              if [ ! -f "$bundle/$font" ]; then
+                echo "::error title=Fonts::${bundle##*/} lists $font in UIAppFonts but the file isn't in the bundle"
+                exit 1
+              fi
+            done
+            echo "${bundle##*/}: $(echo "$fonts" | wc -l | tr -d ' ') fonts embedded"
+          done
+
+      - name: Smoke test in the Simulator
+        run: .github/scripts/smoke-test.sh "${{ steps.sim.outputs.udid }}" DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app screenshots
+
+      - name: Read screenshots (OCR)
+        if: always()
+        run: |
+          ls screenshots/*.png >/dev/null 2>&1 || exit 0
+          swift .github/scripts/ocr.swift screenshots/*.png | tee ocr.txt
+
+      - name: Check each look's screens (OCR)
+        run: bash .github/scripts/verify-screens.sh ocr.txt
+
+      - name: Prepare screenshots for review
+        if: always()
+        run: |
+          mkdir -p published/full
+          ls screenshots/*.png >/dev/null 2>&1 || exit 0
+          for file in screenshots/*.png; do
+            name=$(basename "$file" .png)
+            # About 700 px wide for quick review, plus full resolution for close inspection.
+            sips -Z 1500 -s format jpeg -s formatOptions 72 "$file" --out "published/$name.jpg" >/dev/null
+            sips -s format jpeg -s formatOptions 86 "$file" --out "published/full/$name.jpg" >/dev/null
+          done
+          cp ocr.txt published/ 2>/dev/null || true
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: |
+            screenshots
+            ocr.txt
+          if-no-files-found: ignore
+
+      - name: Upload screenshots for the ci-screenshots branch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-screenshots
+          path: published
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # The only job with write access: it force-pushes the screenshots the app job produced to the
+  # ci-screenshots branch. It runs no code from the repository.
+  publish:
+    name: Publish screenshots
+    needs: app
+    if: always() && github.event_name == 'push' && needs.app.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download screenshots
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: published-screenshots
+          path: published
+
+      - name: Push to the ci-screenshots branch
+        if: steps.download.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd published
+          ls *.jpg >/dev/null 2>&1 || exit 0
+          git init -q -b ci-screenshots
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Simulator screenshots for ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/ci-screenshots
+          echo "::notice title=Screenshots::Pushed $(ls *.jpg | wc -l | tr -d ' ') screenshots of ${GITHUB_SHA::7} to the ci-screenshots branch."
+
+  archive:
+    name: App Store archive (dry run, nothing uploaded)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Archive and check entitlements (no App Store Connect secrets)
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}.${{ github.run_attempt }}
+        run: bash .github/scripts/testflight.sh
