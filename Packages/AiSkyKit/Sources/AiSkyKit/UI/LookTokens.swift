@@ -382,10 +382,10 @@ public enum LookFonts {
 
     /// The faces the widget extension bundles (a subset, to keep it small).
     public static let widget: [String] = [
-        "Barlow-Light", "Barlow-Regular", "BarlowCondensed-SemiBold",
-        "Geist-ExtraLight", "Geist-Regular", "GeistMono-Regular",
+        "Barlow-Light", "Barlow-Regular", "Barlow-SemiBold", "BarlowCondensed-SemiBold",
+        "Geist-ExtraLight", "Geist-Regular", "Geist-Medium", "GeistMono-Regular",
         "NewsreaderDisplay-Light", "NewsreaderText-Regular", "NewsreaderText-Italic", "InstrumentSans-Regular", "InstrumentSans-SemiBold",
-        "Manrope-Light", "Manrope-Regular", "Manrope-SemiBold", "Manrope-Bold",
+        "Manrope-Light", "Manrope-Regular", "Manrope-Medium", "Manrope-SemiBold", "Manrope-Bold",
         "BricolageGrotesqueDisplay-Medium", "BricolageGrotesque-SemiBold", "BricolageGrotesque-Regular", "DMMono-Regular",
     ]
 

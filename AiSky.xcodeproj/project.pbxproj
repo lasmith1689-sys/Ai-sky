@@ -69,6 +69,9 @@
 		A1B2C3D4E5F6000000000508 /* InstrumentSans-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000408 /* InstrumentSans-OFL.txt */; };
 		A1B2C3D4E5F6000000000509 /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000409 /* Manrope-OFL.txt */; };
 		A1B2C3D4E5F600000000050A /* Newsreader-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000040A /* Newsreader-OFL.txt */; };
+		A1B2C3D4E5F6000000000305 /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000105 /* Barlow-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000310 /* Geist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */; };
+		A1B2C3D4E5F6000000000319 /* Manrope-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000119 /* Manrope-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -413,6 +416,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D4E5F6000000000305 /* Barlow-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000310 /* Geist-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000319 /* Manrope-Medium.ttf in Resources */,
 				A1B2C3D4E5F6000000000302 /* Barlow-Light.ttf in Resources */,
 				A1B2C3D4E5F6000000000304 /* Barlow-Regular.ttf in Resources */,
 				A1B2C3D4E5F6000000000307 /* BarlowCondensed-SemiBold.ttf in Resources */,

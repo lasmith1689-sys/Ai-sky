@@ -27,6 +27,9 @@
 		<string>BricolageGrotesque-SemiBold.ttf</string>
 		<string>BricolageGrotesque-Regular.ttf</string>
 		<string>DMMono-Regular.ttf</string>
+		<string>Barlow-SemiBold.ttf</string>
+		<string>Geist-Medium.ttf</string>
+		<string>Manrope-Medium.ttf</string>
 	</array>
 	<key>NSExtension</key>
 	<dict>
