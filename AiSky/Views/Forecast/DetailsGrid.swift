@@ -194,10 +194,10 @@ struct SunArc: View {
                     .frame(height: 1)
                     .offset(y: height)
                 if let progress {
-                    let t = min(max(progress, 0), 1)
+                    let u = min(max(progress, 0), 1)
                     // Point on the quadratic Bézier curve.
-                    let x = width * t
-                    let y = pow(1 - t, 2) * height + 2 * (1 - t) * t * (-height * 0.9) + pow(t, 2) * height
+                    let x = width * u
+                    let y = pow(1 - u, 2) * height + 2 * (1 - u) * u * (-height * 0.9) + pow(u, 2) * height
                     Circle()
                         .fill(t.look == .liquid ? Color.yellow : t.sun)
                         .shadow(color: (t.look == .liquid ? Color.yellow : t.sun).opacity(0.8), radius: 4)

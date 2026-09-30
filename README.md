@@ -42,9 +42,32 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 | Next Hour | small, medium | rectangular (with minute graph), inline |
 | Air Quality | small | circular (AQI gauge), rectangular, inline |
 | Rainfall | small, medium | rectangular |
-| My Places | medium (3 places), large (6 places) | — |
+| My Places | medium (3 places), large (6 places) | Not available |
 
 **Notifications (optional)**: "Rain starting soon" and severe-weather alerts for the places you choose.
+
+## Looks
+
+Pick one of six looks in **Settings > Look**. They show the same forecast and features, each with its own layout for the top of the forecast (hero, next hour, hourly, 10 days) and its own tab bar. Everything else (radar, places, settings, sheets, charts) follows the look's colors, type and surfaces, and so do the widgets.
+
+| Look | Page | Type | Signature |
+|---|---|---|---|
+| **Instrument** (default) | Graphite | Barlow, Barlow Condensed | A 270° range dial with an orange needle, flat bordered panels, condensed caps labels, cobalt for rain |
+| **Liquid** | Condition sky | SF Pro | Liquid Glass cards and the system Liquid Glass tab bar; the Apple-style option |
+| **Obsidian** | True black | Geist, Geist Mono | Hairline rules instead of cards, a huge ultralight temperature, one accent that only means rain |
+| **Editorial** | Warm paper | Newsreader, Instrument Sans | A serif headline sentence ("Rain arrives in eighteen minutes and is gone by ten past four."), table-like hours |
+| **Horizon** | Deep navy | Manrope | The next 12 hours as a vertical ribbon: condition bands, a temperature curve, sunset marker, rain chances |
+| **Chroma '74** | Cream | Bricolage Grotesque, DM Mono | Big color blocks, a retro stripe, color-coded hour tiles and a pill tab bar |
+
+Instrument and Obsidian read times as a 24-hour clock, like their mockups.
+
+**Fonts.** All bundled typefaces are under the SIL Open Font License 1.1; their licenses are in `Fonts/Licenses/` and in the app under **Settings > About > Typefaces and Licenses**. The files in `Fonts/` are static instances cut from the Google Fonts variable fonts (only the weights and optical sizes the looks use), so every face has a fixed PostScript name. The app registers them with `UIAppFonts`; the widget extension bundles a subset (see `LookFonts.widget`). Debug builds log any face that doesn't resolve, and the CI smoke test fails on it.
+
+**Adding a look**
+1. Add a case to `Look` (`Packages/AiSkyKit/Sources/AiSkyKit/Settings/Look.swift`) and its `LookTokens` in `UI/LookTokens.swift`: colors, faces, surface style, radii, spacing.
+2. Bundle any new fonts in `Fonts/` with their license, list them in `LookFonts.all` (and `LookFonts.widget` if widgets use them), add them to both targets' resources in the Xcode project and to `UIAppFonts` in `Config/AiSky-Info.plist` (and the widget's plist).
+3. Create `AiSky/Looks/<Name>/` with the hero, next hour, hourly and daily views, and add them to the switches in `ForecastView.swift` (`LookHero`, `LookNextHour`, `LookHourly`, `LookDaily`), plus a tab bar in `LookChrome.swift` and a preview in `LookPicker.swift`.
+4. Add the id to the look loop in `.github/scripts/smoke-test.sh`; CI then publishes its screenshots to the `ci-screenshots` branch.
 
 ## What you need
 
@@ -113,6 +136,8 @@ AiSky/                   The iOS app (SwiftUI)
   State/                 App state, weather cache, location + search
   Services/              Background refresh, notifications
   Views/                 Forecast, Radar, Locations, Settings screens
+  Looks/                 The six looks: shared chrome and each look's forecast sections
+Fonts/                   Bundled typefaces (static instances) and their OFL licenses
 AiSkyWidgets/            WidgetKit extension (Home Screen + Lock Screen widgets)
 Packages/AiSkyKit/       Shared Swift package: models, API clients, caching, summaries, charts
   Tests/                 Unit tests with sample API responses
