@@ -14,13 +14,7 @@ struct LiquidClouds: View {
             let w = proxy.size.width / 390
             // Bright clouds belong to a partly cloudy sky; on gray skies they would wash out the
             // white type, so they fade to a faint texture.
-            let strength: Double = {
-                switch condition.family {
-                case .partlyCloudy: return 1
-                case .clear: return 0.3
-                default: return 0.12
-                }
-            }() * (isDaylight ? 1 : 0.35)
+            let strength = LiquidGlass.cloudStrength(for: condition, isDaylight: isDaylight)
             ZStack(alignment: .topLeading) {
                 Capsule()
                     .fill(Color.white.opacity(0.55 * strength))
@@ -119,6 +113,18 @@ struct LiquidHero: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 20)
         .padding(.bottom, 8)
+        .background {
+            // Over the bright clouds of a blue day sky, a soft glow of the sky's own deeper top
+            // color sits behind the hero so its white type keeps 3:1 (see `LiquidGlass`).
+            if context.tokens.heroScrim > 0 {
+                Ellipse()
+                    .fill(context.tokens.heroScrimColor.opacity(context.tokens.heroScrim))
+                    .padding(.horizontal, -24)
+                    .blur(radius: 36)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+        }
     }
 
     private var subtitle: String {

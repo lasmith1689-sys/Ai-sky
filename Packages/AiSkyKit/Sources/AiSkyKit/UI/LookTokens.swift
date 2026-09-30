@@ -141,24 +141,31 @@ public struct LookTokens {
     public var bodySize: CGFloat
     /// Tint for system switches and sliders (nil keeps the system default).
     public var controlTint: Color?
-    /// Liquid only: opacity of the dark sheen under glass cards on a gray sky (0 keeps the light,
-    /// clear glass). Set by ``onSky(_:isDaylight:)``.
+    /// Liquid only: opacity and color of the sheen under glass cards (0 keeps plain light glass).
+    /// Set by ``onSky(_:isDaylight:)``.
     public var glassSheen: Double = 0
+    public var glassSheenColor: Color = .black
+    /// Liquid only: opacity and color of the soft scrim behind the hero on bright skies.
+    public var heroScrim: Double = 0
+    public var heroScrimColor: Color = .clear
     /// Liquid only: secondary and tertiary text at 92% and 82% white instead of the mockup's
-    /// softer values, on gray skies and at night where those fall under 4.5:1 on the cards.
+    /// softer values, which fall under 4.5:1 on the sheened cards and at night.
     public var brightSecondaryText = false
 
-    /// Liquid on a gray sky: cards carry a dark sheen.
-    public var onGraySky: Bool { glassSheen > 0 }
+    /// Liquid cards carry a sheen under their content.
+    public var isSheened: Bool { glassSheen > 0 }
 
-    /// These tokens for content drawn over Liquid's `condition` sky: on gray skies the glass
-    /// cards get a dark sheen sized from the sky (``LiquidGlass``), and on gray skies and at night
-    /// secondary and tertiary text brighten so they keep 4.5:1. Blue day skies keep the mockup's
-    /// light, clear glass; other looks are unchanged.
+    /// These tokens for content drawn over Liquid's `condition` sky: glass cards get a sheen
+    /// sized from that sky (black on gray skies, deep blue on blue ones; see ``LiquidGlass``),
+    /// the hero gets a soft scrim over bright clouds, and secondary text brightens so it keeps
+    /// 4.5:1. Other looks are unchanged.
     public func onSky(_ condition: SkyCondition, isDaylight: Bool) -> LookTokens {
         guard usesSky else { return self }
         var copy = self
         copy.glassSheen = LiquidGlass.sheen(for: condition, isDaylight: isDaylight)
+        copy.glassSheenColor = Palette.color(hex: LiquidGlass.sheenTint(for: condition, isDaylight: isDaylight))
+        copy.heroScrim = LiquidGlass.heroScrim(for: condition, isDaylight: isDaylight)
+        copy.heroScrimColor = Palette.color(hex: Palette.skyStops(for: condition, isDaylight: isDaylight).first ?? 0)
         copy.brightSecondaryText = copy.glassSheen > 0 || !isDaylight
         copy.ink2 = copy.brightSecondaryText ? .white.opacity(LiquidGlass.brightInk2) : LookTokens.liquid.ink2
         copy.ink3 = copy.brightSecondaryText ? .white.opacity(LiquidGlass.brightInk3) : LookTokens.liquid.ink3

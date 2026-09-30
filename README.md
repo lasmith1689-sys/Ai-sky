@@ -61,7 +61,7 @@ Pick one of six looks in **Settings > Look**. They show the same forecast and fe
 
 Instrument and Obsidian read times as a 24-hour clock, like their mockups.
 
-Liquid's glass follows the sky: blue skies and clear nights keep light, clear glass, while gray skies (clouds, fog, rain, snow, storms, overcast nights) put a dark sheen under each card, sized from that sky so white text keeps at least 4.5:1 (`LiquidGlass` in AiSkyKit). The smoke test captures Liquid on each kind of sky (`liquid-sky-*`).
+Liquid's glass follows the sky: each card gets a sheen under its content, sized from that sky so white text keeps at least 4.5:1 (7:1 by design), deep blue on clear and partly cloudy skies and black on gray ones (clouds, fog, rain, snow, storms). Over the bright clouds of a blue day sky, a soft glow of the sky's own top color sits behind the hero so it keeps 3:1. See `LiquidGlass` in AiSkyKit; the smoke test captures Liquid on each kind of sky (`liquid-sky-*`).
 
 **Fonts.** All bundled typefaces are under the SIL Open Font License 1.1; their licenses are in `Fonts/Licenses/` and in the app under **Settings > About > Typefaces and Licenses**. The files in `Fonts/` are static instances cut from the Google Fonts variable fonts (only the weights and optical sizes the looks use), so every face has a fixed PostScript name. The app registers them with `UIAppFonts`; the widget extension bundles a subset (see `LookFonts.widget`). Debug builds log any face that doesn't resolve, and the CI smoke test fails on it.
 
