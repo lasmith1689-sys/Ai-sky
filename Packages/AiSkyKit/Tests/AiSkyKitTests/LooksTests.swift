@@ -103,6 +103,69 @@ final class LookTokensTests: XCTestCase {
         XCTAssertEqual(LookClock.time(date, timeZone: Fixtures.chicago, tokens: .editorial, formatter: Fixtures.imperial).normalizedSpaces, "3:20 PM")
     }
 }
+
+final class LiquidGlassTests: XCTestCase {
+    private let graySkies: [SkyCondition] = [.mostlyCloudy, .cloudy, .windy, .fog, .haze, .drizzle, .lightRain, .rain,
+                                             .heavyRain, .sleet, .snow, .heavySnow, .thunderstorms]
+
+    func testContrastMath() {
+        XCTAssertEqual(ColorContrast.ratio(ColorContrast.white, ColorContrast.black), 21, accuracy: 0.01)
+        XCTAssertEqual(ColorContrast.ratio(ColorContrast.white, ColorContrast.white), 1, accuracy: 0.001)
+        // #767676 is the classic 4.54:1 gray on white.
+        XCTAssertEqual(ColorContrast.ratio(ColorContrast.rgb(0x767676), ColorContrast.white), 4.54, accuracy: 0.01)
+    }
+
+    func testBlueSkiesKeepLightClearGlass() {
+        for condition in [SkyCondition.clear, .mostlyClear, .partlyCloudy] {
+            for daylight in [true, false] {
+                XCTAssertEqual(LiquidGlass.tone(for: condition, isDaylight: daylight), .light, "\(condition)")
+                XCTAssertEqual(LiquidGlass.sheen(for: condition, isDaylight: daylight), 0, "\(condition)")
+                XCTAssertFalse(LookTokens.liquid.onSky(condition, isDaylight: daylight).onGraySky)
+            }
+        }
+    }
+
+    func testGraySkiesGetASheenSizedFromTheSky() {
+        for condition in graySkies {
+            for daylight in [true, false] {
+                let sheen = LiquidGlass.sheen(for: condition, isDaylight: daylight)
+                XCTAssertEqual(LiquidGlass.tone(for: condition, isDaylight: daylight), .dark, "\(condition)")
+                XCTAssertGreaterThanOrEqual(sheen, LiquidGlass.minimumSheen, "\(condition)")
+                XCTAssertLessThanOrEqual(sheen, LiquidGlass.maximumSheen, "\(condition)")
+            }
+        }
+        // Paler skies need more sheen than dark ones.
+        XCTAssertGreaterThan(LiquidGlass.sheen(for: .snow, isDaylight: true), LiquidGlass.sheen(for: .cloudy, isDaylight: false))
+        XCTAssertGreaterThan(LiquidGlass.sheen(for: .fog, isDaylight: true), LiquidGlass.sheen(for: .heavyRain, isDaylight: true))
+    }
+
+    func testTextOnGraySkyCardsKeepsContrast() {
+        for condition in graySkies {
+            for daylight in [true, false] {
+                let card = LiquidGlass.card(condition: condition, isDaylight: daylight)
+                let white = ColorContrast.ratio(ColorContrast.white, card)
+                let tertiary = ColorContrast.ratio(ColorContrast.blend(ColorContrast.white, opacity: LiquidGlass.graySkyInk3, over: card), card)
+                XCTAssertGreaterThanOrEqual(white, 6, "\(condition) day \(daylight)")
+                XCTAssertGreaterThanOrEqual(tertiary, 4.5, "\(condition) day \(daylight)")
+            }
+        }
+    }
+
+    func testOnSkyTokens() {
+        let gray = LookTokens.liquid.onSky(.cloudy, isDaylight: true)
+        XCTAssertTrue(gray.onGraySky)
+        XCTAssertEqual(gray.glassSheen, LiquidGlass.sheen(for: .cloudy, isDaylight: true))
+        // Moving back to a blue sky restores the light glass and the softer secondary text.
+        let blue = gray.onSky(.clear, isDaylight: true)
+        XCTAssertFalse(blue.onGraySky)
+        XCTAssertEqual(blue.glassSheen, 0)
+        XCTAssertEqual(blue.ink3, LookTokens.liquid.ink3)
+        // Looks without a sky ignore it.
+        for look in Look.allCases where look != .liquid {
+            XCTAssertEqual(LookTokens.tokens(for: look).onSky(.snow, isDaylight: true).glassSheen, 0)
+        }
+    }
+}
 #endif
 
 final class GaugeScaleTests: XCTestCase {

@@ -400,16 +400,21 @@ struct LookSurfaceModifier: ViewModifier {
         switch tokens.surfaceStyle {
         case .glass:
             // Light, clear glass with a bright hairline, as in the mockup (regular glass turns dark
-            // under the dark color scheme the sky pages use).
+            // under the dark color scheme the sky pages use). On gray skies a dark sheen sits
+            // under the content so white type keeps its contrast (see `LiquidGlass`).
+            let sheen = tokens.glassSheen
+            let gray = tokens.onGraySky
             if #available(iOS 26.0, *) {
                 content
-                    .glassEffect(.clear.tint(Color.white.opacity(0.12)), in: shape)
-                    .overlay(shape.strokeBorder(Color.white.opacity(0.28), lineWidth: 1))
+                    .background(shape.fill(Color.black.opacity(sheen)))
+                    .glassEffect(gray ? Glass.clear : Glass.clear.tint(Color.white.opacity(0.12)), in: shape)
+                    .overlay(shape.strokeBorder(Color.white.opacity(gray ? 0.2 : 0.28), lineWidth: 1))
             } else {
                 content
+                    .background(Color.black.opacity(sheen), in: shape)
                     .background(.ultraThinMaterial.opacity(0.7), in: shape)
-                    .background(Color.white.opacity(0.12), in: shape)
-                    .overlay(shape.strokeBorder(Color.white.opacity(0.28), lineWidth: 1))
+                    .background(Color.white.opacity(gray ? 0 : 0.12), in: shape)
+                    .overlay(shape.strokeBorder(Color.white.opacity(gray ? 0.2 : 0.28), lineWidth: 1))
             }
         case .flat:
             content

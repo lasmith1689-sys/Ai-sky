@@ -37,6 +37,7 @@ struct TimeMachineView: View {
                 .padding(.vertical, 16)
             }
         }
+        .lookSky(day?.summary?.condition ?? .partlyCloudy, isDaylight: true)
         .foregroundStyle(t.ink)
         .lookNavigationTitle("Time Machine")
         .task(id: date) {

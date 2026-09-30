@@ -22,6 +22,26 @@ final class WeatherStore {
     #if DEBUG
     /// `-AiSkyDemoWeather`: sample weather everywhere, for deterministic screenshots of every look.
     static let usesDemoWeather = ProcessInfo.processInfo.arguments.contains("-AiSkyDemoWeather")
+
+    /// `-AiSkyDemoSky <condition>[-night]` (with `-AiSkyDemoWeather`): the sample's current sky,
+    /// e.g. `clear`, `snow` or `cloudy-night`, for screenshots of Liquid on each kind of sky.
+    static let demoSky: (condition: SkyCondition, isDaylight: Bool)? = {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-AiSkyDemoSky"), arguments.indices.contains(index + 1) else { return nil }
+        let value = arguments[index + 1]
+        let night = value.hasSuffix("-night")
+        guard let condition = SkyCondition(rawValue: night ? String(value.dropLast(6)) : value) else { return nil }
+        return (condition, !night)
+    }()
+
+    static func demoSnapshot(for location: WeatherLocation) -> WeatherSnapshot {
+        var snapshot = SampleData.snapshot(now: Date(), location: location)
+        if let sky = demoSky {
+            snapshot.current.condition = sky.condition
+            snapshot.current.isDaylight = sky.isDaylight
+        }
+        return snapshot
+    }
     #endif
 
     init(repository: WeatherRepository) {
@@ -64,7 +84,7 @@ final class WeatherStore {
     func refresh(_ location: WeatherLocation, settings: AppSettings, force: Bool = false) async {
         #if DEBUG
         if Self.usesDemoWeather {
-            let snapshot = SampleData.snapshot(now: Date(), location: location)
+            let snapshot = Self.demoSnapshot(for: location)
             snapshots[location.id] = snapshot
             summaries[location.id] = snapshot.summary
             errors[location.id] = nil
@@ -99,7 +119,7 @@ final class WeatherStore {
         #if DEBUG
         if Self.usesDemoWeather {
             for location in locations {
-                summaries[location.id] = SampleData.snapshot(now: Date(), location: location).summary
+                summaries[location.id] = Self.demoSnapshot(for: location).summary
             }
             return
         }

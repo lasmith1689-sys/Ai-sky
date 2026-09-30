@@ -48,6 +48,16 @@ expect editorial-1-forecast "$tabs && Forecast && THE NEXT HOUR && Feels like &&
 expect horizon-1-forecast "$tabs && Timeline && HOURS && Feels && !load weather"
 expect chroma-1-forecast "$tabs && Forecast && FEELS && !load weather"
 
+# Liquid on each sky shows that sky's condition in the hero.
+expect liquid-sky-clear "Clear && Feels && Now && !load weather"
+expect liquid-sky-partlyCloudy "Partly Cloudy && Feels && Now && !load weather"
+expect liquid-sky-clear-night "Clear && Feels && Now && !load weather"
+expect liquid-sky-drizzle "Drizzle && Feels && Now && !load weather"
+expect liquid-sky-rain "Rain && Feels && Now && !load weather"
+expect liquid-sky-fog "Fog && Feels && Now && !load weather"
+expect liquid-sky-snow "Snow && Feels && Now && !load weather"
+expect liquid-sky-cloudy-night "Cloudy && Feels && Now && !load weather"
+
 for look in liquid obsidian instrument editorial horizon chroma; do
   expect "$look-2-daily" "Time Machine"
   expect "$look-3-precipitation" "Past 24 hrs && Rainfall"

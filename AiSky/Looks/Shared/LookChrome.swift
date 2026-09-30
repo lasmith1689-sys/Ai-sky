@@ -289,6 +289,24 @@ struct LookPageBackground: View {
     }
 }
 
+extension View {
+    /// Content over Liquid's `condition` sky: its glass cards darken on gray skies and keep the
+    /// light, clear glass on blue ones. Other looks are unaffected.
+    func lookSky(_ condition: SkyCondition, isDaylight: Bool) -> some View {
+        modifier(LookSky(condition: condition, isDaylight: isDaylight))
+    }
+}
+
+private struct LookSky: ViewModifier {
+    @Environment(\.lookTokens) private var t
+    let condition: SkyCondition
+    let isDaylight: Bool
+
+    func body(content: Content) -> some View {
+        content.environment(\.lookTokens, t.onSky(condition, isDaylight: isDaylight))
+    }
+}
+
 /// Which forecast page is visible: dots (with an arrow for the device location) or short ticks.
 struct LookPageIndicator: View {
     @Environment(\.lookTokens) private var t

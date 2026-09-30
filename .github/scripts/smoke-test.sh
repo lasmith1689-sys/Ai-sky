@@ -96,6 +96,12 @@ done
 capture editorial-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook editorial -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 capture chroma-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook chroma -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 
+# Liquid on each kind of sky (-AiSkyDemoSky sets the sample's current sky): light, clear glass on
+# blue skies and clear nights, a dark sheen under the cards on gray skies.
+for sky in clear partlyCloudy clear-night drizzle rain fog snow cloudy-night; do
+  capture "liquid-sky-$sky" forecast 9 -AiSkyDemoWeather -AiSkyLook liquid -AiSkyDemoSky "$sky"
+done
+
 if [ "$failures" -gt 0 ]; then
   find ~/Library/Logs/DiagnosticReports -name "AiSky*" -mmin -20 -print -exec head -120 {} \; 2>/dev/null
   exit 1

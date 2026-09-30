@@ -91,12 +91,13 @@ struct ForecastView: View {
 
     var body: some View {
         let snapshot = model.weather.snapshot(for: location.id)
+        // The sky Liquid draws behind the page; its cards follow it (light glass on blue skies,
+        // a dark sheen on gray ones).
+        let sky = snapshot?.current.condition ?? .partlyCloudy
+        let daylight = snapshot?.current.isDaylight ?? true
         ZStack {
-            LookPageBackground(
-                condition: snapshot?.current.condition ?? .partlyCloudy,
-                isDaylight: snapshot?.current.isDaylight ?? true
-            )
-            .ignoresSafeArea()
+            LookPageBackground(condition: sky, isDaylight: daylight)
+                .ignoresSafeArea()
 
             ScrollViewReader { proxy in
                 ScrollView {
@@ -130,6 +131,7 @@ struct ForecastView: View {
 
             StatusBarScrim()
         }
+        .lookSky(sky, isDaylight: daylight)
         .foregroundStyle(t.ink)
         .task(id: location.id) {
             await model.refresh(location)
@@ -200,7 +202,7 @@ struct ForecastView: View {
                     now: now,
                     formatter: model.formatter,
                     settings: model.settings,
-                    tokens: t,
+                    tokens: t.onSky(snapshot.current.condition, isDaylight: snapshot.current.isDaylight),
                     onSelectDay: { selectedDay = $0 },
                     onTimeMachine: { presentedSheet = .timeMachine }
                 )

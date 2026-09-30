@@ -88,7 +88,8 @@ final class AppModel {
     #if DEBUG
     /// Debug-only launch arguments used by the CI smoke test (handy in the Simulator too):
     /// `-AiSkyDemoLibrary` fills an empty library with sample places;
-    /// `-AiSkyDemoWeather` shows sample weather (rain in a few minutes) everywhere;
+    /// `-AiSkyDemoWeather` shows sample weather (rain in a few minutes) everywhere, and
+    /// `-AiSkyDemoSky <condition>[-night]` sets its current sky (see `WeatherStore.demoSky`);
     /// `-AiSkyLook <id>` shows a look without saving it;
     /// `-AiSkyScreen radar|radarSpot|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail`
     /// opens that screen.

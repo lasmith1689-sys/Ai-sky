@@ -21,6 +21,7 @@ struct DayDetailView: View {
                         .padding(.vertical, 16)
                 }
             }
+            .lookSky(day.condition, isDaylight: true)
             .foregroundStyle(t.ink)
             .lookNavigationTitle(model.formatter.fullDay(day.date, timeZone: timeZone))
             .toolbar {

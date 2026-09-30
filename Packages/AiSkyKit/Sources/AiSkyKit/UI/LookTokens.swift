@@ -141,6 +141,25 @@ public struct LookTokens {
     public var bodySize: CGFloat
     /// Tint for system switches and sliders (nil keeps the system default).
     public var controlTint: Color?
+    /// Liquid only: opacity of the dark sheen under glass cards on a gray sky (0 keeps the light,
+    /// clear glass). Set by ``onSky(_:isDaylight:)``.
+    public var glassSheen: Double = 0
+
+    /// Liquid on a gray sky: cards carry a dark sheen and secondary text is brighter.
+    public var onGraySky: Bool { glassSheen > 0 }
+
+    /// These tokens for content drawn over Liquid's `condition` sky: on gray skies the glass
+    /// cards get a dark sheen sized from the sky (``LiquidGlass``) and secondary and tertiary
+    /// text brighten so they keep 4.5:1 on it. Blue skies, and every other look, are unchanged.
+    public func onSky(_ condition: SkyCondition, isDaylight: Bool) -> LookTokens {
+        guard usesSky else { return self }
+        var copy = self
+        copy.glassSheen = LiquidGlass.sheen(for: condition, isDaylight: isDaylight)
+        let gray = copy.glassSheen > 0
+        copy.ink2 = gray ? .white.opacity(LiquidGlass.graySkyInk2) : LookTokens.liquid.ink2
+        copy.ink3 = gray ? .white.opacity(LiquidGlass.graySkyInk3) : LookTokens.liquid.ink3
+        return copy
+    }
 
     /// Label tracking in points at `size`.
     public func tracking(_ size: CGFloat) -> CGFloat { size * labelTracking }

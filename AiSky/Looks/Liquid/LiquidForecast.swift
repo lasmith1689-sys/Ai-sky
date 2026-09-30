@@ -13,12 +13,12 @@ struct LiquidClouds: View {
         GeometryReader { proxy in
             let w = proxy.size.width / 390
             // Bright clouds belong to a partly cloudy sky; on gray skies they would wash out the
-            // white type, so they fade.
+            // white type, so they fade to a faint texture.
             let strength: Double = {
                 switch condition.family {
                 case .partlyCloudy: return 1
                 case .clear: return 0.3
-                default: return 0.25
+                default: return 0.12
                 }
             }() * (isDaylight ? 1 : 0.35)
             ZStack(alignment: .topLeading) {
@@ -42,6 +42,14 @@ struct LiquidClouds: View {
         }
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+}
+
+extension ForecastContext {
+    /// White at the mockup's softer opacity on blue skies; brighter on gray skies, where the paler
+    /// sky and the sheened cards need it for 4.5:1 (see `LiquidGlass`).
+    func skyInk(_ blueSky: Double, gray: Double) -> Color {
+        .white.opacity(tokens.onGraySky ? gray : blueSky)
     }
 }
 
@@ -79,7 +87,7 @@ struct LiquidHero: View {
             .accessibilityAddTraits(.isHeader)
             Text(subtitle)
                 .font(.footnote.weight(.medium))
-                .opacity(0.78)
+                .foregroundStyle(context.skyInk(0.78, gray: 1))
                 .padding(.top, 2)
             Text(formatter.temperature(current.temperature))
                 .font(.system(size: 124, weight: .thin))
@@ -96,14 +104,14 @@ struct LiquidHero: View {
                 .padding(.top, 2)
             Text(rangeLine)
                 .font(.subheadline.weight(.medium))
-                .opacity(0.86)
+                .foregroundStyle(context.skyInk(0.86, gray: 1))
                 .padding(.top, 3)
             if !context.window.isPrecipitating,
                let comparison = YesterdayComparison.text(for: context.snapshot, now: context.now, formatter: formatter) {
                 Text(comparison)
                     .font(.footnote)
                     .multilineTextAlignment(.center)
-                    .opacity(0.8)
+                    .foregroundStyle(context.skyInk(0.8, gray: 1))
                     .padding(.top, 8)
             }
         }
@@ -145,7 +153,7 @@ struct LiquidNextHour: View {
                 if let detail = window.liquidDetail(clock: context.shortClock) {
                     Text(detail)
                         .font(.footnote)
-                        .opacity(0.8)
+                        .foregroundStyle(context.skyInk(0.8, gray: 0.92))
                         .lineLimit(1)
                 }
             }
@@ -164,12 +172,12 @@ struct LiquidNextHour: View {
                     }
                 }
                 .font(.caption2.weight(.semibold))
-                .opacity(0.72)
+                .foregroundStyle(context.skyInk(0.72, gray: 0.82))
                 .padding(.top, 6)
                 if let rate = context.snapshot.current.precipitationIntensity, rate >= 0.05 {
                     Text("Now: \(PrecipitationIntensity(millimetersPerHour: rate).displayName.lowercased()) \(context.snapshot.current.condition.precipitationKind.noun), \(context.formatter.precipitationRate(rate))")
                         .font(.caption)
-                        .opacity(0.8)
+                        .foregroundStyle(context.skyInk(0.8, gray: 0.92))
                         .padding(.top, 6)
                 }
             }
@@ -292,7 +300,7 @@ struct LiquidDaily: View {
             CardHeader(title: "\(days.count)-Day Forecast", systemImage: "calendar")
             Text(ForecastNarrator.weekSummary(days: days, now: context.now, timeZone: context.timeZone, formatter: context.formatter))
                 .font(.subheadline)
-                .opacity(0.9)
+                .foregroundStyle(context.skyInk(0.9, gray: 1))
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 8)
                 .padding(.bottom, 4)
@@ -339,7 +347,7 @@ struct LiquidDaily: View {
             .frame(width: 32)
             Text(context.temperature(day.low))
                 .font(.callout)
-                .opacity(0.72)
+                .foregroundStyle(context.skyInk(0.72, gray: 0.82))
                 .frame(width: 36, alignment: .trailing)
             TemperatureRangeBar(low: day.low, high: day.high, rangeLow: rangeLow, rangeHigh: rangeHigh, current: today ? context.current.temperature : nil, trackColor: .white.opacity(0.2))
             Text(context.temperature(day.high))

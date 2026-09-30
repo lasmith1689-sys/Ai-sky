@@ -31,6 +31,7 @@ struct RainHistoryView: View {
                     .padding(.vertical, 16)
                 }
             }
+            .lookSky(.rain, isDaylight: true)
             .foregroundStyle(t.ink)
             .lookNavigationTitle("Rainfall · \(history.location.name)")
             .toolbar {
