@@ -80,7 +80,13 @@ expect liquid-sky-snow "Snow && Feels && Now && !load weather"
 expect liquid-sky-cloudy-night "Cloudy && Feels && Now && !load weather"
 
 for look in liquid obsidian instrument editorial horizon chroma; do
-  expect "$look-2-daily" "Time Machine"
+  # Horizon's daily section opens with the next hour and the week sentence, so its Time Machine
+  # link sits below the fold; the ten days are checked instead.
+  if [ "$look" = horizon ]; then
+    expect "$look-2-daily" "The Week && Today && Tomorrow"
+  else
+    expect "$look-2-daily" "Time Machine"
+  fi
   expect "$look-3-precipitation" "Past 24 hrs && Rainfall"
   expect "$look-4-details" "Humidity && Wind && UV"
   expect "$look-5-day-detail" "Temperature && Done"
