@@ -40,6 +40,7 @@ expect() {
 }
 
 tabs="Radar && Places && Settings"
+expect 10-settings "Settings && Look && Instrument && Units"
 expect instrument-1-forecast "$tabs && Forecast && NEXT HOUR && FEELS && WIND && HUMID && !load weather"
 expect liquid-1-forecast "Forecast && $tabs && Feels && Now && !load weather"
 expect obsidian-1-forecast "$tabs && Forecast && NEXT HOUR && HOURLY && FEELS && !load weather"

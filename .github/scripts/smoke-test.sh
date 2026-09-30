@@ -17,6 +17,23 @@ xcrun simctl install "$UDID" "$APP"
 xcrun simctl privacy "$UDID" grant location "$BUNDLE" || true
 xcrun simctl location "$UDID" set 41.8781,-87.6298 || true   # Chicago
 
+# Text recognition, to tell a rendered screen from the plain launch screen (which only shows the
+# status bar). Falls back to the PNG size check if it doesn't build.
+OCR_BIN="$(mktemp -d)/ocr"
+if ! xcrun swiftc -O -o "$OCR_BIN" "$(dirname "$0")/ocr.swift" >/dev/null 2>&1; then
+  echo "::warning title=Smoke test::Couldn't build the OCR helper; loading checks use screenshot size only"
+  OCR_BIN=""
+fi
+
+# rendered <png>: true when the screenshot shows more than the status bar.
+rendered() {
+  [ "$(stat -f%z "$1" 2>/dev/null || echo 0)" -gt 60000 ] || return 1
+  [ -z "$OCR_BIN" ] && return 0
+  local lines
+  lines=$("$OCR_BIN" "$1" 2>/dev/null | grep -c "%  ")
+  [ "${lines:-0}" -ge 4 ]
+}
+
 alive() {
   # Read the whole list first: `| grep -q` exits early, launchctl dies of SIGPIPE, and with
   # pipefail that reads as "not running" even when the app is.
@@ -33,10 +50,10 @@ capture() {
   xcrun simctl launch "$UDID" "$BUNDLE" -AiSkyDemoLibrary -AiSkyScreen "$screen" "$@" >/dev/null
   sleep "$wait"
   if alive; then
-    # A slow runner can still be showing the plain launch screen (a tiny PNG); give it more time.
-    for attempt in 1 2 3 4; do
+    # A slow runner can still be showing the plain launch screen; give it more time.
+    for attempt in 1 2 3 4 5 6; do
       xcrun simctl io "$UDID" screenshot --type=png "$OUT/$file.png" >/dev/null 2>&1
-      [ "$(stat -f%z "$OUT/$file.png" 2>/dev/null || echo 0)" -gt 60000 ] && break
+      rendered "$OUT/$file.png" && break
       echo "… $file still loading (attempt $attempt)"
       sleep 5
     done
@@ -56,7 +73,7 @@ capture 06-air-quality airQuality 5
 capture 07-details details 5
 capture 08-radar radar 25
 capture 09-locations locations 10
-capture 10-settings settings 5
+capture 10-settings settings 8
 capture 11-rain-history rainHistory 25
 capture 12-time-machine timeMachine 20
 capture 13-radar-spot radarSpot 20
