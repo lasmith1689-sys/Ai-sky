@@ -84,6 +84,18 @@ final class LookTokensTests: XCTestCase {
         }
     }
 
+    func testWidgetBundlesEveryFaceItsTextUses() {
+        // Widgets set text in these roles; a face missing from the extension silently becomes SF.
+        for look in Look.allCases {
+            let tokens = LookTokens.tokens(for: look)
+            for role in [LookTokens.Role.display, .text, .textStrong, .label, .number] {
+                if let name = tokens.face(role).postScriptName {
+                    XCTAssertTrue(LookFonts.widget.contains(name), "\(look): widget lacks \(name)")
+                }
+            }
+        }
+    }
+
     func testTwentyFourHourClock() {
         let date = Fixtures.now.addingTimeInterval(3 * 3600) // 15:20 in Chicago
         XCTAssertEqual(LookClock.time(date, timeZone: Fixtures.chicago, tokens: .instrument, formatter: Fixtures.imperial), "15:20")
