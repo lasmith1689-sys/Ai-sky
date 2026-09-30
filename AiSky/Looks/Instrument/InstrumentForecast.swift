@@ -49,6 +49,7 @@ struct InstrumentHeader: View {
 }
 
 struct InstrumentHero: View {
+    @Environment(\.lookTokens) private var t
     let context: ForecastContext
 
     var body: some View {
