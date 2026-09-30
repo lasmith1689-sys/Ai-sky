@@ -4,8 +4,9 @@ import SwiftUI
 // Obsidian: true black, hairline rules instead of cards, a huge ultralight temperature and mono
 // caps labels. One accent, #7CC4FF, and it only ever means rain.
 
-private let dim = Palette.color(hex: 0x3A3A38)
-private let axis = Palette.color(hex: 0x5C5C58)
+/// De-emphasized values (a low chance of rain); the value is also spoken.
+private let dim = Palette.color(hex: 0x5A5A56)
+private let axis = Palette.color(hex: 0x767672)
 private let softRule = Palette.color(hex: 0x161615)
 
 /// Mono label row: "NEXT HOUR ........ LIGHT RAIN 15:30 TO 16:10".

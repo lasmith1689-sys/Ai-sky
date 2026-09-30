@@ -44,7 +44,6 @@ struct LookPicker: View {
                 .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
             }
         }
-        .sensoryFeedback(.selection, trigger: model.look)
     }
 }
 

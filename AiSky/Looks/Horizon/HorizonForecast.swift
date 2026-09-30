@@ -4,7 +4,7 @@ import SwiftUI
 // Horizon: deep navy, Manrope, and the day as a vertical ribbon: condition color bands, the
 // temperature as a curve of points, a dashed sunset marker and the chance of rain per hour.
 
-private let dimLabel = Palette.color(hex: 0x5D6A80)
+private let dimLabel = Palette.color(hex: 0x727F95)
 private let rainWords = Palette.color(hex: 0x9FC9FF)
 
 struct HorizonHero: View {

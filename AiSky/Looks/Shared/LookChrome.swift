@@ -182,7 +182,7 @@ private struct HorizonTabBar: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
-                    .foregroundStyle(selected ? t.ink : Palette.color(hex: 0x5D6A80))
+                    .foregroundStyle(selected ? t.ink : t.ink3)
                     .frame(minWidth: 52)
                     .padding(.top, 10)
                     .padding(.bottom, 8)

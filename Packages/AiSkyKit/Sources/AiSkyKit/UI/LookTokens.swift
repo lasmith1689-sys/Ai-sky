@@ -78,7 +78,8 @@ public struct LookTokens {
     public var rule: Color
     /// Empty tracks of bars, gauges and capsules.
     public var track: Color
-    /// Primary, secondary and tertiary text.
+    /// Primary, secondary and tertiary text. Tertiary text keeps at least 4.5:1 contrast on the
+    /// look's page and cards (a touch lighter or darker than the mockups where they fell short).
     public var ink: Color
     public var ink2: Color
     public var ink3: Color
@@ -265,7 +266,7 @@ public struct LookTokens {
         look: .obsidian, colorScheme: .dark,
         background: hex(0x000000), surface: hex(0x0B0B0A), surfaceAlt: hex(0x121211),
         line: hex(0x1F1F1D), rule: hex(0x1F1F1D), track: hex(0x2A2A28),
-        ink: hex(0xF4F4F2), ink2: hex(0x8A8A86), ink3: hex(0x6B6B67),
+        ink: hex(0xF4F4F2), ink2: hex(0x8A8A86), ink3: hex(0x767672),
         accent: hex(0xF4F4F2), onAccent: hex(0x000000),
         rain: hex(0x7CC4FF), rainText: hex(0x7CC4FF), now: hex(0xF4F4F2), sun: hex(0x8A8A86),
         chartLine: hex(0xF4F4F2), chartArea: hex(0xF4F4F2, 0.08), grid: hex(0x161615),
@@ -282,7 +283,7 @@ public struct LookTokens {
         look: .instrument, colorScheme: .dark,
         background: hex(0x121417), surface: hex(0x1A1D21), surfaceAlt: hex(0x16191C),
         line: hex(0x2A2E34), rule: hex(0x2A2E34), track: hex(0x23272C),
-        ink: hex(0xE9E4D8), ink2: hex(0x8B8F96), ink3: hex(0x6B7078),
+        ink: hex(0xE9E4D8), ink2: hex(0x8B8F96), ink3: hex(0x80858D),
         accent: hex(0xF26B38), onAccent: hex(0x121417),
         rain: hex(0x4C7DFF), rainText: hex(0x7EA3FF), now: hex(0xF26B38), sun: hex(0xE0A15E),
         chartLine: hex(0xE9E4D8), chartArea: hex(0xE9E4D8, 0.08), grid: hex(0x23272C),
@@ -299,7 +300,7 @@ public struct LookTokens {
         look: .editorial, colorScheme: .light,
         background: hex(0xF3EFE6), surface: hex(0xF3EFE6), surfaceAlt: hex(0xEBE5D8),
         line: hex(0xD9D2C3), rule: hex(0x17150F), track: hex(0xDDD6C7),
-        ink: hex(0x17150F), ink2: hex(0x6E685C), ink3: hex(0x7A7466),
+        ink: hex(0x17150F), ink2: hex(0x6E685C), ink3: hex(0x726C60),
         accent: hex(0x2C4DA0), onAccent: hex(0xF3EFE6),
         rain: hex(0x2C4DA0), rainText: hex(0x2C4DA0), now: hex(0x17150F), sun: hex(0xA2672A),
         chartLine: hex(0x17150F), chartArea: hex(0x17150F, 0.06), grid: hex(0xD9D2C3),
@@ -318,7 +319,7 @@ public struct LookTokens {
         look: .horizon, colorScheme: .dark,
         background: hex(0x0D1320), surface: hex(0x131B2B), surfaceAlt: hex(0x182134),
         line: hex(0x1C2536), rule: hex(0x1C2536), track: hex(0x222C40),
-        ink: hex(0xEAF0FA), ink2: hex(0x8793A8), ink3: hex(0x6A778D),
+        ink: hex(0xEAF0FA), ink2: hex(0x8793A8), ink3: hex(0x727F95),
         accent: hex(0x7FB8FF), onAccent: hex(0x0D1320),
         rain: hex(0x4F8FF7), rainText: hex(0x7FB8FF), now: hex(0xEAF0FA), sun: hex(0xFFD9A8),
         chartLine: hex(0xEAF0FA), chartArea: hex(0x7FB8FF, 0.12), grid: hex(0x1C2536),
@@ -335,7 +336,7 @@ public struct LookTokens {
         look: .chroma, colorScheme: .light,
         background: hex(0xF2EAD8), surface: hex(0xE8DCC2), surfaceAlt: hex(0xDFD1B3),
         line: hex(0x1C2B4B, 0.14), rule: hex(0x1C2B4B, 0.14), track: hex(0x1C2B4B, 0.1),
-        ink: hex(0x1C2B4B), ink2: hex(0x47536B), ink3: hex(0x5F697D),
+        ink: hex(0x1C2B4B), ink2: hex(0x47536B), ink3: hex(0x555F73),
         accent: hex(0x2F5BD3), onAccent: hex(0xF2EAD8),
         rain: hex(0x2F5BD3), rainText: hex(0x2F5BD3), now: hex(0xD9582B), sun: hex(0xD9582B),
         chartLine: hex(0x1C2B4B), chartArea: hex(0xE3A62B, 0.35), grid: hex(0x1C2B4B, 0.12),
