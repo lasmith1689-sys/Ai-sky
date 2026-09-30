@@ -180,6 +180,12 @@ struct LiquidNextHour: View {
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(context.skyInk(0.72, gray: 0.82))
                 .padding(.top, 6)
+                if let resolution = context.nextHourResolution {
+                    Text(resolution)
+                        .font(.caption2)
+                        .foregroundStyle(context.skyInk(0.72, gray: 0.82))
+                        .padding(.top, 4)
+                }
                 if let rate = context.snapshot.current.precipitationIntensity, rate >= 0.05 {
                     Text("Now: \(PrecipitationIntensity(millimetersPerHour: rate).displayName.lowercased()) \(context.snapshot.current.condition.precipitationKind.noun), \(context.formatter.precipitationRate(rate))")
                         .font(.caption)
@@ -195,7 +201,7 @@ struct LiquidNextHour: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .lookSurface(context.tokens, radius: 26)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+        .accessibilityLabel(context.nextHourSpoken)
     }
 
     private func symbol(_ window: NextHourWindow) -> String {
@@ -210,25 +216,6 @@ struct LiquidNextHour: View {
 /// Hour columns with sunrise and sunset slotted in, like Apple Weather.
 struct LiquidHourly: View {
     let context: ForecastContext
-
-    private enum Item: Identifiable {
-        case hour(HourlyForecast)
-        case sun(Date, rising: Bool)
-
-        var id: String {
-            switch self {
-            case .hour(let hour): return "h\(hour.date.timeIntervalSince1970)"
-            case .sun(let date, let rising): return "\(rising ? "r" : "s")\(date.timeIntervalSince1970)"
-            }
-        }
-
-        var date: Date {
-            switch self {
-            case .hour(let hour): return hour.date
-            case .sun(let date, _): return date
-            }
-        }
-    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -245,15 +232,10 @@ struct LiquidHourly: View {
         .lookSurface(context.tokens, radius: 26)
     }
 
-    private var items: [Item] {
-        let hours = context.hours(48)
-        guard let first = hours.first?.date, let last = hours.last?.date else { return [] }
-        let sun = context.sunEvents(from: first, to: last).map { Item.sun($0.date, rising: $0.rising) }
-        return (hours.map(Item.hour) + sun).sorted { $0.date < $1.date }
-    }
+    private var items: [ForecastHourItem] { context.hourItems() }
 
     @ViewBuilder
-    private func column(_ item: Item) -> some View {
+    private func column(_ item: ForecastHourItem) -> some View {
         switch item {
         case .hour(let hour):
             let chance = hour.precipitationChance ?? 0
@@ -272,7 +254,8 @@ struct LiquidHourly: View {
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(context.isNow(hour) ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.spokenTemperature(hour.temperature)), \(hour.condition.description)\(chance >= 0.15 ? ", \(context.formatter.percent(chance)) chance of precipitation" : "")")
         case .sun(let date, let rising):
             VStack(spacing: 7) {
                 Text(context.shortClock(date))
@@ -290,7 +273,8 @@ struct LiquidHourly: View {
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(rising ? "Sunrise" : "Sunset") at \(context.formatter.time(date, timeZone: context.timeZone)), \(context.spokenTemperature(context.temperature(at: date)))")
         }
     }
 }
@@ -363,6 +347,6 @@ struct LiquidDaily: View {
         .frame(minHeight: 50)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low))")
     }
 }

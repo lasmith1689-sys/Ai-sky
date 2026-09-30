@@ -16,18 +16,26 @@ struct HorizonHero: View {
         let window = context.window
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
-                HStack(spacing: 6) {
-                    if context.location.isCurrentLocation {
-                        Image(systemName: "location.fill")
-                            .font(.system(size: 12, weight: .semibold))
-                            .accessibilityLabel("Current location")
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 6) {
+                        if context.location.isCurrentLocation {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 12, weight: .semibold))
+                                .accessibilityHidden(true)
+                        }
+                        Text(context.location.name)
+                            .font(t.font(.headline, 20))
+                            .tracking(-0.2)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
                     }
-                    Text(context.location.name)
-                        .font(t.font(.headline, 20))
-                        .tracking(-0.2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                    if context.location.isCurrentLocation {
+                        Text("My Location")
+                            .font(t.font(.textStrong, 12))
+                            .foregroundStyle(t.ink2)
+                    }
                 }
+                .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
                 Text(context.formatter.time(context.now, timeZone: context.timeZone))
@@ -56,6 +64,13 @@ struct HorizonHero: View {
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
             }
+            if let headline = context.headline {
+                Text(headline)
+                    .font(t.font(.text, 15))
+                    .foregroundStyle(t.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 4)
+            }
         }
         .padding(.top, 6)
     }
@@ -79,23 +94,20 @@ struct HorizonNextHour: View {
     }
 }
 
-/// The next twelve hours as a vertical ribbon.
+/// The next twelve hours as a vertical ribbon, extending to all 48 on request.
 struct HorizonTimeline: View {
     @Environment(\.lookTokens) private var t
     let context: ForecastContext
+    @State private var showsAll = false
 
     private let rowHeight: CGFloat = 62
 
     var body: some View {
-        let hours = context.hours(12)
+        let hours = context.hours(showsAll ? ForecastContext.hourlyLimit : 12)
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Next \(hours.count) Hours")
-                Spacer(minLength: 8)
-                Text("Scroll for tomorrow")
-            }
-            .lookLabel(t, size: 11, color: dimLabel, tracking: 1.6)
-            .accessibilityHidden(true)
+            Text("Next \(hours.count) Hours")
+                .lookLabel(t, size: 11, color: dimLabel, tracking: 1.6)
+                .accessibilityAddTraits(.isHeader)
 
             GeometryReader { proxy in
                 timeline(hours: hours, width: proxy.size.width)
@@ -103,6 +115,22 @@ struct HorizonTimeline: View {
             .frame(height: rowHeight * CGFloat(hours.count))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(spokenSummary(hours))
+
+            Button {
+                withAnimation(.easeInOut(duration: 0.3)) { showsAll.toggle() }
+            } label: {
+                HStack(spacing: 6) {
+                    Text(showsAll ? "Show 12 hours" : "Show all \(ForecastContext.hourlyLimit) hours")
+                        .font(t.font(.textStrong, 14))
+                    Image(systemName: showsAll ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .foregroundStyle(t.accent)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(t.surfaceAlt, in: Capsule())
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
         }
         .padding(.top, 8)
     }
@@ -220,12 +248,19 @@ struct HorizonTimeline: View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(Array(hours.enumerated()), id: \.element.id) { index, hour in
                 let changed = index == 0 || hours[index - 1].condition.family != hour.condition.family
-                Text(changed ? sentenceCase(hour.condition.description) : " ")
-                    .font(t.font(.textStrong, 12))
-                    .foregroundStyle(hour.condition.isPrecipitation ? rainWords : t.ink2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .frame(width: width, height: rowHeight, alignment: .leading)
+                HStack(spacing: 4) {
+                    OutlineConditionIcon(hour.condition, isDaylight: hour.isDaylight)
+                        .font(.system(size: 12, weight: .medium))
+                        .frame(width: 16)
+                    if changed {
+                        Text(sentenceCase(hour.condition.description))
+                            .font(t.font(.textStrong, 12))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                }
+                .foregroundStyle(hour.condition.isPrecipitation ? rainWords : t.ink2)
+                .frame(width: width, height: rowHeight, alignment: .leading)
             }
         }
         .offset(x: 88)
@@ -285,15 +320,19 @@ struct HorizonTimeline: View {
     }
 
     private func spokenSummary(_ hours: [HourlyForecast]) -> String {
-        let parts = hours.prefix(12).enumerated().map { index, hour -> String in
+        let parts = hours.enumerated().map { index, hour -> String in
             let time = index == 0 ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)
-            var text = "\(time) \(context.temperature(hour.temperature)), \(hour.condition.description)"
+            var text = "\(time) \(context.spokenTemperature(hour.temperature)), \(hour.condition.description)"
             if let chance = hour.precipitationChance, chance >= 0.2 {
                 text += ", \(context.formatter.chance(chance)) chance"
             }
             return text
         }
-        return "Next \(hours.count) hours. " + parts.joined(separator: ". ")
+        let start = hours.first?.date ?? context.now
+        let sun = context.sunEvents(from: start, to: start.addingTimeInterval(Double(max(hours.count - 1, 0)) * 3600)).map {
+            "\($0.rising ? "Sunrise" : "Sunset") at \(context.formatter.time($0.date, timeZone: context.timeZone))"
+        }
+        return (["Next \(hours.count) hours"] + parts + sun).joined(separator: ". ")
     }
 }
 
@@ -309,6 +348,11 @@ struct HorizonDaily: View {
         VStack(spacing: t.sectionSpacing) {
             HorizonMinuteCard(context: context)
             WeatherCard(title: "The Week") {
+                Text(context.weekSummary)
+                    .font(t.font(.text, 15))
+                    .foregroundStyle(t.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 4)
                 VStack(spacing: 0) {
                     ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
                         if index > 0 { LookRule() }
@@ -363,7 +407,7 @@ struct HorizonDaily: View {
         .frame(minHeight: 44)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low))\(chanceText(day).isEmpty ? "" : ", \(chanceText(day)) chance of precipitation")")
     }
 
     private func chanceText(_ day: DailyForecast) -> String {
@@ -379,7 +423,7 @@ private struct HorizonMinuteCard: View {
     var body: some View {
         let window = context.window
         let summary = NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now)
-        WeatherCard(title: "Next Hour", accessory: context.snapshot.nextHour?.isMinuteByMinute == true ? "Minute by minute" : "15-minute data") {
+        WeatherCard(title: "Next Hour", accessory: context.nextHourResolution) {
             Text(summary.text)
                 .font(t.font(.textStrong, 15))
                 .foregroundStyle(window.isPrecipitating ? t.ink : t.ink2)
@@ -395,7 +439,15 @@ private struct HorizonMinuteCard: View {
                 }
                 .font(t.font(.label, 11))
                 .foregroundStyle(t.ink3)
+                if let rate = context.precipitationRateLine {
+                    Text(rate)
+                        .font(t.font(.text, 14))
+                        .foregroundStyle(t.accent)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(context.nextHourSpoken)
     }
 }

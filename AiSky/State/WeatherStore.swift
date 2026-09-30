@@ -34,11 +34,29 @@ final class WeatherStore {
         return (condition, !night)
     }()
 
+    /// The sample weather, with the `-AiSkyDemoSky` sky applied: a dry sky also dries the next
+    /// hour (so the yesterday comparison shows), a wet one is raining now and stops within the
+    /// hour (so the rate line shows).
     static func demoSnapshot(for location: WeatherLocation) -> WeatherSnapshot {
         var snapshot = SampleData.snapshot(now: Date(), location: location)
         if let sky = demoSky {
             snapshot.current.condition = sky.condition
             snapshot.current.isDaylight = sky.isDaylight
+            if var nextHour = snapshot.nextHour {
+                let kind = sky.condition.precipitationKind
+                let start = nextHour.minutes.first?.date ?? Date()
+                nextHour.minutes = nextHour.minutes.map { minute in
+                    var minute = minute
+                    let offset = minute.date.timeIntervalSince(start) / 60
+                    let wet = sky.condition.isPrecipitation && offset < 34
+                    minute.intensity = wet ? 1.1 + sin(offset / 3) * 0.4 : 0
+                    minute.chance = wet ? 0.9 : 0.05
+                    minute.kind = wet ? kind : .none
+                    return minute
+                }
+                snapshot.nextHour = nextHour
+            }
+            snapshot.current.precipitationIntensity = sky.condition.isPrecipitation ? 1.2 : 0
         }
         return snapshot
     }

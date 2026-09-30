@@ -96,6 +96,15 @@ done
 capture editorial-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook editorial -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 capture chroma-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook chroma -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 
+# Every other look dry (the hero's yesterday comparison) and while it's raining (the next hour's
+# rate line and resolution).
+for look in obsidian instrument editorial horizon chroma; do
+  capture "$look-10-dry" forecast 9 -AiSkyDemoWeather -AiSkyLook "$look" -AiSkyDemoSky clear
+  section=nextHour
+  [ "$look" = horizon ] && section=daily   # Horizon's next hour sits below its timeline
+  capture "$look-11-raining" "$section" 9 -AiSkyDemoWeather -AiSkyLook "$look" -AiSkyDemoSky rain
+done
+
 # Liquid on each kind of sky (-AiSkyDemoSky sets the sample's current sky): light, clear glass on
 # blue skies and clear nights, a dark sheen under the cards on gray skies.
 for sky in clear partlyCloudy clear-night drizzle rain fog snow cloudy-night; do

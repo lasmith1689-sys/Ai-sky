@@ -115,6 +115,8 @@ struct HourlyMetricChart: View {
             )
             .foregroundStyle(barColor(hour).opacity(0.85))
             .cornerRadius(2)
+            .accessibilityLabel(spokenTime(hour))
+            .accessibilityValue(spokenValue(hour))
         } else if metric == .amount {
             BarMark(
                 x: .value("Time", hour.date, unit: .hour),
@@ -122,6 +124,8 @@ struct HourlyMetricChart: View {
             )
             .foregroundStyle(barColor(hour))
             .cornerRadius(2)
+            .accessibilityLabel(spokenTime(hour))
+            .accessibilityValue(spokenValue(hour))
         } else if metric == .uv {
             BarMark(
                 x: .value("Time", hour.date, unit: .hour),
@@ -129,6 +133,8 @@ struct HourlyMetricChart: View {
             )
             .foregroundStyle(t.usesTemperatureColors ? Palette.uv(UVCategory(index: hour.uvIndex ?? 0)) : t.chartLine.opacity(0.8))
             .cornerRadius(2)
+            .accessibilityLabel(spokenTime(hour))
+            .accessibilityValue(spokenValue(hour))
         } else {
             LineMark(
                 x: .value("Time", hour.date),
@@ -137,6 +143,8 @@ struct HourlyMetricChart: View {
             .interpolationMethod(.catmullRom)
             .foregroundStyle(lineGradient)
             .lineStyle(StrokeStyle(lineWidth: t.surfaceStyle == .hairline ? 1.5 : 2.5))
+            .accessibilityLabel(spokenTime(hour))
+            .accessibilityValue(spokenValue(hour))
             AreaMark(
                 x: .value("Time", hour.date),
                 yStart: .value("Base", yDomain.lowerBound),
@@ -144,6 +152,24 @@ struct HourlyMetricChart: View {
             )
             .interpolationMethod(.catmullRom)
             .foregroundStyle(areaGradient)
+            .accessibilityHidden(true)
+        }
+    }
+
+    private func spokenTime(_ hour: HourlyForecast) -> String {
+        formatter.hour(hour.date, timeZone: timeZone)
+    }
+
+    /// The value with its unit, for VoiceOver ("72°F", "14 mph", "40% chance").
+    private func spokenValue(_ hour: HourlyForecast) -> String {
+        switch metric {
+        case .temperature: return formatter.temperature(hour.temperature, includeUnit: true)
+        case .feelsLike: return "Feels like " + formatter.temperature(hour.apparentTemperature ?? hour.temperature, includeUnit: true)
+        case .wind: return formatter.windSpeed(hour.windSpeed ?? 0)
+        case .humidity: return "\(formatter.percent(hour.humidity ?? 0)) humidity"
+        case .precipitation: return "\(formatter.percent(hour.precipitationChance ?? 0)) chance of precipitation"
+        case .amount: return formatter.precipitation(hour.precipitationAmount ?? 0)
+        case .uv: return "UV index \(Int((hour.uvIndex ?? 0).rounded()))"
         }
     }
 

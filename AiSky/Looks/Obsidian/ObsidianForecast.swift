@@ -41,18 +41,25 @@ struct ObsidianHero: View {
         let window = context.window
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline) {
-                HStack(spacing: 5) {
-                    if context.location.isCurrentLocation {
-                        Image(systemName: "location.fill")
-                            .font(.system(size: 8, weight: .semibold))
-                            .accessibilityLabel("Current location")
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 5) {
+                        if context.location.isCurrentLocation {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 8, weight: .semibold))
+                                .accessibilityHidden(true)
+                        }
+                        Text(context.location.name)
+                            .lookLabel(t, size: 11, color: t.ink2, tracking: 2)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                     }
-                    Text(context.location.name)
-                        .lookLabel(t, size: 11, color: t.ink2, tracking: 2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                    if context.location.isCurrentLocation {
+                        Text("My Location")
+                            .lookLabel(t, size: 10, color: t.ink3, tracking: 1.6)
+                    }
                 }
                 .foregroundStyle(t.ink2)
+                .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
                 Text("\(weekday) \(context.clock(context.now))")
@@ -88,12 +95,19 @@ struct ObsidianHero: View {
                 .tracking(-0.3)
                 .foregroundStyle(window.isPrecipitating ? t.rain : t.ink3)
                 .fixedSize(horizontal: false, vertical: true)
+            if let comparison = context.yesterdayComparison {
+                Text(comparison)
+                    .font(t.font(.text, 15))
+                    .foregroundStyle(t.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+            }
 
             HStack(spacing: 0) {
-                stat("Feels", context.temperature(current.apparentTemperature), leading: false)
+                stat("Feels", current.apparentTemperature, leading: false)
                 if let today = context.today {
-                    stat("High", context.temperature(today.high), leading: true)
-                    stat("Low", context.temperature(today.low), leading: true)
+                    stat("High", today.high, leading: true)
+                    stat("Low", today.low, leading: true)
                 }
             }
             .overlay(alignment: .top) { Rectangle().fill(t.line).frame(height: 1) }
@@ -107,11 +121,11 @@ struct ObsidianHero: View {
         context.formatter.weekdayShort(context.now, timeZone: context.timeZone).uppercased()
     }
 
-    private func stat(_ label: String, _ value: String, leading: Bool) -> some View {
+    private func stat(_ label: String, _ celsius: Double, leading: Bool) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(label)
                 .lookLabel(t, size: 10, color: t.ink3, tracking: 1.6)
-            Text(value)
+            Text(context.temperature(celsius))
                 .font(t.font(.number, 17))
                 .foregroundStyle(t.ink)
         }
@@ -121,7 +135,8 @@ struct ObsidianHero: View {
         .overlay(alignment: .leading) {
             if leading { Rectangle().fill(t.line).frame(width: 1) }
         }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label) \(context.spokenTemperature(celsius))")
     }
 }
 
@@ -154,10 +169,27 @@ struct ObsidianNextHour: View {
                 }
                 .lookLabel(t, size: 10, color: axis, tracking: 0)
                 .padding(.top, 6)
+                if context.nextHourResolution != nil || context.precipitationRateLine != nil {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        if let rate = context.precipitationRateLine {
+                            Text(rate)
+                                .font(t.font(.text, 14))
+                                .foregroundStyle(t.rain)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 8)
+                        if let resolution = context.nextHourResolution {
+                            Text(resolution)
+                                .lookLabel(t, size: 10, color: t.ink3, tracking: 1.6)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.top, 10)
+                }
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+        .accessibilityLabel(context.nextHourSpoken)
     }
 }
 
@@ -215,13 +247,12 @@ struct ObsidianHourly: View {
     let context: ForecastContext
 
     var body: some View {
-        let hours = context.hours(48)
         VStack(alignment: .leading, spacing: 10) {
-            ObsidianLabelRow(title: "Hourly", detail: sunDetail(hours))
+            ObsidianLabelRow(title: "Hourly", detail: "\(ForecastContext.hourlyLimit) hours")
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
-                    ForEach(hours) { hour in
-                        column(hour)
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(context.hourItems()) { item in
+                        column(item)
                             .containerRelativeFrame(.horizontal, count: 6, spacing: 0)
                     }
                 }
@@ -231,30 +262,52 @@ struct ObsidianHourly: View {
         }
     }
 
-    private func sunDetail(_ hours: [HourlyForecast]) -> String? {
-        guard let first = hours.first?.date else { return nil }
-        guard let event = context.sunEvents(from: first, to: first.addingTimeInterval(24 * 3600)).first else { return nil }
-        return "\(event.rising ? "Sunrise" : "Sunset") \(context.clock(event.date))"
-    }
-
-    private func column(_ hour: HourlyForecast) -> some View {
-        let chance = hour.precipitationChance ?? 0
-        let now = context.isNow(hour)
-        return VStack(alignment: .leading, spacing: 6) {
-            Text(now ? "Now" : context.hourLabel(hour.date))
-                .lookLabel(t, size: 10, color: t.ink2, tracking: 0)
-            Text(context.temperature(hour.temperature))
-                .font(t.font(.numberLight, 20))
-            Text("\(Int((chance * 100).rounded()))%")
-                .lookLabel(t, size: 10, color: chance >= 0.2 ? t.rain : dim, tracking: 0)
+    @ViewBuilder
+    private func column(_ item: ForecastHourItem) -> some View {
+        switch item {
+        case .hour(let hour):
+            let chance = hour.precipitationChance ?? 0
+            let now = context.isNow(hour)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(now ? "Now" : context.hourLabel(hour.date))
+                    .lookLabel(t, size: 10, color: t.ink2, tracking: 0)
+                OutlineConditionIcon(hour.condition, isDaylight: hour.isDaylight)
+                    .font(.system(size: 13, weight: .light))
+                    .foregroundStyle(t.ink2)
+                    .frame(height: 16)
+                Text(context.temperature(hour.temperature))
+                    .font(t.font(.numberLight, 20))
+                Text("\(Int((chance * 100).rounded()))%")
+                    .lookLabel(t, size: 10, color: chance >= 0.2 ? t.rain : dim, tracking: 0)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.spokenTemperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
+        case .sun(let date, let rising):
+            VStack(alignment: .leading, spacing: 6) {
+                Text(context.clock(date))
+                    .lookLabel(t, size: 10, color: t.ink2, tracking: 0)
+                Image(systemName: rising ? "sunrise" : "sunset")
+                    .font(.system(size: 13, weight: .light))
+                    .foregroundStyle(t.ink2)
+                    .frame(height: 16)
+                Text(context.temperature(context.temperature(at: date)))
+                    .font(t.font(.numberLight, 20))
+                Text(rising ? "Rise" : "Set")
+                    .lookLabel(t, size: 10, color: t.ink3, tracking: 0)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(rising ? "Sunrise" : "Sunset") at \(context.formatter.time(date, timeZone: context.timeZone)), \(context.spokenTemperature(context.temperature(at: date)))")
         }
-        .lineLimit(1)
-        .minimumScaleFactor(0.7)
-        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-        .padding(.vertical, 12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.temperature(hour.temperature)), \(context.formatter.percent(chance)) chance of precipitation")
     }
 }
 
@@ -268,6 +321,12 @@ struct ObsidianDaily: View {
         let rangeHigh = days.map(\.high).max() ?? 1
         VStack(alignment: .leading, spacing: 4) {
             ObsidianLabelRow(title: "\(days.count) Days")
+            Text(context.weekSummary)
+                .font(t.font(.text, 15))
+                .foregroundStyle(t.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 6)
+                .padding(.bottom, 8)
             VStack(spacing: 0) {
                 ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
                     Button {
@@ -291,12 +350,16 @@ struct ObsidianDaily: View {
         let label = context.formatter.dayLabel(day.date, timeZone: context.timeZone, now: context.now)
         let chance = day.precipitationChance ?? 0
         let today = context.isToday(day)
-        return HStack(spacing: 14) {
+        return HStack(spacing: 12) {
             Text(label)
                 .font(t.font(.text, 15))
                 .frame(width: 76, alignment: .leading)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+            OutlineConditionIcon(day.condition)
+                .font(.system(size: 13, weight: .light))
+                .foregroundStyle(t.ink2)
+                .frame(width: 18)
             Text("\(Int((chance * 100).rounded()))%")
                 .font(t.font(.number, 11))
                 .foregroundStyle(chance >= 0.2 ? t.rain : dim)
@@ -317,6 +380,6 @@ struct ObsidianDaily: View {
         .frame(minHeight: 40)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low)), \(context.formatter.percent(chance)) chance of precipitation")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low)), \(context.formatter.percent(chance)) chance of precipitation")
     }
 }

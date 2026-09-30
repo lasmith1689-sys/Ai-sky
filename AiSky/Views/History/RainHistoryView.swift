@@ -252,6 +252,7 @@ private struct RainfallBarChart: View {
                 )
                 .foregroundStyle(t.rain.opacity(bar.isIncomplete ? 0.6 : 1))
                 .cornerRadius(2)
+                .accessibilityValue(formatter.precipitation(bar.amount))
             }
             if granularity != .day {
                 ForEach(bars.filter { $0.normal != nil }) { bar in
@@ -262,6 +263,7 @@ private struct RainfallBarChart: View {
                     )
                     .lineStyle(StrokeStyle(lineWidth: 2))
                     .foregroundStyle(t.ink)
+                    .accessibilityValue("Normal \(formatter.precipitation(bar.normal ?? 0))")
                 }
             }
         }
@@ -359,6 +361,7 @@ private struct CumulativeRainChart: View {
                     yEnd: .value("Total", formatter.precipitationValue(point.total))
                 )
                 .foregroundStyle(LinearGradient(colors: [t.rain.opacity(0.45), t.rain.opacity(0.05)], startPoint: .top, endPoint: .bottom))
+                .accessibilityHidden(true)
                 LineMark(
                     x: .value("Date", chartDate(point.date, calendar: calendar)),
                     y: .value("Total", formatter.precipitationValue(point.total)),
@@ -366,6 +369,7 @@ private struct CumulativeRainChart: View {
                 )
                 .foregroundStyle(t.rain)
                 .lineStyle(StrokeStyle(lineWidth: 2.5))
+                .accessibilityValue("Total \(formatter.precipitation(point.total))")
             }
             if points.contains(where: { $0.normal != nil }) {
                 ForEach(points) { point in
@@ -376,6 +380,7 @@ private struct CumulativeRainChart: View {
                     )
                     .foregroundStyle(t.ink)
                     .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                    .accessibilityValue("Normal \(formatter.precipitation(point.normal ?? 0))")
                 }
             }
         }

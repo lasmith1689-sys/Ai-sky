@@ -15,19 +15,27 @@ struct InstrumentHeader: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
-            HStack(alignment: .firstTextBaseline, spacing: 5) {
-                if location.isCurrentLocation {
-                    Image(systemName: "location.fill")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(t.ink2)
-                        .accessibilityLabel("Current location")
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(alignment: .firstTextBaseline, spacing: 5) {
+                    if location.isCurrentLocation {
+                        Image(systemName: "location.fill")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(t.ink2)
+                            .accessibilityHidden(true)
+                    }
+                    Text(location.name)
+                        .lookLabel(t, size: 13, color: t.ink, tracking: 3)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                        .accessibilityAddTraits(.isHeader)
                 }
-                Text(location.name)
-                    .lookLabel(t, size: 13, color: t.ink, tracking: 3)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                    .accessibilityAddTraits(.isHeader)
+                if location.isCurrentLocation {
+                    Text("My Location")
+                        .lookLabel(t, size: 10, color: t.ink2, tracking: 2)
+                        .lineLimit(1)
+                }
             }
+            .accessibilityElement(children: .combine)
             .layoutPriority(1)
             Spacer(minLength: 8)
             Text(clock)
@@ -52,6 +60,16 @@ struct InstrumentHero: View {
             )
             RangeGaugeView(reading: RangeGaugeView.Reading(context: context))
                 .frame(maxWidth: .infinity)
+            if let headline = context.headline {
+                Text(headline)
+                    .font(t.font(.text, 15))
+                    .foregroundStyle(t.ink2)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 4)
+            }
         }
     }
 
@@ -164,7 +182,8 @@ struct RangeGaugeView: View {
     }
 
     private var accessibilityText: String {
-        "\(Self.number(reading.current)) degrees, feels like \(Self.number(reading.feelsLike)). \(reading.condition). Today's range \(Self.number(reading.low)) to \(Self.number(reading.high))."
+        let unit = reading.unit.symbol
+        return "Temperature \(Self.number(reading.current))\(unit), feels like \(Self.number(reading.feelsLike))\(unit). \(reading.condition). Today's range \(Self.number(reading.low))\(unit) to \(Self.number(reading.high))\(unit)."
     }
 
     /// Rounded whole degrees without a "-0".
@@ -308,6 +327,18 @@ struct InstrumentNextHour: View {
                 }
                 .lookLabel(t, size: 11, color: t.ink3, face: condensedMedium, tracking: 1.5)
                 .padding(.top, 7)
+                if let resolution = context.nextHourResolution {
+                    Text(resolution)
+                        .lookLabel(t, size: 10, color: t.ink3, tracking: 1.8)
+                        .padding(.top, 9)
+                }
+                if let rate = context.precipitationRateLine {
+                    Text(rate)
+                        .font(t.font(.text, 14))
+                        .foregroundStyle(t.rainText)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 4)
+                }
             } else {
                 Text("Minute-by-minute precipitation isn't available here.")
                     .font(t.font(.text, 14))
@@ -321,7 +352,7 @@ struct InstrumentNextHour: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .lookSurface(t, radius: 18)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+        .accessibilityLabel(context.nextHourSpoken)
     }
 }
 
@@ -392,16 +423,17 @@ private struct InstrumentStatTiles: View {
     }
 }
 
-/// 48 hours as columns: hour, temperature, a chance capsule and the chance. Six fit the card.
+/// 48 hours as columns: hour, condition, temperature, a chance capsule and the chance, with
+/// sunrise and sunset slotted in. Six fit the card; the rest scroll.
 private struct InstrumentHourStrip: View {
     @Environment(\.lookTokens) private var t
     let context: ForecastContext
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 0) {
-                ForEach(context.hours(48)) { hour in
-                    column(hour)
+            HStack(alignment: .top, spacing: 0) {
+                ForEach(context.hourItems()) { item in
+                    column(item)
                         .containerRelativeFrame(.horizontal, count: 6, spacing: 0)
                 }
             }
@@ -411,25 +443,53 @@ private struct InstrumentHourStrip: View {
         .lookSurface(t, radius: 18)
     }
 
-    private func column(_ hour: HourlyForecast) -> some View {
-        let now = context.isNow(hour)
-        let chance = hour.precipitationChance ?? 0
-        return VStack(spacing: 6) {
-            Text(now ? "Now" : context.hourLabel(hour.date))
-                .lookLabel(t, size: 11, color: now ? t.now : t.ink2, tracking: 1.6)
-            Text(context.temperature(hour.temperature))
-                .font(t.font(.number, 20))
-                .foregroundStyle(t.ink)
-            ChanceCapsule(chance: chance, fill: t.rain, track: t.track)
-            Text("\(Int((chance * 100).rounded()))")
-                .font(condensedMedium.font(11))
-                .foregroundStyle(chance >= 0.2 ? t.rainText : t.ink3)
+    @ViewBuilder
+    private func column(_ item: ForecastHourItem) -> some View {
+        switch item {
+        case .hour(let hour):
+            let now = context.isNow(hour)
+            let chance = hour.precipitationChance ?? 0
+            VStack(spacing: 6) {
+                Text(now ? "Now" : context.hourLabel(hour.date))
+                    .lookLabel(t, size: 11, color: now ? t.now : t.ink2, tracking: 1.6)
+                OutlineConditionIcon(hour.condition, isDaylight: hour.isDaylight)
+                    .font(.system(size: 15, weight: .light))
+                    .foregroundStyle(t.ink2)
+                    .frame(height: 18)
+                Text(context.temperature(hour.temperature))
+                    .font(t.font(.number, 20))
+                    .foregroundStyle(t.ink)
+                ChanceCapsule(chance: chance, fill: t.rain, track: t.track)
+                Text("\(Int((chance * 100).rounded()))")
+                    .font(condensedMedium.font(11))
+                    .foregroundStyle(chance >= 0.2 ? t.rainText : t.ink3)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.spokenTemperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
+        case .sun(let date, let rising):
+            VStack(spacing: 6) {
+                Text(context.clock(date))
+                    .lookLabel(t, size: 11, color: t.ink2, tracking: 1.2)
+                Image(systemName: rising ? "sunrise" : "sunset")
+                    .font(.system(size: 15, weight: .light))
+                    .foregroundStyle(t.sun)
+                    .frame(height: 18)
+                Text(context.temperature(context.temperature(at: date)))
+                    .font(t.font(.number, 20))
+                    .foregroundStyle(t.ink)
+                Text(rising ? "Sunrise" : "Sunset")
+                    .lookLabel(t, size: 9, color: t.ink2, tracking: 1)
+                    .frame(height: 12)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(rising ? "Sunrise" : "Sunset") at \(context.formatter.time(date, timeZone: context.timeZone)), \(context.spokenTemperature(context.temperature(at: date)))")
         }
-        .lineLimit(1)
-        .minimumScaleFactor(0.7)
-        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.temperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
     }
 }
 
@@ -447,6 +507,11 @@ struct InstrumentDaily: View {
                 .lookLabel(t, size: 12, color: t.ink2, tracking: 2.2)
                 .padding(.bottom, 6)
                 .accessibilityAddTraits(.isHeader)
+            Text(context.weekSummary)
+                .font(t.font(.text, 15))
+                .foregroundStyle(t.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.bottom, 10)
             ForEach(days) { day in
                 LookRule()
                 Button {
@@ -502,7 +567,7 @@ struct InstrumentDaily: View {
         .padding(.vertical, 11)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low))\(chanceText(day).isEmpty ? "" : ", \(chanceText(day)) chance of precipitation")")
     }
 
     private func chanceText(_ day: DailyForecast) -> String {

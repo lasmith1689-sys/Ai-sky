@@ -113,12 +113,16 @@ struct PrecipitationHistoryChart: View {
                     width: .ratio(0.7)
                 )
                 .foregroundStyle(t.rain)
+                .accessibilityLabel(label(bar))
+                .accessibilityValue("\(formatter.precipitation(bar.observed)) observed")
                 BarMark(
                     x: .value("Day", label(bar)),
                     y: .value("Forecast", formatter.precipitationValue(bar.forecast)),
                     width: .ratio(0.7)
                 )
                 .foregroundStyle(t.rain.opacity(0.4))
+                .accessibilityLabel(label(bar))
+                .accessibilityValue("\(formatter.precipitation(bar.forecast)) forecast")
             }
             if let today = bars.first(where: \.isToday) {
                 RuleMark(x: .value("Day", label(today)))

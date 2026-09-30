@@ -68,6 +68,13 @@ struct EditorialHero: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 18)
                 .accessibilityAddTraits(.isHeader)
+            if let comparison = context.yesterdayComparison {
+                Text(comparison)
+                    .font(t.font(.emphasis, 17))
+                    .foregroundStyle(t.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+            }
 
             HStack(alignment: .top, spacing: 18) {
                 Text(context.temperature(current.temperature))
@@ -99,7 +106,7 @@ struct EditorialHero: View {
     }
 
     private var placeName: some View {
-        Text(context.location.name)
+        Text(context.location.isCurrentLocation ? "\(context.location.name) · My Location" : context.location.name)
             .lookLabel(t, color: t.ink2)
             .lineLimit(1)
             .minimumScaleFactor(0.8)
@@ -172,10 +179,22 @@ struct EditorialNextHour: View {
                 .font(t.font(.number, 12))
                 .foregroundStyle(t.ink2)
                 .padding(.top, 6)
+                if let rate = context.precipitationRateLine {
+                    Text(rate)
+                        .font(t.font(.emphasis, 15))
+                        .foregroundStyle(t.rain)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 8)
+                }
+                if let resolution = context.nextHourResolution {
+                    Text(resolution)
+                        .lookLabel(t, size: t.labelSize - 1, color: t.ink2)
+                        .padding(.top, 6)
+                }
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("The next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+        .accessibilityLabel(context.nextHourSpoken)
     }
 }
 
@@ -192,7 +211,9 @@ struct EditorialHourly: View {
         let words: String
         let chance: Double?
         let temperature: Double
-        let isSun: Bool
+        let condition: SkyCondition?
+        let isDaylight: Bool
+        let rising: Bool?
     }
 
     var body: some View {
@@ -210,7 +231,7 @@ struct EditorialHourly: View {
                     withAnimation(.easeInOut(duration: 0.25)) { showsAll.toggle() }
                 } label: {
                     HStack {
-                        Text(showsAll ? "Fewer hours" : "The next 24 hours")
+                        Text(showsAll ? "Fewer hours" : "The next \(ForecastContext.hourlyLimit) hours")
                             .lookLabel(t, color: t.accent)
                         Spacer()
                         Image(systemName: showsAll ? "chevron.up" : "chevron.down")
@@ -237,21 +258,20 @@ struct EditorialHourly: View {
         }
     }
 
+    /// The coming hours after this one (the hero covers now), with sunrise and sunset rows.
     private var rows: [Row] {
-        let hours = Array(context.hours(25).dropFirst())
-        guard let first = hours.first?.date, let last = hours.last?.date else { return [] }
-        var rows = hours.map { hour in
-            Row(id: "h\(hour.date.timeIntervalSince1970)", date: hour.date,
-                time: context.formatter.hour(hour.date, timeZone: context.timeZone),
-                words: sentenceCase(hour.condition.description), chance: hour.precipitationChance,
-                temperature: hour.temperature, isSun: false)
+        context.hourItems(ForecastContext.hourlyLimit + 1).dropFirst().map { item -> Row in
+            switch item {
+            case .hour(let hour):
+                return Row(id: item.id, date: hour.date,
+                           time: context.formatter.hour(hour.date, timeZone: context.timeZone),
+                           words: sentenceCase(hour.condition.description), chance: hour.precipitationChance,
+                           temperature: hour.temperature, condition: hour.condition, isDaylight: hour.isDaylight, rising: nil)
+            case .sun(let date, let rising):
+                return Row(id: item.id, date: date, time: context.shortClock(date), words: rising ? "Sunrise" : "Sunset",
+                           chance: nil, temperature: context.temperature(at: date), condition: nil, isDaylight: true, rising: rising)
+            }
         }
-        for event in context.sunEvents(from: first, to: last) {
-            rows.append(Row(id: "s\(event.date.timeIntervalSince1970)", date: event.date,
-                            time: context.shortClock(event.date), words: event.rising ? "Sunrise" : "Sunset",
-                            chance: nil, temperature: context.snapshot.conditions(at: event.date).temperature, isSun: true))
-        }
-        return rows.sorted { $0.date < $1.date }
     }
 
     private func rowView(_ row: Row) -> some View {
@@ -259,6 +279,17 @@ struct EditorialHourly: View {
             Text(row.time)
                 .font(t.font(.textStrong, 14))
                 .frame(width: 70, alignment: .leading)
+            Group {
+                if let condition = row.condition {
+                    OutlineConditionIcon(condition, isDaylight: row.isDaylight)
+                } else {
+                    Image(systemName: row.rising == true ? "sunrise" : "sunset")
+                }
+            }
+            .font(.system(size: 13, weight: .light))
+            .foregroundStyle(t.ink2)
+            .frame(width: 24, alignment: .leading)
+            .accessibilityHidden(true)
             Text(row.words)
                 .font(t.font(.text, 14))
                 .foregroundStyle(t.ink2)
@@ -274,7 +305,16 @@ struct EditorialHourly: View {
                 .frame(width: 50, alignment: .trailing)
         }
         .frame(minHeight: 36)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spoken(row))
+    }
+
+    private func spoken(_ row: Row) -> String {
+        var text = "\(row.time): \(row.words), \(context.spokenTemperature(row.temperature))"
+        if let chance = row.chance, chance >= 0.15 {
+            text += ", \(context.formatter.percent(chance)) chance of precipitation"
+        }
+        return text
     }
 
     private func chanceText(_ chance: Double?) -> String {
@@ -291,7 +331,7 @@ struct EditorialDaily: View {
         let days = context.days()
         VStack(alignment: .leading, spacing: 0) {
             EditorialLabel(title: "The Week Ahead")
-            Text(ForecastNarrator.weekSummary(days: days, now: context.now, timeZone: context.timeZone, formatter: context.formatter))
+            Text(context.weekSummary)
                 .font(t.font(.number, 17))
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical, 10)
@@ -343,7 +383,7 @@ struct EditorialDaily: View {
         .frame(minHeight: 38)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low))")
     }
 
     private func chanceText(_ chance: Double?) -> String {

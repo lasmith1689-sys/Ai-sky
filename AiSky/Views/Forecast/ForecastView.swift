@@ -75,6 +75,86 @@ struct ForecastContext {
         .filter { $0.date > max(start, now) && $0.date < end }
         .sorted { $0.date < $1.date }
     }
+
+    /// The next `limit` hours with sunrises and sunsets slotted in, as the hourly strip shows them.
+    func hourItems(_ limit: Int = ForecastContext.hourlyLimit) -> [ForecastHourItem] {
+        let hours = self.hours(limit)
+        guard let first = hours.first?.date, let last = hours.last?.date else { return [] }
+        let sun = sunEvents(from: first, to: last).map { ForecastHourItem.sun($0.date, rising: $0.rising) }
+        return (hours.map(ForecastHourItem.hour) + sun).sorted { $0.date < $1.date }
+    }
+
+    /// Every look can reach this many hours in its hourly section.
+    static let hourlyLimit = 48
+
+    /// A temperature with its unit, for VoiceOver ("72°F").
+    func spokenTemperature(_ celsius: Double) -> String {
+        formatter.temperature(celsius, includeUnit: true)
+    }
+
+    /// Temperature at a sunrise or sunset between hours.
+    func temperature(at date: Date) -> Double {
+        snapshot.conditions(at: date).temperature
+    }
+
+    /// The old screen's headline under the hero: imminent precipitation first, otherwise how
+    /// today compares with yesterday.
+    var headline: String? {
+        let summary = NextHourSummarizer.summarize(snapshot.nextHour, now: now)
+        if summary.isPrecipitationExpected { return summary.text }
+        return YesterdayComparison.text(for: snapshot, now: now, formatter: formatter)
+    }
+
+    /// "4° warmer than yesterday at this time." when no precipitation is on the way.
+    var yesterdayComparison: String? {
+        guard !NextHourSummarizer.summarize(snapshot.nextHour, now: now).isPrecipitationExpected else { return nil }
+        return YesterdayComparison.text(for: snapshot, now: now, formatter: formatter)
+    }
+
+    /// The week in a sentence or two.
+    var weekSummary: String {
+        ForecastNarrator.weekSummary(days: days(), now: now, timeZone: timeZone, formatter: formatter)
+    }
+
+    /// "Now: light rain, 0.05 in/hr" while it's falling.
+    var precipitationRateLine: String? {
+        guard let rate = snapshot.current.precipitationIntensity, rate >= 0.05 else { return nil }
+        let intensity = PrecipitationIntensity(millimetersPerHour: rate).displayName.lowercased()
+        return "Now: \(intensity) \(snapshot.current.condition.precipitationKind.noun), \(formatter.precipitationRate(rate))"
+    }
+
+    /// What VoiceOver reads for a next-hour section: the summary and, while it's falling, the rate.
+    var nextHourSpoken: String {
+        var text = "Next hour. " + NextHourSummarizer.summarize(snapshot.nextHour, now: now).text
+        if let rate = precipitationRateLine { text += " " + rate }
+        if let resolution = nextHourResolution { text += " " + resolution + "." }
+        return text
+    }
+
+    /// "Minute by minute" or "15-minute data", so the next-hour graph says how fine it is.
+    var nextHourResolution: String? {
+        snapshot.nextHour.map { $0.isMinuteByMinute ? "Minute by minute" : "15-minute data" }
+    }
+}
+
+/// An hour of the forecast, or a sunrise or sunset between two hours.
+enum ForecastHourItem: Identifiable {
+    case hour(HourlyForecast)
+    case sun(Date, rising: Bool)
+
+    var id: String {
+        switch self {
+        case .hour(let hour): return "h\(hour.date.timeIntervalSince1970)"
+        case .sun(let date, let rising): return "\(rising ? "r" : "s")\(date.timeIntervalSince1970)"
+        }
+    }
+
+    var date: Date {
+        switch self {
+        case .hour(let hour): return hour.date
+        case .sun(let date, _): return date
+        }
+    }
 }
 
 /// Full forecast for one location, laid out by the selected look.

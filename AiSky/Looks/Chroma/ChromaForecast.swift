@@ -16,17 +16,24 @@ struct ChromaHero: View {
         let window = context.window
         let mono = t.face(.label)
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                HStack(spacing: 5) {
-                    if context.location.isCurrentLocation {
-                        Image(systemName: "location.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                            .accessibilityLabel("Current location")
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 5) {
+                        if context.location.isCurrentLocation {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 9, weight: .semibold))
+                                .accessibilityHidden(true)
+                        }
+                        Text(context.location.name.uppercased())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                     }
-                    Text(context.location.name.uppercased())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                    if context.location.isCurrentLocation {
+                        Text("MY LOCATION")
+                            .font(mono.font(10))
+                    }
                 }
+                .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
                 Text(context.formatter.time(context.now, timeZone: context.timeZone).uppercased())
@@ -65,6 +72,13 @@ struct ChromaHero: View {
             .textCase(.uppercase)
             .foregroundStyle(cream.opacity(0.8))
             .padding(.top, 16)
+            if let headline = context.headline {
+                Text(headline)
+                    .font(t.font(.text, 15))
+                    .foregroundStyle(cream.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 12)
+            }
         }
         .foregroundStyle(cream)
         .padding(.horizontal, 22)
@@ -127,6 +141,19 @@ struct ChromaNextHour: View {
                 .textCase(.uppercase)
                 .foregroundStyle(cream.opacity(0.72))
                 .padding(.top, 7)
+                if let rate = context.precipitationRateLine {
+                    Text(rate)
+                        .font(t.font(.textMedium, 14))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 10)
+                }
+                if let resolution = context.nextHourResolution {
+                    Text(resolution.uppercased())
+                        .font(mono.font(10))
+                        .tracking(1)
+                        .foregroundStyle(cream.opacity(0.8))
+                        .padding(.top, 6)
+                }
             }
         }
         .foregroundStyle(cream)
@@ -136,11 +163,12 @@ struct ChromaNextHour: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(ChromaPalette.cobalt, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+        .accessibilityLabel(context.nextHourSpoken)
     }
 }
 
-/// Color-coded hour tiles: mustard by day, green when it's wet, navy at night.
+/// Color-coded hour tiles: mustard by day, green when it's wet, navy at night, and an
+/// orange-rimmed sand tile for sunrise and sunset.
 struct ChromaHourly: View {
     @Environment(\.lookTokens) private var t
     let context: ForecastContext
@@ -148,15 +176,23 @@ struct ChromaHourly: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-                ForEach(context.hours(48)) { hour in
-                    tile(hour)
+                ForEach(context.hourItems()) { item in
+                    tile(item)
                         .containerRelativeFrame(.horizontal, count: 6, spacing: 6)
                 }
             }
         }
     }
 
-    private func tile(_ hour: HourlyForecast) -> some View {
+    @ViewBuilder
+    private func tile(_ item: ForecastHourItem) -> some View {
+        switch item {
+        case .hour(let hour): hourTile(hour)
+        case .sun(let date, let rising): sunTile(date, rising: rising)
+        }
+    }
+
+    private func hourTile(_ hour: HourlyForecast) -> some View {
         let chance = hour.precipitationChance ?? 0
         let wet = chance >= 0.5 || hour.condition.isPrecipitation
         let fill: Color = wet ? ChromaPalette.green : (hour.isDaylight ? ChromaPalette.mustard : navy)
@@ -166,6 +202,10 @@ struct ChromaHourly: View {
         return VStack(spacing: 0) {
             Text(now ? "NOW" : compactHour(hour.date))
                 .font(LookFace.custom("DMMono-Medium").font(11))
+            Spacer(minLength: 4)
+            OutlineConditionIcon(hour.condition, isDaylight: hour.isDaylight)
+                .font(.system(size: 15, weight: .medium))
+                .frame(height: 18)
             Spacer(minLength: 4)
             Text(context.temperature(hour.temperature))
                 .font(t.font(.headline, 23))
@@ -180,10 +220,48 @@ struct ChromaHourly: View {
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .foregroundStyle(ink)
         .padding(.vertical, 12)
-        .frame(maxWidth: .infinity, minHeight: 108)
+        .frame(maxWidth: .infinity, minHeight: 124)
         .background(fill, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.temperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
+        .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.spokenTemperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
+    }
+
+    private func sunTile(_ date: Date, rising: Bool) -> some View {
+        VStack(spacing: 0) {
+            Text(compactClock(date))
+                .font(LookFace.custom("DMMono-Medium").font(11))
+            Spacer(minLength: 4)
+            Image(systemName: rising ? "sunrise" : "sunset")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(ChromaPalette.orange)
+                .frame(height: 18)
+            Spacer(minLength: 4)
+            Text(context.temperature(context.temperature(at: date)))
+                .font(t.font(.headline, 23))
+                .tracking(-0.5)
+            Spacer(minLength: 4)
+            Text(rising ? "RISE" : "SET")
+                .font(LookFace.custom("DMMono-Medium").font(10))
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+        .foregroundStyle(navy)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, minHeight: 124)
+        .background(ChromaPalette.sand, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(ChromaPalette.orange, lineWidth: 2))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(rising ? "Sunrise" : "Sunset") at \(context.formatter.time(date, timeZone: context.timeZone)), \(context.spokenTemperature(context.temperature(at: date)))")
+    }
+
+    /// "6:42A" (or "06:42" on a 24-hour phone).
+    private func compactClock(_ date: Date) -> String {
+        context.formatter.time(date, timeZone: context.timeZone)
+            .replacingOccurrences(of: "\u{202F}", with: " ")
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: " PM", with: "P")
+            .replacingOccurrences(of: " AM", with: "A")
     }
 
     /// "4P", "11A" (or "16" on a 24-hour phone).
@@ -205,8 +283,15 @@ struct ChromaDaily: View {
         let rangeLow = days.map(\.low).min() ?? 0
         let rangeHigh = days.map(\.high).max() ?? 1
         VStack(spacing: 0) {
+            Text(context.weekSummary)
+                .font(t.font(.text, 15))
+                .foregroundStyle(t.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 12)
+                .padding(.bottom, 10)
             ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
-                if index > 0 { LookRule() }
+                LookRule()
                 Button {
                     context.onSelectDay(day)
                 } label: {
@@ -229,12 +314,20 @@ struct ChromaDaily: View {
     private func row(_ day: DailyForecast, rangeLow: Double, rangeHigh: Double) -> some View {
         let label = context.formatter.dayLabel(day.date, timeZone: context.timeZone, now: context.now)
         let mono = t.face(.label)
-        return HStack(spacing: 12) {
+        let chance = day.precipitationChance ?? 0
+        return HStack(spacing: 10) {
             Text(label)
                 .font(t.font(.headline, 16))
-                .frame(width: 88, alignment: .leading)
+                .frame(width: 84, alignment: .leading)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+            OutlineConditionIcon(day.condition)
+                .font(.system(size: 15, weight: .medium))
+                .frame(width: 22)
+            Text(chance >= 0.15 ? "\(Int((chance * 100).rounded()))%" : "")
+                .font(LookFace.custom("DMMono-Medium").font(11))
+                .foregroundStyle(t.rainText)
+                .frame(width: 30, alignment: .leading)
             Text(context.degrees(day.low))
                 .font(mono.font(13))
                 .foregroundStyle(t.ink2)
@@ -251,7 +344,7 @@ struct ChromaDaily: View {
         .frame(minHeight: 44)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.spokenTemperature(day.high)), low \(context.spokenTemperature(day.low))\(chance >= 0.15 ? ", \(context.formatter.percent(chance)) chance of precipitation" : "")")
     }
 
     /// Warm days orange, mild mustard, cool green, cold cobalt.

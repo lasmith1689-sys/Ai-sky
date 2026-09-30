@@ -48,7 +48,7 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 
 ## Looks
 
-Pick one of six looks in **Settings > Look**. They show the same forecast and features, each with its own layout for the top of the forecast (hero, next hour, hourly, 10 days) and its own tab bar. Everything else (radar, places, settings, sheets, charts) follows the look's colors, type and surfaces, and so do the widgets.
+Pick one of six looks in **Settings > Look**. They show the same forecast and features (the headline or yesterday comparison, the next hour with its rate and resolution, 48 hours with conditions and sunrise and sunset, the week in a sentence and 10 days), each with its own layout for the top of the forecast and its own tab bar. Editorial and Horizon open on fewer hours and expand to all 48. Everything else (radar, places, settings, sheets, charts) follows the look's colors, type and surfaces, and so do the widgets.
 
 | Look | Page | Type | Signature |
 |---|---|---|---|
@@ -56,7 +56,7 @@ Pick one of six looks in **Settings > Look**. They show the same forecast and fe
 | **Liquid** | Condition sky | SF Pro | Liquid Glass cards and the system Liquid Glass tab bar; the Apple-style option |
 | **Obsidian** | True black | Geist, Geist Mono | Hairline rules instead of cards, a huge ultralight temperature, one accent that only means rain |
 | **Editorial** | Warm paper | Newsreader, Instrument Sans | A serif headline sentence ("Rain arrives in eighteen minutes and is gone by ten past four."), table-like hours |
-| **Horizon** | Deep navy | Manrope | The next 12 hours as a vertical ribbon: condition bands, a temperature curve, sunset marker, rain chances |
+| **Horizon** | Deep navy | Manrope | The next 12 hours (up to 48) as a vertical ribbon: condition bands, a temperature curve, sunset marker, rain chances |
 | **Chroma '74** | Cream | Bricolage Grotesque, DM Mono | Big color blocks, a retro stripe, color-coded hour tiles and a pill tab bar |
 
 Instrument and Obsidian read times as a 24-hour clock, like their mockups.
