@@ -5,8 +5,8 @@ import WidgetKit
 
 /// Debug builds only: every widget family rendered inside the app from the widget extension's own
 /// views (the shared `WidgetViews` folder), so the CI smoke test can photograph them per look.
-/// `-AiSkyScreen widgets` shows page 1 (small, medium and Lock Screen), `widgets2` page 2 (large,
-/// places, rainfall). `-AiSkyWidgetMode tinted` renders them in the tinted (accented) rendering
+/// `-AiSkyScreen widgets` shows page 1 (small, medium and Lock Screen), `widgets2` page 2 (large
+/// conditions, rainfall) and `widgets3` page 3 (places, small rainfall, more Lock Screen). `-AiSkyWidgetMode tinted` renders them in the tinted (accented) rendering
 /// mode on a dark plate with an amber tint: an approximation of the Tinted Home Screen, since
 /// only the system applies the real one.
 struct WidgetGalleryView: View {
@@ -41,10 +41,18 @@ struct WidgetGalleryView: View {
                             }
                         }
                     }
-                } else {
+                } else if page == 2 {
                     tile("Conditions", .systemLarge, width: wide, height: 382) { ConditionsWidgetView(entry: entry) }
-                    tile("My Places", .systemMedium, width: wide, height: small) { LocationsWidgetView(entry: places) }
                     tile("Rainfall", .systemMedium, width: wide, height: small) { PrecipitationWidgetView(entry: entry) }
+                } else {
+                    tile("My Places", .systemLarge, width: wide, height: 382) { LocationsWidgetView(entry: places) }
+                    HStack(alignment: .top, spacing: 12) {
+                        tile("Rainfall", .systemSmall, width: small, height: small) { PrecipitationWidgetView(entry: entry) }
+                        VStack(alignment: .leading, spacing: 10) {
+                            tile("Rainfall", .accessoryRectangular, width: small, height: 72) { PrecipitationWidgetView(entry: entry) }
+                            tile("Next Hour", .accessoryRectangular, width: small, height: 72) { NextHourWidgetView(entry: entry) }
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 19)

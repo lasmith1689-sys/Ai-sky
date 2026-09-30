@@ -100,8 +100,8 @@ capture chroma-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook chroma -UIP
 # three looks, in full color and as tinted Home Screen widgets (an approximation of the system's
 # accented rendering).
 for look in instrument editorial liquid; do
-  for page in 1 2; do
-    screen=widgets; [ "$page" = 2 ] && screen=widgets2
+  for page in 1 2 3; do
+    screen=widgets; [ "$page" != 1 ] && screen=widgets$page
     capture "widgets-$look-$page" "$screen" 8 -AiSkyDemoWeather -AiSkyLook "$look"
     capture "widgets-$look-$page-tinted" "$screen" 8 -AiSkyDemoWeather -AiSkyLook "$look" -AiSkyWidgetMode tinted
   done

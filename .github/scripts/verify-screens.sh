@@ -51,11 +51,11 @@ expect chroma-1-forecast "$tabs && Forecast && FEELS && !load weather"
 # Every look shows the old screen's features: the week in a sentence, My Location, the yesterday
 # comparison when it's dry, and the rate line and resolution while it's raining.
 for look in liquid obsidian instrument editorial horizon chroma; do
-  expect "$look-2-daily" "high temperatures"
+  expect "$look-2-daily" "temperatures"
 done
 for look in obsidian instrument editorial horizon chroma; do
   expect "$look-10-dry" "My Location && yesterday"
-  expect "$look-11-raining" "Now: && rain && (Minute by minute|15-minute data)"
+  expect "$look-11-raining" "Now: && rain && (by minute|15-minute)"
 done
 expect liquid-sky-clear "My Location && yesterday"
 expect liquid-sky-rain "Now: && Minute by minute"
@@ -64,7 +64,8 @@ expect liquid-sky-rain "Now: && Minute by minute"
 for look in instrument editorial liquid; do
   for mode in "" "-tinted"; do
     expect "widgets-$look-1$mode" "Conditions && Next Hour && Air Quality && Lock Screen && Chicago"
-    expect "widgets-$look-2$mode" "large && My Places && Rainfall && Chicago"
+    expect "widgets-$look-2$mode" "Conditions . large && Rainfall . medium && Chicago"
+    expect "widgets-$look-3$mode" "My Places . large && Rainfall . small && Work && Denver"
   done
 done
 

@@ -57,7 +57,7 @@ final class AppModel {
     var lookOverride: Look?
     /// Debug builds only: the CI smoke test's `-AiSkyScreen dayDetail` opens the first day.
     var debugOpensDayDetail = false
-    /// Debug builds only: `-AiSkyScreen widgets` (or `widgets2`) shows the widget gallery page,
+    /// Debug builds only: `-AiSkyScreen widgets` (or `widgets2`, `widgets3`) shows a widget gallery page,
     /// and `-AiSkyWidgetMode tinted` renders it as tinted Home Screen widgets (an approximation).
     var debugWidgetPage: Int?
     var debugWidgetsTinted = false
@@ -95,7 +95,7 @@ final class AppModel {
     /// `-AiSkyDemoWeather` shows sample weather (rain in a few minutes) everywhere, and
     /// `-AiSkyDemoSky <condition>[-night]` sets its current sky (see `WeatherStore.demoSky`);
     /// `-AiSkyLook <id>` shows a look without saving it;
-    /// `-AiSkyScreen radar|radarSpot|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail|widgets|widgets2`
+    /// `-AiSkyScreen radar|radarSpot|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail|widgets|widgets2|widgets3`
     /// opens that screen (`widgets` pages are the DEBUG widget gallery; `-AiSkyWidgetMode tinted` tints them).
     private func applyDebugLaunchArguments() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -122,6 +122,7 @@ final class AppModel {
                 debugOpensDayDetail = true
             case "widgets": debugWidgetPage = 1
             case "widgets2": debugWidgetPage = 2
+            case "widgets3": debugWidgetPage = 3
             default:
                 selectedTab = .forecast
                 pendingSection = ForecastSection(rawValue: arguments[index + 1])
