@@ -10,6 +10,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   package:
     name: AiSkyKit (unit tests on macOS + iOS Simulator)
@@ -24,7 +27,14 @@ jobs:
           swift --version
 
       - name: Unit tests (macOS)
-        run: swift test --package-path Packages/AiSkyKit
+        run: |
+          swift test --package-path Packages/AiSkyKit > test-macos.log 2>&1 || status=$?
+          grep -E "Executed [0-9]+ tests|error:|failed \(" test-macos.log | sort -u | head -80 || true
+          if [ -n "${status:-}" ]; then
+            bash .github/scripts/annotate-errors.sh test-macos.log "swift test"
+            exit "$status"
+          fi
+          echo "::notice title=Unit tests (macOS)::$(grep -E "Executed [0-9]+ tests" test-macos.log | tail -1 | sed 's/^ *//')"
 
       - name: Unit tests (iOS Simulator)
         working-directory: Packages/AiSkyKit
@@ -38,12 +48,18 @@ jobs:
             CODE_SIGNING_ALLOWED=NO > test.log 2>&1 || status=$?
           grep -E "(error|warning): |Executed [0-9]+ tests|TEST (SUCCEEDED|FAILED)|failed \(" test.log | sort -u | head -100 || true
           tail -n 5 test.log
-          exit ${status:-0}
+          if [ -n "${status:-}" ]; then
+            bash ../../.github/scripts/annotate-errors.sh test.log "iOS Simulator tests"
+            exit "$status"
+          fi
+          echo "::notice title=Unit tests (iOS Simulator)::$(grep -E "Executed [0-9]+ tests" test.log | tail -1 | sed 's/^ *//')"
 
   app:
     name: iOS app + widgets (build & Simulator smoke test)
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 50
+    permissions:
+      contents: write # only to force-push screenshots to the ci-screenshots branch
     steps:
       - uses: actions/checkout@v5
 
@@ -65,18 +81,33 @@ jobs:
             -derivedDataPath DerivedData \
             -skipPackagePluginValidation \
             CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || status=$?
-          echo "::group::Errors and warnings"
-          grep -E "(error|warning): " build.log | sort -u | head -200 || true
+          if [ -n "${status:-}" ]; then
+            bash .github/scripts/annotate-errors.sh build.log "Simulator build"
+            exit "$status"
+          fi
+          echo "::group::Warnings"
+          grep -E "warning: " build.log | grep -v "/DerivedData/" | sort -u | head -80 || true
           echo "::endgroup::"
-          tail -n 5 build.log
-          exit ${status:-0}
+          tail -n 3 build.log
 
-      - name: Verify widget extension is embedded
+      - name: Verify widget extension and fonts are embedded
         run: |
           app=DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app
-          test -d "$app/PlugIns/AiSkyWidgetsExtension.appex"
+          widget="$app/PlugIns/AiSkyWidgetsExtension.appex"
+          test -d "$widget"
           plutil -p "$app/Info.plist" | grep -E "CFBundleIdentifier|AiSkyAppGroup|com.lasmith|NSLocationWhenInUse"
-          plutil -p "$app/PlugIns/AiSkyWidgetsExtension.appex/Info.plist" | grep -E "CFBundleIdentifier|NSExtensionPointIdentifier|NSWidgetWantsLocation"
+          plutil -p "$widget/Info.plist" | grep -E "CFBundleIdentifier|NSExtensionPointIdentifier|NSWidgetWantsLocation"
+          for bundle in "$app" "$widget"; do
+            fonts=$(/usr/libexec/PlistBuddy -c "Print :UIAppFonts" "$bundle/Info.plist" 2>/dev/null | sed -n 's/^ *\([^ ].*\.ttf\)$/\1/p')
+            [ -z "$fonts" ] && continue
+            for font in $fonts; do
+              if [ ! -f "$bundle/$font" ]; then
+                echo "::error title=Fonts::${bundle##*/} lists $font in UIAppFonts but the file isn't in the bundle"
+                exit 1
+              fi
+            done
+            echo "${bundle##*/}: $(echo "$fonts" | wc -l | tr -d ' ') fonts embedded"
+          done
 
       - name: Smoke test in the Simulator
         run: .github/scripts/smoke-test.sh "${{ steps.sim.outputs.udid }}" DerivedData/Build/Products/Debug-iphonesimulator/AiSky.app screenshots
@@ -85,7 +116,31 @@ jobs:
         if: always()
         run: |
           ls screenshots/*.png >/dev/null 2>&1 || exit 0
-          swift .github/scripts/ocr.swift screenshots/*.png
+          swift .github/scripts/ocr.swift screenshots/*.png | tee ocr.txt
+
+      - name: Publish screenshots to the ci-screenshots branch
+        if: always() && github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ls screenshots/*.png >/dev/null 2>&1 || exit 0
+          out=$(mktemp -d)
+          mkdir -p "$out/full"
+          for file in screenshots/*.png; do
+            name=$(basename "$file" .png)
+            # About 700 px wide for quick review, plus full resolution for close inspection.
+            sips -Z 1500 -s format jpeg -s formatOptions 72 "$file" --out "$out/$name.jpg" >/dev/null
+            sips -s format jpeg -s formatOptions 86 "$file" --out "$out/full/$name.jpg" >/dev/null
+          done
+          cp ocr.txt "$out/" 2>/dev/null || true
+          cd "$out"
+          git init -q -b ci-screenshots
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Simulator screenshots for ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/ci-screenshots
+          echo "::notice title=Screenshots::Pushed $(ls *.jpg | wc -l | tr -d ' ') screenshots of ${GITHUB_SHA::7} to the ci-screenshots branch."
 
       - name: Upload screenshots
         if: always()
@@ -95,13 +150,14 @@ jobs:
           path: screenshots
           if-no-files-found: ignore
 
-      - name: Preview images for review (base64 JPEG)
-        if: always()
-        run: |
-          for name in 01-forecast 04-daily 05-precipitation 11-rain-history 12-time-machine 13-radar-spot; do
-            [ -f "screenshots/$name.png" ] || continue
-            sips -Z 700 -s format jpeg -s formatOptions 40 "screenshots/$name.png" --out "/tmp/$name.jpg" >/dev/null
-            echo "=====BEGIN $name.jpg====="
-            base64 -i "/tmp/$name.jpg" | fold -w 180
-            echo "=====END $name.jpg====="
-          done
+  archive:
+    name: App Store archive (dry run, nothing uploaded)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Archive and check entitlements (no App Store Connect secrets)
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}.${{ github.run_attempt }}
+        run: bash .github/scripts/testflight.sh

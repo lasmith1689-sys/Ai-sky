@@ -25,22 +25,24 @@ alive() {
   [[ "$services" == *"UIKitApplication:$BUNDLE"* ]]
 }
 
-# capture <file> <screen> <seconds to wait>
+# capture <file> <screen> <seconds to wait> [extra launch arguments...]
 capture() {
+  local file="$1" screen="$2" wait="$3"
+  shift 3
   xcrun simctl terminate "$UDID" "$BUNDLE" >/dev/null 2>&1 || true
-  xcrun simctl launch "$UDID" "$BUNDLE" -AiSkyDemoLibrary -AiSkyScreen "$2" >/dev/null
-  sleep "$3"
+  xcrun simctl launch "$UDID" "$BUNDLE" -AiSkyDemoLibrary -AiSkyScreen "$screen" "$@" >/dev/null
+  sleep "$wait"
   if alive; then
     # A slow runner can still be showing the plain launch screen (a tiny PNG); give it more time.
     for attempt in 1 2 3 4; do
-      xcrun simctl io "$UDID" screenshot --type=png "$OUT/$1.png" >/dev/null 2>&1
-      [ "$(stat -f%z "$OUT/$1.png" 2>/dev/null || echo 0)" -gt 150000 ] && break
-      echo "… $1 still loading (attempt $attempt)"
+      xcrun simctl io "$UDID" screenshot --type=png "$OUT/$file.png" >/dev/null 2>&1
+      [ "$(stat -f%z "$OUT/$file.png" 2>/dev/null || echo 0)" -gt 60000 ] && break
+      echo "… $file still loading (attempt $attempt)"
       sleep 5
     done
-    echo "captured $1"
+    echo "captured $file"
   else
-    echo "❌ Ai Sky is not running on screen '$2'"
+    echo "❌ Ai Sky is not running on screen '$screen'"
     failures=$((failures + 1))
   fi
 }
@@ -58,12 +60,28 @@ capture 10-settings settings 5
 capture 11-rain-history rainHistory 25
 capture 12-time-machine timeMachine 20
 capture 13-radar-spot radarSpot 20
+capture 14-day-detail dayDetail 8
+capture 15-add-location addLocation 6
+capture 16-forecast-large-text forecast 10 -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 
 if [ "$failures" -gt 0 ]; then
   find ~/Library/Logs/DiagnosticReports -name "AiSky*" -mmin -20 -print -exec head -120 {} \; 2>/dev/null
   exit 1
 fi
 echo "✅ Ai Sky opened every screen without crashing"
+
+# The debug build logs whether every bundled font resolved (a wrong PostScript name silently
+# falls back to the system font).
+fonts=$(xcrun simctl spawn "$UDID" log show --last 30m --style compact \
+  --predicate 'subsystem == "com.lasmith1689.AiSky" AND category == "Fonts"' 2>/dev/null | grep -E "Instrument fonts" | tail -n 1)
+if [[ "$fonts" == *"missing"* ]]; then
+  echo "::error title=Fonts::${fonts##*Instrument fonts}"
+  exit 1
+elif [ -n "$fonts" ]; then
+  echo "::notice title=Fonts::Instrument fonts${fonts##*Instrument fonts}"
+else
+  echo "::warning title=Fonts::No font check found in the app log"
+fi
 
 echo "::group::App log (errors and faults)"
 xcrun simctl spawn "$UDID" log show --last 5m --style compact \

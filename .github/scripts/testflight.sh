@@ -46,7 +46,7 @@ if ! xcodebuild archive \
     PROVISIONING_PROFILE_SPECIFIER= \
     "${settings[@]}" > "$OUT/archive.log" 2>&1; then
   grep -E "error:|warning:" "$OUT/archive.log" | sort -u | head -50 || true
-  tail -n 40 "$OUT/archive.log"
+  bash "$(dirname "$0")/annotate-errors.sh" "$OUT/archive.log" "App Store archive" || true
   echo "::error::The App Store build failed. See the log above."
   exit 1
 fi
