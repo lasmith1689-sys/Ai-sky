@@ -12,12 +12,13 @@ struct LiquidClouds: View {
     var body: some View {
         GeometryReader { proxy in
             let w = proxy.size.width / 390
+            // Bright clouds belong to a partly cloudy sky; on gray skies they would wash out the
+            // white type, so they fade.
             let strength: Double = {
                 switch condition.family {
-                case .clear: return 0.35
                 case .partlyCloudy: return 1
-                case .cloudy, .fog, .windy: return 0.8
-                default: return 0.55
+                case .clear: return 0.3
+                default: return 0.25
                 }
             }() * (isDaylight ? 1 : 0.35)
             ZStack(alignment: .topLeading) {

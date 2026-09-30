@@ -50,9 +50,11 @@ struct EditorialHero: View {
                     }
                     VStack(alignment: .leading, spacing: 4) {
                         placeName
-                        Text(dateline)
+                        Text(day)
                             .lookLabel(t, color: t.ink2)
                             .fixedSize(horizontal: false, vertical: true)
+                        Text(time)
+                            .lookLabel(t, color: t.ink2)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -105,10 +107,13 @@ struct EditorialHero: View {
     }
 
     /// "Tuesday 29 September · 3:12 PM".
-    private var dateline: String {
-        let day = LookClock.twentyFourHour(context.now, timeZone: context.timeZone, pattern: "EEEE d MMMM")
-        return "\(day) · \(context.formatter.time(context.now, timeZone: context.timeZone))"
+    private var dateline: String { "\(day) · \(time)" }
+
+    private var day: String {
+        LookClock.twentyFourHour(context.now, timeZone: context.timeZone, pattern: "EEEE d MMMM")
     }
+
+    private var time: String { context.formatter.time(context.now, timeZone: context.timeZone) }
 
     private var headline: String {
         let fallback = ForecastNarrator.daySummary(hours: context.snapshot.hourly, now: context.now, timeZone: context.timeZone, formatter: context.formatter)
