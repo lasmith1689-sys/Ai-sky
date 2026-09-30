@@ -105,9 +105,8 @@ Optional settings go on the **Variables** tab of the same page:
 
 ## 6. Build
 
-Tell Claude the secrets are in, or start a build yourself: on GitHub, open **Actions** ▸ **TestFlight**,
-open the latest run, and click **Re-run all jobs**. After the code is merged into `main`, you can
-also use **Run workflow**.
+Tell Claude the secrets are in, and it will ship a build. After the code is merged into `main`, you
+can also start one yourself: on GitHub, open **Actions** ▸ **TestFlight** and click **Run workflow**.
 
 Building and uploading takes about 15 minutes. Apple then processes the build, usually within
 5–30 minutes, and emails you when it's ready. After that, a new build goes up when you click

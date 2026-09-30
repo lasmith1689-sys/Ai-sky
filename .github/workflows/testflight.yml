@@ -9,7 +9,9 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: testflight-${{ github.ref }}
+  # Every push still starts a run (its job is skipped without [ship]). Keep those runs in their own
+  # group so a later push can't cancel an upload that's in progress.
+  group: testflight-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[ship]') }}
   cancel-in-progress: true
 
 permissions:
