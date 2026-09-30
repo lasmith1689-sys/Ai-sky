@@ -262,6 +262,8 @@ final class FormatterCache: @unchecked Sendable {
             formatter.setLocalizedDateFormatFromTemplate(template)
             formatters[key] = formatter
         }
-        return formatter.string(from: date)
+        // ICU puts a narrow no-break space before AM/PM. Most bundled typefaces lack that glyph
+        // and the fallback renders a wide gap, so use a regular no-break space.
+        return formatter.string(from: date).replacingOccurrences(of: "\u{202F}", with: "\u{00A0}")
     }
 }

@@ -200,9 +200,10 @@ struct LookPreview: View {
                 Text("64°")
                     .font(tokens.display.font(w * 0.28, fixed: true))
                     .foregroundStyle(tokens.ink)
-                MiniCurve(vertical: true)
-                    .stroke(tokens.ink, lineWidth: 1.2)
-                    .frame(height: w * 0.5)
+                TimelineGlyph()
+                    .stroke(tokens.ink, style: StrokeStyle(lineWidth: 1.2, lineCap: .round))
+                    .overlay(TimelineGlyph(dotsOnly: true).fill(tokens.ink))
+                    .frame(width: w * 0.42, height: w * 0.52)
             }
         }
     }
@@ -248,6 +249,33 @@ private struct MiniCurve: Shape {
                 ? CGPoint(x: rect.minX + value * rect.width, y: rect.minY + t * rect.height)
                 : CGPoint(x: rect.minX + t * rect.width, y: rect.minY + value * rect.height)
             if index == 0 { path.move(to: point) } else { path.addLine(to: point) }
+        }
+        return path
+    }
+}
+
+/// Horizon's temperature curve in miniature: a smooth vertical line through a few points.
+private struct TimelineGlyph: Shape {
+    var dotsOnly = false
+    private let xs: [CGFloat] = [0.95, 0.85, 0.62, 0.42, 0.28, 0.2]
+
+    func path(in rect: CGRect) -> Path {
+        let points = xs.enumerated().map { index, x in
+            CGPoint(x: rect.minX + x * rect.width, y: rect.minY + CGFloat(index) / CGFloat(xs.count - 1) * rect.height)
+        }
+        var path = Path()
+        if dotsOnly {
+            for point in points {
+                path.addEllipse(in: CGRect(x: point.x - 1.8, y: point.y - 1.8, width: 3.6, height: 3.6))
+            }
+            return path
+        }
+        path.move(to: points[0])
+        for index in points.indices.dropFirst() {
+            let a = points[index - 1]
+            let b = points[index]
+            let bend = (b.y - a.y) * 0.45
+            path.addCurve(to: b, control1: CGPoint(x: a.x, y: a.y + bend), control2: CGPoint(x: b.x, y: b.y - bend))
         }
         return path
     }

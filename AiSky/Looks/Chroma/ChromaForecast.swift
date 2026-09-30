@@ -103,8 +103,9 @@ struct ChromaNextHour: View {
                 Text(window.chromaTitle(clock: context.shortClock))
                     .font(t.font(.headline, 18))
                     .tracking(-0.2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 if let word = window.intensityWord {
                     Text(word.uppercased())
@@ -188,6 +189,7 @@ struct ChromaHourly: View {
     private func compactHour(_ date: Date) -> String {
         context.formatter.hour(date, timeZone: context.timeZone)
             .replacingOccurrences(of: "\u{202F}", with: " ")
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
             .replacingOccurrences(of: " PM", with: "P")
             .replacingOccurrences(of: " AM", with: "A")
     }

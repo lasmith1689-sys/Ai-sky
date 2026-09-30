@@ -119,12 +119,13 @@ struct HorizonTimeline: View {
         }
         let start = hours.first?.date ?? context.now
         let sunEvents = context.sunEvents(from: start, to: start.addingTimeInterval(Double(max(hours.count - 1, 0)) * 3600))
+        let conditionWidth = min(104, width * 0.3)
         return ZStack(alignment: .topLeading) {
             ribbon(hours)
             sunMarkers(sunEvents, start: start, width: width)
-            curveLayer(points: points, hours: hours)
+            curveLayer(points: points, hours: hours, labelsRightOf: 88 + conditionWidth + 4)
             timesColumn(hours)
-            conditionsColumn(hours, width: max(minX - 88 - 64, 60))
+            conditionsColumn(hours, width: conditionWidth)
         }
         .frame(width: width, height: rowHeight * CGFloat(hours.count), alignment: .topLeading)
     }
@@ -162,17 +163,20 @@ struct HorizonTimeline: View {
         }
     }
 
-    /// The temperature curve, its points and their labels.
-    private func curveLayer(points: [CGPoint], hours: [HourlyForecast]) -> some View {
+    /// The temperature curve, its points and their labels. A label sits left of its point unless
+    /// that would run into a condition name, then it moves to the right.
+    private func curveLayer(points: [CGPoint], hours: [HourlyForecast], labelsRightOf limit: CGFloat) -> some View {
         ZStack(alignment: .topLeading) {
             curve(points).stroke(t.ink, style: StrokeStyle(lineWidth: 2, lineCap: .round))
             ForEach(Array(points.enumerated()), id: \.offset) { index, point in
+                let named = index == 0 || hours[index - 1].condition.family != hours[index].condition.family
+                let onRight = named && point.x - 56 < limit
                 pointMark(first: index == 0).position(point)
                 Text(context.temperature(hours[index].temperature))
                     .font(t.font(index == 0 ? .textStrong : .textMedium, index == 0 ? 17 : 16))
                     .fixedSize()
-                    .frame(width: 60, alignment: .trailing)
-                    .position(x: point.x - 46, y: point.y)
+                    .frame(width: 60, alignment: onRight ? .leading : .trailing)
+                    .position(x: onRight ? point.x + 46 : point.x - 46, y: point.y)
             }
         }
     }
@@ -258,10 +262,16 @@ struct HorizonTimeline: View {
         case .storm: day = 0x7B5CF0
         }
         guard !hour.isDaylight else { return Palette.color(hex: day) }
-        if hour.condition.isPrecipitation { return Palette.color(hex: day).opacity(0.75) }
-        let nightShades: [UInt32] = [0x4A4F7E, 0x2E3C78, 0x243063, 0x1B2552]
-        let nightIndex = min(nightHoursBefore(index, in: hours), nightShades.count - 1)
-        return Palette.color(hex: nightShades[nightIndex])
+        switch hour.condition.family {
+        case .clear:
+            // Clear nights deepen hour by hour after dusk.
+            let shades: [UInt32] = [0x4A4F7E, 0x2E3C78, 0x243063, 0x1B2552]
+            return Palette.color(hex: shades[min(nightHoursBefore(index, in: hours), shades.count - 1)])
+        case .partlyCloudy: return Palette.color(hex: 0x4A4F7E)
+        case .cloudy, .windy: return Palette.color(hex: 0x4B5570)
+        case .fog: return Palette.color(hex: 0x55586A)
+        default: return Palette.color(hex: day).opacity(0.72)
+        }
     }
 
     private func nightHoursBefore(_ index: Int, in hours: [HourlyForecast]) -> Int {

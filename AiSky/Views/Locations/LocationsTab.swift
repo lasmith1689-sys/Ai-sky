@@ -18,6 +18,9 @@ struct LocationsTab: View {
             }
             .font(t.look == .liquid ? .body : t.font(.text, 16))
             .lookList(t)
+            .overlay(alignment: .top) {
+                if t.look != .liquid { StatusBarScrim() }
+            }
             .navigationTitle(t.look == .liquid ? "Places" : "")
             .navigationBarTitleDisplayMode(t.look == .liquid ? .large : .inline)
             .toolbarBackground(t.look == .liquid ? Color.clear : t.background, for: .navigationBar)

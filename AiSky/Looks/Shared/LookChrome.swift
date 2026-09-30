@@ -40,7 +40,7 @@ struct LookTabBar: View {
             case .instrument, .liquid: InstrumentTabBar(selection: $selection)
             }
         }
-        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+        .dynamicTypeSize(...DynamicTypeSize.xLarge)
         .sensoryFeedback(.selection, trigger: selection)
     }
 }
@@ -112,6 +112,7 @@ private struct ObsidianTabBar: View {
                     Text(tab.title)
                         .lookLabel(t, size: 11, color: selected ? t.ink : t.ink3)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                         .padding(.top, 20)
                         .padding(.bottom, 9)
                         .overlay(alignment: .bottom) {
@@ -143,6 +144,7 @@ private struct EditorialTabBar: View {
                     Text(tab.title)
                         .lookLabel(t, size: 11, color: selected ? t.ink : t.ink2)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                         .padding(.bottom, 5)
                         .overlay(alignment: .bottom) {
                             Rectangle().fill(selected ? t.ink : Color.clear).frame(height: 1.5)
@@ -178,6 +180,7 @@ private struct HorizonTabBar: View {
                         Text(tab == .forecast ? "Timeline" : tab.title)
                             .font(t.font(.label, 10, relativeTo: .caption2))
                             .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                     .foregroundStyle(selected ? t.ink : Palette.color(hex: 0x5D6A80))
                     .frame(minWidth: 52)
@@ -250,6 +253,7 @@ private struct ChromaTabBar: View {
                     Text(tab.title)
                         .font(t.font(.textStrong, 13, relativeTo: .footnote))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                         .foregroundStyle(selected ? ChromaPalette.navy : ChromaPalette.cream)
                         .padding(.vertical, 11)
                         .padding(.horizontal, selected ? 18 : 10)
@@ -477,5 +481,36 @@ private struct LookPanel: ViewModifier {
         case .chroma:
             content.background(shape.fill(tokens.background))
         }
+    }
+}
+
+/// Fades scrolled content out under the status bar, in the look's page color (a soft material
+/// over Liquid's sky).
+struct StatusBarScrim: View {
+    @Environment(\.lookTokens) private var t
+
+    var body: some View {
+        GeometryReader { proxy in
+            let height = proxy.safeAreaInsets.top + 6
+            VStack(spacing: 0) {
+                Group {
+                    if t.usesSky {
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
+                    } else {
+                        LinearGradient(
+                            stops: [.init(color: t.background, location: 0), .init(color: t.background, location: 0.7), .init(color: t.background.opacity(0), location: 1)],
+                            startPoint: .top, endPoint: .bottom
+                        )
+                    }
+                }
+                .frame(height: height)
+                Spacer(minLength: 0)
+            }
+            .ignoresSafeArea(edges: .top)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }

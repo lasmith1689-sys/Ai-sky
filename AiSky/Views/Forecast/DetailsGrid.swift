@@ -158,11 +158,11 @@ struct WindCompass: View {
         ZStack {
             Circle().stroke(t.line.opacity(t.look == .liquid ? 1.4 : 1), lineWidth: 1.5)
             ForEach(Array(["N", "E", "S", "W"].enumerated()), id: \.offset) { index, letter in
+                let angle = Double(index) * .pi / 2
                 Text(letter)
                     .font(t.look == .liquid ? .system(size: 9, weight: .bold) : t.font(.label, 9, fixed: true))
                     .foregroundStyle(t.ink2)
-                    .offset(y: -24)
-                    .rotationEffect(.degrees(Double(index) * 90))
+                    .offset(x: sin(angle) * 24, y: -cos(angle) * 24)
             }
             Image(systemName: "location.north.fill")
                 .font(.system(size: 20))

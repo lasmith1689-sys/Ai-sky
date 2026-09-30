@@ -399,10 +399,17 @@ struct LookSurfaceModifier: ViewModifier {
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         switch tokens.surfaceStyle {
         case .glass:
+            // Light, clear glass with a bright hairline, as in the mockup (regular glass turns dark
+            // under the dark color scheme the sky pages use).
             if #available(iOS 26.0, *) {
-                content.glassEffect(.regular, in: shape)
+                content
+                    .glassEffect(.clear.tint(Color.white.opacity(0.16)), in: shape)
+                    .overlay(shape.strokeBorder(Color.white.opacity(0.28), lineWidth: 1))
             } else {
-                content.background(.ultraThinMaterial, in: shape)
+                content
+                    .background(.ultraThinMaterial.opacity(0.7), in: shape)
+                    .background(Color.white.opacity(0.12), in: shape)
+                    .overlay(shape.strokeBorder(Color.white.opacity(0.28), lineWidth: 1))
             }
         case .flat:
             content

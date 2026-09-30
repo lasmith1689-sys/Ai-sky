@@ -1,0 +1,64 @@
+#!/bin/bash
+# Checks the OCR text of each look's screenshots for what that screen must show, so a look that
+# renders blank, falls back to an error, or loses its tab bar fails CI.
+#   verify-screens.sh ocr.txt
+set -uo pipefail
+OCR="${1:-ocr.txt}"
+[ -f "$OCR" ] || { echo "::warning title=Screens::No OCR text to check"; exit 0; }
+failures=0
+
+# section <capture name>: the OCR lines printed for that screenshot.
+section() {
+  awk -v name="===== $1.png =====" '$0 == name {p = 1; next} /^===== / {p = 0} p' "$OCR"
+}
+
+# expect <capture name> <spec>: every " && "-separated extended regex must match (case-insensitive);
+# a leading "!" means it must not.
+expect() {
+  local name="$1" rest="$2" term problems="" text
+  text=$(section "$name")
+  if [ -z "$text" ]; then
+    echo "::error title=Screens::$name: no screenshot text"
+    failures=$((failures + 1))
+    return
+  fi
+  while [ -n "$rest" ]; do
+    term="${rest%% && *}"
+    if [ "$term" = "$rest" ]; then rest=""; else rest="${rest#* && }"; fi
+    if [ "${term:0:1}" = "!" ]; then
+      grep -Eiq -- "${term:1}" <<<"$text" && problems+="[shows '${term:1}'] "
+    else
+      grep -Eiq -- "$term" <<<"$text" || problems+="[no '$term'] "
+    fi
+  done
+  if [ -n "$problems" ]; then
+    echo "::error title=Screens::$name: $problems"
+    failures=$((failures + 1))
+  else
+    echo "ok $name"
+  fi
+}
+
+tabs="Radar && Places && Settings"
+expect instrument-1-forecast "$tabs && Forecast && NEXT HOUR && FEELS && WIND && HUMID && !load weather"
+expect liquid-1-forecast "Forecast && $tabs && Feels && Now && !load weather"
+expect obsidian-1-forecast "$tabs && Forecast && NEXT HOUR && HOURLY && FEELS && !load weather"
+expect editorial-1-forecast "$tabs && Forecast && THE NEXT HOUR && Feels like && !load weather"
+expect horizon-1-forecast "$tabs && Timeline && HOURS && Feels && !load weather"
+expect chroma-1-forecast "$tabs && Forecast && FEELS && !load weather"
+
+for look in liquid obsidian instrument editorial horizon chroma; do
+  expect "$look-2-daily" "Time Machine"
+  expect "$look-3-precipitation" "Past 24 hrs && Rainfall"
+  expect "$look-4-details" "Humidity && Wind && UV"
+  expect "$look-5-day-detail" "Temperature && Done"
+  expect "$look-6-places" "Places && Saved Places && Work"
+  expect "$look-7-settings" "Settings && Look && Obsidian && Editorial && Horizon"
+  expect "$look-8-radar" "(NEXRAD|RainViewer) && Now"
+done
+
+if [ "$failures" -gt 0 ]; then
+  echo "::error title=Screens::$failures screen(s) didn't show what they should"
+  exit 1
+fi
+echo "✅ Every look's screens show what they should"

@@ -27,6 +27,7 @@ struct ForecastContext {
         let time = formatter.time(date, timeZone: timeZone)
         return time
             .replacingOccurrences(of: "\u{202F}", with: " ")
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
             .replacingOccurrences(of: " AM", with: "")
             .replacingOccurrences(of: " PM", with: "")
     }
@@ -105,7 +106,7 @@ struct ForecastView: View {
                     }
                     .padding(.horizontal, t.gutter)
                     .padding(.top, pageCount > 1 ? 16 : 6)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, t.look == .liquid ? 96 : 32)
                 }
                 .scrollIndicators(.hidden)
                 .refreshable {
@@ -126,6 +127,8 @@ struct ForecastView: View {
                     presentPendingSheet(snapshot: snapshot)
                 }
             }
+
+            StatusBarScrim()
         }
         .foregroundStyle(t.ink)
         .task(id: location.id) {

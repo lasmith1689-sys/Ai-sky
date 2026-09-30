@@ -15,7 +15,7 @@ struct RootView: View {
         }
         .environment(\.lookTokens, tokens)
         .preferredColorScheme(tokens.colorScheme)
-        .tint(tokens.controlTint ?? tokens.accent)
+        .tint(tokens.accent)
         // Switching looks crossfades (instantly under Reduce Motion).
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: look)
         .onChange(of: model.settings) { oldValue, newValue in

@@ -118,6 +118,9 @@ jobs:
           ls screenshots/*.png >/dev/null 2>&1 || exit 0
           swift .github/scripts/ocr.swift screenshots/*.png | tee ocr.txt
 
+      - name: Check each look's screens (OCR)
+        run: bash .github/scripts/verify-screens.sh ocr.txt
+
       - name: Publish screenshots to the ci-screenshots branch
         if: always() && github.event_name == 'push'
         env:

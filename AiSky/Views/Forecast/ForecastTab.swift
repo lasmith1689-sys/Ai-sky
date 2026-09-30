@@ -29,7 +29,8 @@ struct ForecastTab: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .ignoresSafeArea(edges: .top)
+                // Liquid's sky runs under the floating system tab bar.
+                .ignoresSafeArea(edges: t.look == .liquid ? .all : .top)
 
                 if locations.count > 1 {
                     LookPageIndicator(locations: locations, selectedID: selection.wrappedValue)

@@ -44,6 +44,19 @@ struct LiquidClouds: View {
     }
 }
 
+/// White line icon for a condition, warm for sun, as in the mockup.
+struct LiquidConditionIcon: View {
+    let condition: SkyCondition
+    var isDaylight = true
+
+    var body: some View {
+        let sunny = isDaylight && (condition.family == .clear || condition == .hot)
+        OutlineConditionIcon(condition, isDaylight: isDaylight)
+            .symbolRenderingMode(.monochrome)
+            .foregroundStyle(sunny ? Palette.color(hex: 0xFFE7A3) : .white)
+    }
+}
+
 struct LiquidHero: View {
     let context: ForecastContext
 
@@ -232,8 +245,8 @@ struct LiquidHourly: View {
             VStack(spacing: 7) {
                 Text(context.isNow(hour) ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone))
                     .font(.footnote.weight(.semibold))
-                ConditionIcon(hour.condition, isDaylight: hour.isDaylight)
-                    .font(.system(size: 22))
+                LiquidConditionIcon(condition: hour.condition, isDaylight: hour.isDaylight)
+                    .font(.system(size: 21, weight: .light))
                     .frame(height: 26)
                 Text(chance >= 0.15 ? context.formatter.chance(chance) : " ")
                     .font(.caption2.weight(.bold))
@@ -249,7 +262,7 @@ struct LiquidHourly: View {
                 Text(context.shortClock(date))
                     .font(.footnote.weight(.semibold))
                 Image(systemName: rising ? "sunrise" : "sunset")
-                    .font(.system(size: 20))
+                    .font(.system(size: 19, weight: .light))
                     .foregroundStyle(context.tokens.sun)
                     .frame(height: 26)
                 Text(rising ? "Sunrise" : "Sunset")
@@ -312,8 +325,8 @@ struct LiquidDaily: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             VStack(spacing: 0) {
-                ConditionIcon(day.condition)
-                    .font(.system(size: 20))
+                LiquidConditionIcon(condition: day.condition)
+                    .font(.system(size: 19, weight: .light))
                 if let chance = day.precipitationChance, chance >= 0.15 {
                     Text(context.formatter.chance(chance))
                         .font(.caption2.weight(.bold))

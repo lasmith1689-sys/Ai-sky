@@ -23,6 +23,9 @@ struct SettingsTab: View {
             .font(t.look == .liquid ? .body : t.font(.text, 16))
             .foregroundStyle(t.ink)
             .lookList(t)
+            .overlay(alignment: .top) {
+                if t.look != .liquid { StatusBarScrim() }
+            }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(t.look == .liquid ? .large : .inline)
             .toolbar(t.look == .liquid ? .automatic : .hidden, for: .navigationBar)
@@ -81,7 +84,7 @@ struct SettingsTab: View {
             Button("Use Regional Defaults") {
                 model.settings.units = UnitPreferences.defaults(for: .autoupdatingCurrent)
             }
-            .foregroundStyle(t.controlTint ?? t.accent)
+            .foregroundStyle(t.accent)
             .lookRow(t)
         } header: {
             SettingsHeader(title: "Units")
@@ -134,11 +137,13 @@ struct SettingsTab: View {
             VStack(alignment: .leading) {
                 Text("Opacity: \(Int(model.settings.radarOpacity * 100))%")
                 Slider(value: $model.settings.radarOpacity, in: 0.3...1.0)
+                    .tint(t.controlTint ?? Palette.color(hex: 0x0A84FF))
             }
             .lookRow(t)
             VStack(alignment: .leading) {
                 Text("Animation Speed: \(String(format: "%.1f", model.settings.radarSpeed)) frames/sec")
                 Slider(value: $model.settings.radarSpeed, in: 1...6, step: 0.5)
+                    .tint(t.controlTint ?? Palette.color(hex: 0x0A84FF))
             }
             .lookRow(t)
         } header: {
@@ -160,6 +165,7 @@ struct SettingsTab: View {
                     if enabled { requestNotifications() }
                 }
             ))
+            .tint(t.controlTint ?? .green)
             .lookRow(t)
             Toggle("Severe Weather Alerts", isOn: Binding(
                 get: { model.settings.severeAlertsEnabled },
@@ -168,6 +174,7 @@ struct SettingsTab: View {
                     if enabled { requestNotifications() }
                 }
             ))
+            .tint(t.controlTint ?? .green)
             .lookRow(t)
             if model.settings.rainAlertsEnabled || model.settings.severeAlertsEnabled {
                 NavigationLink {
@@ -183,7 +190,7 @@ struct SettingsTab: View {
                         UIApplication.shared.open(url)
                     }
                 }
-                .foregroundStyle(t.controlTint ?? t.accent)
+                .foregroundStyle(t.accent)
                 .lookRow(t)
             }
         } header: {
@@ -238,7 +245,7 @@ struct SettingsTab: View {
                     Link("Apple Weather data sources", destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!)
                 }
             }
-            .foregroundStyle(t.controlTint ?? t.accent)
+            .foregroundStyle(t.accent)
             .lookRow(t)
             NavigationLink {
                 FontLicensesView()
@@ -297,14 +304,14 @@ private struct AlertLocationsView: View {
                     HStack {
                         if location.isCurrentLocation {
                             Image(systemName: "location.fill")
-                                .foregroundStyle(t.controlTint ?? t.accent)
+                                .foregroundStyle(t.accent)
                         }
                         Text(location.name)
                             .foregroundStyle(t.ink)
                         Spacer()
                         if watched {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(t.controlTint ?? t.accent)
+                                .foregroundStyle(t.accent)
                         }
                     }
                 }

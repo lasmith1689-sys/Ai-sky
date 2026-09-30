@@ -234,7 +234,7 @@ private struct RadarControls: View {
                 } label: {
                     Image(systemName: radar.isPlaying ? "pause.fill" : "play.fill")
                         .font(.title2)
-                        .foregroundStyle(t.controlTint ?? t.accent)
+                        .foregroundStyle(t.accent)
                         .frame(width: 36, height: 36)
                 }
                 .disabled(radar.frames.count < 2)
@@ -253,7 +253,7 @@ private struct RadarControls: View {
                 }
                 Button("Now") { radar.showLatest() }
                     .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 15))
-                    .foregroundStyle(t.controlTint ?? t.accent)
+                    .foregroundStyle(t.accent)
                     .disabled(radar.frames.isEmpty)
             }
 
