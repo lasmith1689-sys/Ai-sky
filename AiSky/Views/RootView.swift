@@ -12,6 +12,11 @@ struct RootView: View {
             LookedRoot(look: look)
                 .id(look)
                 .transition(.opacity)
+            #if DEBUG
+            if let page = model.debugWidgetPage {
+                WidgetGalleryView(page: page, tinted: model.debugWidgetsTinted)
+            }
+            #endif
         }
         .environment(\.lookTokens, tokens)
         .preferredColorScheme(tokens.colorScheme)

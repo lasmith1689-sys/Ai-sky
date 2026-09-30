@@ -96,6 +96,17 @@ done
 capture editorial-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook editorial -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 capture chroma-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook chroma -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 
+# The widgets, rendered in the app from the extension's own views (DEBUG gallery): each family in
+# three looks, in full color and as tinted Home Screen widgets (an approximation of the system's
+# accented rendering).
+for look in instrument editorial liquid; do
+  for page in 1 2; do
+    screen=widgets; [ "$page" = 2 ] && screen=widgets2
+    capture "widgets-$look-$page" "$screen" 8 -AiSkyDemoWeather -AiSkyLook "$look"
+    capture "widgets-$look-$page-tinted" "$screen" 8 -AiSkyDemoWeather -AiSkyLook "$look" -AiSkyWidgetMode tinted
+  done
+done
+
 # Every other look dry (the hero's yesterday comparison) and while it's raining (the next hour's
 # rate line and resolution).
 for look in obsidian instrument editorial horizon chroma; do

@@ -2,49 +2,6 @@ import AiSkyKit
 import SwiftUI
 import WidgetKit
 
-struct WeatherEntry: TimelineEntry {
-    let date: Date
-    let location: WeatherLocation?
-    let snapshot: WeatherSnapshot?
-    let settings: AppSettings
-    let errorMessage: String?
-
-    var formatter: WeatherFormatter { settings.formatter }
-
-    /// Conditions projected to this entry's time (entries are scheduled ahead of time).
-    var conditions: CurrentConditions? { snapshot?.conditions(at: date) }
-
-    var nextHour: NextHourSummary {
-        NextHourSummarizer.summarize(snapshot?.nextHour, now: date, preferProviderText: false)
-    }
-
-    var today: DailyForecast? { snapshot?.day(containing: date) }
-
-    var deepLink: URL { deepLink(section: nil) }
-
-    /// Opens the app on this place, optionally scrolled to a forecast section.
-    func deepLink(section: String?) -> URL {
-        var components = URLComponents()
-        components.scheme = "aisky"
-        components.host = "forecast"
-        components.path = "/" + (location?.id ?? "")
-        if let section {
-            components.queryItems = [URLQueryItem(name: "section", value: section)]
-        }
-        return components.url ?? URL(string: "aisky://forecast")!
-    }
-
-    static func preview(date: Date = Date()) -> WeatherEntry {
-        WeatherEntry(
-            date: date,
-            location: SampleData.location,
-            snapshot: SampleData.snapshot(now: date),
-            settings: AppSettings.defaults(),
-            errorMessage: nil
-        )
-    }
-}
-
 /// How often each widget kind refreshes and how its future entries are spaced.
 enum WidgetRefreshStyle {
     /// Temperature & conditions: hourly entries from the forecast, refresh every 30 min.

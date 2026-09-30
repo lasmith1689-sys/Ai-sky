@@ -139,8 +139,10 @@ AiSky/                   The iOS app (SwiftUI)
   Services/              Background refresh, notifications
   Views/                 Forecast, Radar, Locations, Settings screens
   Looks/                 The six looks: shared chrome and each look's forecast sections
+  Debug/                 Debug-only widget gallery the CI smoke test photographs
 Fonts/                   Bundled typefaces (static instances) and their OFL licenses
-AiSkyWidgets/            WidgetKit extension (Home Screen + Lock Screen widgets)
+AiSkyWidgets/            WidgetKit extension (Home Screen + Lock Screen widgets, timelines)
+WidgetViews/             The widgets' views and entries, built into the extension and the app
 Packages/AiSkyKit/       Shared Swift package: models, API clients, caching, summaries, charts
   Tests/                 Unit tests with sample API responses
 ```

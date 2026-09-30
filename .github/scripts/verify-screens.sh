@@ -60,6 +60,14 @@ done
 expect liquid-sky-clear "My Location && yesterday"
 expect liquid-sky-rain "Now: && Minute by minute"
 
+# The widget gallery shows every family.
+for look in instrument editorial liquid; do
+  for mode in "" "-tinted"; do
+    expect "widgets-$look-1$mode" "Conditions && Next Hour && Air Quality && Lock Screen && Chicago"
+    expect "widgets-$look-2$mode" "large && My Places && Rainfall && Chicago"
+  done
+done
+
 # Liquid on each sky shows that sky's condition in the hero.
 expect liquid-sky-clear "Clear && Feels && Now && !load weather"
 expect liquid-sky-partlyCloudy "Partly Cloudy && Feels && Now && !load weather"

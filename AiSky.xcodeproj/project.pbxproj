@@ -161,6 +161,11 @@
 			path = AiSkyWidgets;
 			sourceTree = "<group>";
 		};
+		A1B2C3D4E5F6000000000012 /* WidgetViews */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WidgetViews;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +194,7 @@
 				A1B2C3D4E5F6000000000028 /* README.md */,
 				A1B2C3D4E5F6000000000010 /* AiSky */,
 				A1B2C3D4E5F6000000000011 /* AiSkyWidgets */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
 				A1B2C3D4E5F6000000000004 /* Config */,
 				A1B2C3D4E5F6000000000100 /* Fonts */,
 				A1B2C3D4E5F6000000000003 /* Products */,
@@ -291,6 +297,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A1B2C3D4E5F6000000000010 /* AiSky */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
 			);
 			name = AiSky;
 			packageProductDependencies = (
@@ -314,6 +321,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A1B2C3D4E5F6000000000011 /* AiSkyWidgets */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
 			);
 			name = AiSkyWidgetsExtension;
 			packageProductDependencies = (

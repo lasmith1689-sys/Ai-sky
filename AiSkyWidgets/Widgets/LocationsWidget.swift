@@ -8,34 +8,11 @@ struct LocationsWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: LocationsTimelineProvider()) { entry in
-            LocationsWidgetView(entry: entry)
+            WidgetEnvironmentBridge { LocationsWidgetView(entry: entry) }
         }
         .configurationDisplayName("My Places")
         .description("Current conditions for the first places in your library. Reorder places in the app to choose which appear.")
         .supportedFamilies([.systemMedium, .systemLarge])
-    }
-}
-
-struct LocationsEntry: TimelineEntry {
-    struct Row: Identifiable {
-        var id: String { location.id }
-        let location: WeatherLocation
-        let summary: LocationWeatherSummary?
-    }
-
-    let date: Date
-    let rows: [Row]
-    let settings: AppSettings
-
-    static func preview() -> LocationsEntry {
-        let rows = ([SampleData.location] + SampleData.savedLocations.map(WeatherLocation.init(saved:))).enumerated().map { index, location in
-            Row(location: location, summary: LocationWeatherSummary(
-                locationID: location.id, fetchedAt: Date(), timeZoneIdentifier: location.timeZoneIdentifier ?? "UTC",
-                temperature: 12 + Double(index * 4), apparentTemperature: nil,
-                condition: [SkyCondition.clear, .partlyCloudy, .rain, .cloudy, .snow][index % 5], isDaylight: true,
-                high: 18 + Double(index * 3), low: 8 + Double(index * 2), precipitationChance: 0.2, source: .openMeteo))
-        }
-        return LocationsEntry(date: Date(), rows: rows, settings: AppSettings.defaults())
     }
 }
 
@@ -68,67 +45,6 @@ struct LocationsTimelineProvider: TimelineProvider {
         let summaries = await WidgetDataLoader.repository.summaries(for: locations, settings: settings, maxAge: 20 * 60)
         let rows = locations.map { LocationsEntry.Row(location: $0, summary: summaries[$0.id]) }
         return LocationsEntry(date: Date(), rows: rows, settings: settings)
-    }
-}
-
-struct LocationsWidgetView: View {
-    let entry: LocationsEntry
-
-    var body: some View {
-        let formatter = entry.settings.formatter
-        let t = LookTokens.tokens(for: entry.settings.look)
-        VStack(spacing: 0) {
-            if entry.rows.isEmpty {
-                Text("Add places in Ai Sky to see them here.")
-                    .font(.caption)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            ForEach(Array(entry.rows.enumerated()), id: \.element.id) { index, row in
-                if index > 0 {
-                    Rectangle().fill(t.line).frame(height: 1)
-                }
-                Link(destination: URL(string: "aisky://forecast/\(row.location.id)")!) {
-                    HStack(spacing: 8) {
-                        VStack(alignment: .leading, spacing: 1) {
-                            WidgetLocationName(location: row.location)
-                                .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
-                                .widgetAccentable()
-                            if let summary = row.summary {
-                                Text(summary.condition.description)
-                                    .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
-                                    .foregroundStyle(t.ink2)
-                            }
-                        }
-                        Spacer()
-                        if let summary = row.summary {
-                            WidgetConditionIcon(condition: summary.condition, isDaylight: summary.isDaylight, tokens: t)
-                                .font(.body)
-                            Text(formatter.temperature(summary.temperature))
-                                .font(t.look == .liquid ? .title3.weight(.medium) : t.font(.display, 22))
-                                .frame(minWidth: 40, alignment: .trailing)
-                                .widgetAccentable()
-                            if let high = summary.high, let low = summary.low {
-                                Text("\(formatter.temperature(high)) / \(formatter.temperature(low))")
-                                    .font(t.look == .liquid ? .caption2 : t.font(.number, 11))
-                                    .foregroundStyle(t.ink2)
-                                    .frame(width: 58, alignment: .trailing)
-                            }
-                        } else {
-                            Text("--")
-                        }
-                    }
-                    .frame(maxHeight: .infinity)
-                }
-            }
-        }
-        .foregroundStyle(t.ink)
-        .containerBackground(for: .widget) {
-            LookWidgetBackground(
-                tokens: t,
-                condition: entry.rows.first?.summary?.condition ?? .partlyCloudy,
-                isDaylight: entry.rows.first?.summary?.isDaylight ?? true
-            )
-        }
     }
 }
 
