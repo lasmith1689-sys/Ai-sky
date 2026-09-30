@@ -40,28 +40,53 @@ struct LookTabBar: View {
             case .instrument, .liquid: InstrumentTabBar(selection: $selection)
             }
         }
+        // The bar stays compact at large text sizes, like the system tab bar; a long press shows
+        // the Large Content Viewer instead (see `TabButton`).
         .dynamicTypeSize(...DynamicTypeSize.xLarge)
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isTabBar)
         .sensoryFeedback(.selection, trigger: selection)
     }
 }
 
-/// A tab button: a real button with the selected trait and a spoken label.
+/// A tab button: a real button that fills its quarter of the bar (at least 44 pt tall, no gaps
+/// between tabs), with the selected trait, a spoken label matching the visible text and the
+/// Large Content Viewer.
 private struct TabButton<LabelView: View>: View {
     let tab: AppTab
+    /// The visible text when it differs from the tab's name (Horizon's "Timeline").
+    var title: String?
+    /// Where the label sits in its slot (the outer tabs hug the edges in the spread-out bars).
+    var alignment: Alignment = .center
     @Binding var selection: AppTab
     @ViewBuilder let label: (Bool) -> LabelView
 
     var body: some View {
         let selected = tab == selection
+        let name = title ?? tab.title
         Button {
             selection = tab
         } label: {
             label(selected)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: alignment)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(tab.title)
+        .accessibilityLabel(name)
         .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityShowsLargeContentViewer {
+            Label(name, systemImage: tab.systemImage)
+        }
+    }
+}
+
+/// Outer tabs hug the bar's edges and inner ones center, so edge-to-edge bars keep their spread
+/// while every tab still fills an equal slot.
+private func spreadAlignment(_ index: Int) -> Alignment {
+    switch index {
+    case 0: return .leading
+    case AppTab.allCases.count - 1: return .trailing
+    default: return .center
     }
 }
 
@@ -107,8 +132,7 @@ private struct ObsidianTabBar: View {
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             ForEach(Array(AppTab.allCases.enumerated()), id: \.element) { index, tab in
-                if index > 0 { Spacer(minLength: 8) }
-                TabButton(tab: tab, selection: $selection) { selected in
+                TabButton(tab: tab, alignment: spreadAlignment(index), selection: $selection) { selected in
                     Text(tab.title)
                         .lookLabel(t, size: 11, color: selected ? t.ink : t.ink3)
                         .lineLimit(1)
@@ -139,8 +163,7 @@ private struct EditorialTabBar: View {
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             ForEach(Array(AppTab.allCases.enumerated()), id: \.element) { index, tab in
-                if index > 0 { Spacer(minLength: 8) }
-                TabButton(tab: tab, selection: $selection) { selected in
+                TabButton(tab: tab, alignment: spreadAlignment(index), selection: $selection) { selected in
                     Text(tab.title)
                         .lookLabel(t, size: 11, color: selected ? t.ink : t.ink2)
                         .lineLimit(1)
@@ -168,28 +191,30 @@ private struct HorizonTabBar: View {
     @Environment(\.lookTokens) private var t
     @Binding var selection: AppTab
 
+    static func title(_ tab: AppTab) -> String {
+        tab == .forecast ? "Timeline" : tab.title
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            ForEach(Array(AppTab.allCases.enumerated()), id: \.element) { index, tab in
-                if index > 0 { Spacer(minLength: 8) }
-                TabButton(tab: tab, selection: $selection) { selected in
+            ForEach(AppTab.allCases) { tab in
+                TabButton(tab: tab, title: Self.title(tab), selection: $selection) { selected in
                     VStack(spacing: 3) {
                         HorizonTabGlyph(tab: tab)
                             .stroke(style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
                             .frame(width: 22, height: 22)
-                        Text(tab == .forecast ? "Timeline" : tab.title)
+                        Text(Self.title(tab))
                             .font(t.font(.label, 10, relativeTo: .caption2))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
                     .foregroundStyle(selected ? t.ink : t.ink3)
-                    .frame(minWidth: 52)
                     .padding(.top, 10)
                     .padding(.bottom, 8)
                 }
             }
         }
-        .padding(.horizontal, 28)
+        .padding(.horizontal, 12)
         .background(alignment: .top) {
             t.background
                 .overlay(alignment: .top) { Rectangle().fill(t.line).frame(height: 1) }
@@ -247,8 +272,7 @@ private struct ChromaTabBar: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(Array(AppTab.allCases.enumerated()), id: \.element) { index, tab in
-                if index > 0 { Spacer(minLength: 2) }
+            ForEach(AppTab.allCases) { tab in
                 TabButton(tab: tab, selection: $selection) { selected in
                     Text(tab.title)
                         .font(t.font(.textStrong, 13, relativeTo: .footnote))
@@ -256,12 +280,13 @@ private struct ChromaTabBar: View {
                         .minimumScaleFactor(0.7)
                         .foregroundStyle(selected ? ChromaPalette.navy : ChromaPalette.cream)
                         .padding(.vertical, 11)
-                        .padding(.horizontal, selected ? 18 : 10)
+                        .padding(.horizontal, selected ? 14 : 6)
                         .background(Capsule().fill(selected ? ChromaPalette.mustard : Color.clear))
+                        .frame(minHeight: 52)
                 }
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 4)
         .frame(minHeight: 60)
         .background(Capsule().fill(ChromaPalette.navy))
         .padding(.horizontal, 24)
