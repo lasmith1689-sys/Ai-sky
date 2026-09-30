@@ -46,10 +46,10 @@ struct LiquidClouds: View {
 }
 
 extension ForecastContext {
-    /// White at the mockup's softer opacity on blue skies; brighter on gray skies, where the paler
-    /// sky and the sheened cards need it for 4.5:1 (see `LiquidGlass`).
+    /// White at the mockup's softer opacity on blue day skies; brighter on gray skies and at
+    /// night, where the softer values fall under 4.5:1 (see `LiquidGlass`).
     func skyInk(_ blueSky: Double, gray: Double) -> Color {
-        .white.opacity(tokens.onGraySky ? gray : blueSky)
+        .white.opacity(tokens.brightSecondaryText ? gray : blueSky)
     }
 }
 

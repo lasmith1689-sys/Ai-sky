@@ -61,19 +61,19 @@ public enum LiquidGlass {
     /// Relative luminance the card behind the text should not exceed.
     public static let cardTarget = 0.10
 
-    /// How much lighter than the sky a card renders before the sheen: the glass highlight and
-    /// the drifting clouds, as a share of the way to white (measured about +40 on a mid-gray
-    /// sky, of which the white tint of the light glass was about +18).
-    public static let glassLift = 0.24
+    /// How much lighter than the sky a card renders before the sheen (the glass highlight and
+    /// the faint clouds), as a share of the way to white. Measured from CI screenshots of the
+    /// cloudy, fog and snow skies: 13% to 18%.
+    public static let glassLift = 0.16
 
     /// The sheen never drops below this, so dark skies still read as the gray-sky treatment.
     public static let minimumSheen = 0.2
     public static let maximumSheen = 0.6
 
-    /// Opacity of white for secondary and tertiary text on a gray sky (0.82 and 0.66 on blue
-    /// skies, as in the mockup).
-    public static let graySkyInk2 = 0.92
-    public static let graySkyInk3 = 0.82
+    /// Opacity of white for secondary and tertiary text on gray skies and at night (0.82 and 0.66
+    /// on blue day skies, as in the mockup).
+    public static let brightInk2 = 0.92
+    public static let brightInk3 = 0.82
 
     /// Opacity of the black sheen under a card's content on this sky (0 on blue skies).
     public static func sheen(for condition: SkyCondition, isDaylight: Bool) -> Double {

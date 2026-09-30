@@ -121,6 +121,8 @@ final class LiquidGlassTests: XCTestCase {
                 XCTAssertEqual(LiquidGlass.tone(for: condition, isDaylight: daylight), .light, "\(condition)")
                 XCTAssertEqual(LiquidGlass.sheen(for: condition, isDaylight: daylight), 0, "\(condition)")
                 XCTAssertFalse(LookTokens.liquid.onSky(condition, isDaylight: daylight).onGraySky)
+                // Softer secondary text by day, as in the mockup; brighter at night.
+                XCTAssertEqual(LookTokens.liquid.onSky(condition, isDaylight: daylight).brightSecondaryText, !daylight)
             }
         }
     }
@@ -144,7 +146,7 @@ final class LiquidGlassTests: XCTestCase {
             for daylight in [true, false] {
                 let card = LiquidGlass.card(condition: condition, isDaylight: daylight)
                 let white = ColorContrast.ratio(ColorContrast.white, card)
-                let tertiary = ColorContrast.ratio(ColorContrast.blend(ColorContrast.white, opacity: LiquidGlass.graySkyInk3, over: card), card)
+                let tertiary = ColorContrast.ratio(ColorContrast.blend(ColorContrast.white, opacity: LiquidGlass.brightInk3, over: card), card)
                 XCTAssertGreaterThanOrEqual(white, 6, "\(condition) day \(daylight)")
                 XCTAssertGreaterThanOrEqual(tertiary, 4.5, "\(condition) day \(daylight)")
             }
@@ -154,10 +156,12 @@ final class LiquidGlassTests: XCTestCase {
     func testOnSkyTokens() {
         let gray = LookTokens.liquid.onSky(.cloudy, isDaylight: true)
         XCTAssertTrue(gray.onGraySky)
+        XCTAssertTrue(gray.brightSecondaryText)
         XCTAssertEqual(gray.glassSheen, LiquidGlass.sheen(for: .cloudy, isDaylight: true))
         // Moving back to a blue sky restores the light glass and the softer secondary text.
         let blue = gray.onSky(.clear, isDaylight: true)
         XCTAssertFalse(blue.onGraySky)
+        XCTAssertFalse(blue.brightSecondaryText)
         XCTAssertEqual(blue.glassSheen, 0)
         XCTAssertEqual(blue.ink3, LookTokens.liquid.ink3)
         // Looks without a sky ignore it.
