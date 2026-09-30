@@ -1,7 +1,8 @@
 name: TestFlight
 
-# Builds the App Store version on every push. Once the App Store Connect secrets are added
-# (see TESTFLIGHT.md), each build is also signed and uploaded to TestFlight.
+# Signs the App Store build and uploads it to TestFlight. Runs only when started by hand
+# (Actions > TestFlight > Run workflow) or on a push whose head commit message contains
+# [ship], so work in progress doesn't land on your phone. CI still builds every push.
 on:
   push:
     branches: [main, "claude/**"]
@@ -17,6 +18,7 @@ permissions:
 jobs:
   testflight:
     name: App Store build (uploads to TestFlight when set up)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[ship]')
     runs-on: macos-26
     timeout-minutes: 45
     steps:

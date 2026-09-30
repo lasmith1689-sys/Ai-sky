@@ -110,8 +110,9 @@ open the latest run, and click **Re-run all jobs**. After the code is merged int
 also use **Run workflow**.
 
 Building and uploading takes about 15 minutes. Apple then processes the build, usually within
-5–30 minutes, and emails you when it's ready. After that, every change pushed to the repository
-is built and uploaded the same way.
+5–30 minutes, and emails you when it's ready. After that, a new build goes up when you click
+**Run workflow**, or when a pushed commit's message contains `[ship]`. Other pushes only run CI, so
+work in progress doesn't reach your phone.
 
 ## 7. Install on your iPhone
 
