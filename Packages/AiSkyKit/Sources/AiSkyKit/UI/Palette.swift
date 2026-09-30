@@ -101,7 +101,7 @@ public enum Palette {
         switch (condition.family, isDaylight) {
         case (.clear, true): colors = [0x2E7BD6, 0x5EA8F2, 0x9CCBF7]
         case (.clear, false): colors = [0x0B1026, 0x1B2552, 0x2E3C78]
-        case (.partlyCloudy, true): colors = [0x3C7CC4, 0x6E9FD6, 0xA9C4E4]
+        case (.partlyCloudy, true): colors = [0x2B5EA8, 0x4F86C9, 0x8DB5DF]
         case (.partlyCloudy, false): colors = [0x10162E, 0x252F57, 0x3D4870]
         case (.cloudy, true), (.windy, true): colors = [0x5D6D82, 0x7F8EA2, 0xA6B1BF]
         case (.cloudy, false), (.windy, false): colors = [0x1A1F2B, 0x2E3545, 0x454D60]

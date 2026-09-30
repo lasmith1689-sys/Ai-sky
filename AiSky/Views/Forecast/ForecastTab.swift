@@ -5,6 +5,7 @@ import UIKit
 /// Swipe between the device location and every saved place.
 struct ForecastTab: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
 
     var body: some View {
         let locations = model.forecastLocations
@@ -22,8 +23,8 @@ struct ForecastTab: View {
             )
             ZStack(alignment: .top) {
                 TabView(selection: selection) {
-                    ForEach(locations) { location in
-                        ForecastView(location: location)
+                    ForEach(Array(locations.enumerated()), id: \.element.id) { index, location in
+                        ForecastView(location: location, page: index, pageCount: locations.count)
                             .tag(location.id)
                     }
                 }
@@ -31,105 +32,81 @@ struct ForecastTab: View {
                 .ignoresSafeArea(edges: .top)
 
                 if locations.count > 1 {
-                    PageIndicator(locations: locations, selectedID: selection.wrappedValue)
-                        .padding(.top, 4)
+                    LookPageIndicator(locations: locations, selectedID: selection.wrappedValue)
+                        .padding(.top, 2)
                 }
             }
-            .background(Color.black)
+            .background(t.background.ignoresSafeArea())
         }
-    }
-}
-
-/// Dots showing which page is visible; the device location gets an arrow like Apple Weather.
-private struct PageIndicator: View {
-    let locations: [WeatherLocation]
-    let selectedID: String
-
-    var body: some View {
-        HStack(spacing: 6) {
-            ForEach(locations) { location in
-                let selected = location.id == selectedID
-                Group {
-                    if location.isCurrentLocation {
-                        Image(systemName: "location.fill")
-                            .font(.system(size: 7, weight: .bold))
-                    } else {
-                        Circle().frame(width: 6, height: 6)
-                    }
-                }
-                .foregroundStyle(.white.opacity(selected ? 1 : 0.4))
-            }
-        }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(.black.opacity(0.15), in: Capsule())
-        .accessibilityHidden(true)
     }
 }
 
 /// First launch: no permission and no saved places yet.
 struct WelcomeView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
 
     var body: some View {
         ZStack {
-            SkyBackground(condition: .partlyCloudy, isDaylight: true).ignoresSafeArea()
-            VStack(spacing: 22) {
+            LookPageBackground().ignoresSafeArea()
+            VStack(alignment: t.look == .liquid ? .center : .leading, spacing: 18) {
                 Spacer()
-                Image(systemName: "cloud.sun.rain.fill")
-                    .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 76))
+                if t.look == .liquid {
+                    Image(systemName: "cloud.sun.rain.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 76))
+                } else {
+                    Text("Ai Sky")
+                        .lookLabel(t, color: t.ink2)
+                }
                 Text("Welcome to Ai Sky")
-                    .font(.largeTitle.bold())
+                    .font(t.font(t.look == .instrument || t.look == .obsidian ? .numberLight : .headline, 34, relativeTo: .largeTitle))
+                    .multilineTextAlignment(t.look == .liquid ? .center : .leading)
                 Text("Down-to-the-minute rain forecasts, radar, air quality and real-feel temperatures for up to \(LocationLibrary.maximumLocations) places.")
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(.horizontal, 32)
+                    .font(t.font(.text, 16))
+                    .multilineTextAlignment(t.look == .liquid ? .center : .leading)
+                    .foregroundStyle(t.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 VStack(spacing: 12) {
                     if model.locationManager.isAuthorized {
                         HStack(spacing: 10) {
-                            ProgressView().tint(.white)
+                            ProgressView().tint(t.ink)
                             Text("Finding your location…")
+                                .font(t.font(.textStrong, 16))
                         }
-                        .font(.headline)
                         .padding(.bottom, 8)
                     } else if model.locationManager.isDenied {
                         Text("Location access is off. Enable it in Settings to see weather where you are.")
-                            .font(.footnote)
+                            .font(t.font(.text, 13))
                             .multilineTextAlignment(.center)
-                            .foregroundStyle(.white.opacity(0.8))
+                            .foregroundStyle(t.ink2)
                         Button("Open Settings") {
                             if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url)
                             }
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(LookButtonStyle(kind: .secondary, fullWidth: true))
                     } else {
                         Button {
                             model.locationManager.requestAuthorization()
                         } label: {
                             Label("Use My Location", systemImage: "location.fill")
-                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
+                        .buttonStyle(LookButtonStyle(kind: .primary, fullWidth: true))
                     }
                     Button {
                         model.selectedTab = .locations
                         model.isAddingLocation = true
                     } label: {
                         Label("Search for a Place", systemImage: "magnifyingglass")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
+                    .buttonStyle(LookButtonStyle(kind: .secondary, fullWidth: true))
                 }
-                .padding(.horizontal, 32)
-                .padding(.bottom, 40)
+                .padding(.bottom, 32)
             }
-            .foregroundStyle(.white)
+            .padding(.horizontal, max(t.gutter, 24))
+            .foregroundStyle(t.ink)
         }
-        .environment(\.colorScheme, .dark)
     }
 }

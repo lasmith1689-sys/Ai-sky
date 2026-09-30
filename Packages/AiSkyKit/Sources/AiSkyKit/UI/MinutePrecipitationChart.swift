@@ -71,14 +71,22 @@ public struct MinutePrecipitationChart: View {
     public var showsGuides: Bool
     public var showsAxis: Bool
     public var tint: Color
+    /// Guide lines, grid and axis labels (white on the sky by default).
+    public var chrome: Color
+    public var labelFont: Font
 
-    public init(forecast: NextHourForecast, now: Date = Date(), showsGuides: Bool = true, showsAxis: Bool = true, tint: Color? = nil) {
+    public init(
+        forecast: NextHourForecast, now: Date = Date(), showsGuides: Bool = true, showsAxis: Bool = true,
+        tint: Color? = nil, chrome: Color = .white, labelFont: Font = .caption2
+    ) {
         self.forecast = forecast
         self.now = now
         self.showsGuides = showsGuides
         self.showsAxis = showsAxis
         let dominant = forecast.minutes.first { $0.kind != .none }?.kind ?? .rain
         self.tint = tint ?? Palette.precipitation(dominant)
+        self.chrome = chrome
+        self.labelFont = labelFont
     }
 
     public var body: some View {
@@ -86,12 +94,12 @@ public struct MinutePrecipitationChart: View {
             chart.chartXAxis {
                 AxisMarks(values: [0, 10, 20, 30, 40, 50, 60]) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5))
-                        .foregroundStyle(Color.white.opacity(0.15))
+                        .foregroundStyle(chrome.opacity(0.15))
                     AxisValueLabel {
                         if let minute = value.as(Double.self) {
                             Text(minute == 0 ? "Now" : "\(Int(minute))m")
-                                .font(.caption2)
-                                .foregroundStyle(Color.white.opacity(0.7))
+                                .font(labelFont)
+                                .foregroundStyle(chrome.opacity(0.7))
                         }
                     }
                 }
@@ -108,11 +116,11 @@ public struct MinutePrecipitationChart: View {
             ForEach(lines) { guide in
                 RuleMark(y: .value("Intensity", guide.value))
                     .lineStyle(StrokeStyle(lineWidth: 0.5, dash: [3, 3]))
-                    .foregroundStyle(Color.white.opacity(0.3))
+                    .foregroundStyle(chrome.opacity(0.3))
                     .annotation(position: .top, alignment: .leading, spacing: 1) {
                         Text(guide.label)
                             .font(.system(size: 8, weight: .semibold))
-                            .foregroundStyle(Color.white.opacity(0.55))
+                            .foregroundStyle(chrome.opacity(0.55))
                     }
             }
             ForEach(points) { point in

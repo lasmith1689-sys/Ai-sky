@@ -5,6 +5,7 @@ import SwiftUI
 /// Search for a city, address, ZIP code or landmark and save it to the library.
 struct AddLocationView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     @Environment(\.dismiss) private var dismiss
     @State private var search = LocationSearchModel()
     @State private var errorMessage: String?
@@ -15,14 +16,16 @@ struct AddLocationView: View {
                 if search.query.isEmpty {
                     Section {
                         Text("Search for a city, address, ZIP code or landmark. You have \(LocationLibrary.remainingSlots(in: model.savedLocations)) of \(LocationLibrary.maximumLocations) spots left.")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
+                            .font(t.look == .liquid ? .callout : t.font(.text, 15))
+                            .foregroundStyle(t.ink2)
+                            .lookRow(t)
                         if let current = model.currentLocation, model.canAddLocation {
                             Button {
                                 saveCurrentLocation(current)
                             } label: {
                                 Label("Save my current location (\(current.name ?? "here"))", systemImage: "location.fill")
                             }
+                            .lookRow(t)
                         }
                     }
                 }
@@ -33,11 +36,11 @@ struct AddLocationView: View {
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(completion.title)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(t.ink)
                                 if !completion.subtitle.isEmpty {
                                     Text(completion.subtitle)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                                        .foregroundStyle(t.ink2)
                                 }
                             }
                             Spacer()
@@ -47,14 +50,16 @@ struct AddLocationView: View {
                         }
                     }
                     .disabled(search.resolvingCompletion != nil)
+                    .lookRow(t)
                 }
             }
+            .font(t.look == .liquid ? .body : t.font(.text, 16))
+            .lookList(t)
             .searchable(text: $search.query, placement: .navigationBarDrawer(displayMode: .always), prompt: "City, address or ZIP")
             .onChange(of: search.query) { _, _ in
                 search.queryChanged()
             }
-            .navigationTitle("Add Location")
-            .navigationBarTitleDisplayMode(.inline)
+            .lookNavigationTitle("Add a Place")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

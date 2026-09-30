@@ -3,34 +3,38 @@ import SwiftUI
 
 /// Tappable banner for a government weather alert.
 struct AlertBanner: View {
+    @Environment(\.lookTokens) private var t
     let alert: WeatherAlertInfo
     let action: () -> Void
 
     var body: some View {
+        let color = Palette.alert(alert.severity)
+        let radius = t.surfaceStyle == .hairline ? 0 : t.tileRadius
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.title2)
-                    .foregroundStyle(Palette.alert(alert.severity))
+                    .foregroundStyle(color)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(alert.title)
-                        .font(.headline)
+                        .font(t.look == .liquid ? .headline : t.font(.textStrong, t.bodySize + 1))
+                        .foregroundStyle(t.ink)
                     Text(alert.source)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink2)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundStyle(.white.opacity(0.6))
+                    .foregroundStyle(t.ink3)
             }
             .padding(14)
             .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Palette.alert(alert.severity).opacity(0.28))
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(color.opacity(t.colorScheme == .light ? 0.14 : 0.24))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Palette.alert(alert.severity).opacity(0.7), lineWidth: 1)
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .stroke(color.opacity(0.7), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -39,6 +43,7 @@ struct AlertBanner: View {
 
 struct AlertDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.lookTokens) private var t
     let alert: WeatherAlertInfo
 
     var body: some View {
@@ -79,11 +84,12 @@ struct AlertDetailView: View {
                         }
                     }
                 }
+                .font(t.look == .liquid ? .body : t.font(.text, t.bodySize + 1))
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .navigationTitle(alert.title)
-            .navigationBarTitleDisplayMode(.inline)
+            .lookScreen(t)
+            .lookNavigationTitle(alert.title)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

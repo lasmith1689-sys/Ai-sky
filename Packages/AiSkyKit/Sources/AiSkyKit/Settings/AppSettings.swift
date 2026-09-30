@@ -70,6 +70,8 @@ public struct AppSettings: Codable, Sendable, Equatable {
     public var rainAlertLocationIDs: [String]
     /// Notify about new government weather alerts for watched locations.
     public var severeAlertsEnabled: Bool
+    /// Visual style of the app and widgets.
+    public var look: Look
 
     public init(
         units: UnitPreferences,
@@ -81,7 +83,8 @@ public struct AppSettings: Codable, Sendable, Equatable {
         radarMapStyle: MapStylePreference = .muted,
         rainAlertsEnabled: Bool = false,
         rainAlertLocationIDs: [String] = [WeatherLocation.currentLocationID],
-        severeAlertsEnabled: Bool = false
+        severeAlertsEnabled: Bool = false,
+        look: Look = .default
     ) {
         self.units = units
         self.dataSource = dataSource
@@ -93,6 +96,7 @@ public struct AppSettings: Codable, Sendable, Equatable {
         self.rainAlertsEnabled = rainAlertsEnabled
         self.rainAlertLocationIDs = rainAlertLocationIDs
         self.severeAlertsEnabled = severeAlertsEnabled
+        self.look = look
     }
 
     /// Defaults for the user's region (imperial + US AQI in the U.S., metric + EAQI in Europe...).
@@ -111,7 +115,7 @@ public struct AppSettings: Codable, Sendable, Equatable {
     // Decoding tolerates missing keys so settings survive app updates.
     private enum CodingKeys: String, CodingKey {
         case units, dataSource, aqiScale, radarSource, radarOpacity, radarSpeed, radarMapStyle
-        case rainAlertsEnabled, rainAlertLocationIDs, severeAlertsEnabled
+        case rainAlertsEnabled, rainAlertLocationIDs, severeAlertsEnabled, look
     }
 
     public init(from decoder: Decoder) throws {
@@ -127,6 +131,8 @@ public struct AppSettings: Codable, Sendable, Equatable {
         rainAlertsEnabled = (try? c.decodeIfPresent(Bool.self, forKey: .rainAlertsEnabled)) ?? defaults.rainAlertsEnabled
         rainAlertLocationIDs = (try? c.decodeIfPresent([String].self, forKey: .rainAlertLocationIDs)) ?? defaults.rainAlertLocationIDs
         severeAlertsEnabled = (try? c.decodeIfPresent(Bool.self, forKey: .severeAlertsEnabled)) ?? defaults.severeAlertsEnabled
+        // Settings saved before looks existed have no key: they get the default (Instrument) too.
+        look = (try? c.decodeIfPresent(Look.self, forKey: .look)) ?? .default
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -141,5 +147,6 @@ public struct AppSettings: Codable, Sendable, Equatable {
         try c.encode(rainAlertsEnabled, forKey: .rainAlertsEnabled)
         try c.encode(rainAlertLocationIDs, forKey: .rainAlertLocationIDs)
         try c.encode(severeAlertsEnabled, forKey: .severeAlertsEnabled)
+        try c.encode(look, forKey: .look)
     }
 }

@@ -61,27 +61,35 @@ struct AirQualityWidgetView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             default:
+                let t = entry.tokens
                 VStack(alignment: .leading, spacing: 3) {
                     WidgetLocationName(location: location)
-                        .font(.caption.weight(.semibold))
-                    Text("AIR QUALITY")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
+                        .widgetAccentable()
+                    if t.look == .liquid {
+                        Text("AIR QUALITY")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(t.ink2)
+                    } else {
+                        Text("Air Quality")
+                            .lookLabel(t, size: 9, color: t.ink2)
+                    }
                     Text(number)
-                        .font(.system(size: 40, weight: .semibold, design: .rounded))
+                        .font(t.look == .liquid ? .system(size: 40, weight: .semibold, design: .rounded) : t.font(.display, 40))
+                        .widgetAccentable()
                     Text(level.name)
-                        .font(.caption.weight(.semibold))
+                        .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
                         .lineLimit(2)
                         .minimumScaleFactor(0.8)
                     Spacer(minLength: 0)
                     ScaleBar(colors: AQILevel.levels(for: scale).map(Palette.aqi), position: min(1, value / scale.gaugeMaximum))
                     if let pollutant = airQuality.primaryPollutant(for: scale) {
                         Text("Primary: \(pollutant.symbol)")
-                            .font(.caption2)
-                            .foregroundStyle(.white.opacity(0.8))
+                            .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
+                            .foregroundStyle(t.ink2)
                     }
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(t.ink)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
         } else {

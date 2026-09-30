@@ -23,6 +23,40 @@
 			</array>
 		</dict>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Barlow-Light.ttf</string>
+		<string>Barlow-Medium.ttf</string>
+		<string>Barlow-Regular.ttf</string>
+		<string>Barlow-SemiBold.ttf</string>
+		<string>BarlowCondensed-Medium.ttf</string>
+		<string>BarlowCondensed-SemiBold.ttf</string>
+		<string>BricolageGrotesque-Medium.ttf</string>
+		<string>BricolageGrotesque-Regular.ttf</string>
+		<string>BricolageGrotesque-SemiBold.ttf</string>
+		<string>BricolageGrotesqueDisplay-Medium.ttf</string>
+		<string>DMMono-Medium.ttf</string>
+		<string>DMMono-Regular.ttf</string>
+		<string>Geist-ExtraLight.ttf</string>
+		<string>Geist-Light.ttf</string>
+		<string>Geist-Medium.ttf</string>
+		<string>Geist-Regular.ttf</string>
+		<string>GeistMono-Medium.ttf</string>
+		<string>GeistMono-Regular.ttf</string>
+		<string>InstrumentSans-Medium.ttf</string>
+		<string>InstrumentSans-Regular.ttf</string>
+		<string>InstrumentSans-SemiBold.ttf</string>
+		<string>Manrope-Bold.ttf</string>
+		<string>Manrope-Light.ttf</string>
+		<string>Manrope-Medium.ttf</string>
+		<string>Manrope-Regular.ttf</string>
+		<string>Manrope-SemiBold.ttf</string>
+		<string>NewsreaderDisplay-Light.ttf</string>
+		<string>NewsreaderHeadline-Regular.ttf</string>
+		<string>NewsreaderText-Italic.ttf</string>
+		<string>NewsreaderText-Medium.ttf</string>
+		<string>NewsreaderText-Regular.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

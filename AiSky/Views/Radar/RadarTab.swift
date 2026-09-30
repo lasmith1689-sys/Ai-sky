@@ -5,6 +5,7 @@ import SwiftUI
 /// Full-screen animated precipitation radar.
 struct RadarTab: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     @State private var radar = RadarViewModel()
     @State private var focus: MapFocus?
     @State private var center: CLLocationCoordinate2D?
@@ -40,9 +41,10 @@ struct RadarTab: View {
                 Spacer()
                 if let message = radar.errorMessage {
                     Text(message)
-                        .font(.footnote)
+                        .font(t.look == .liquid ? .footnote : t.font(.text, 13))
+                        .foregroundStyle(t.ink)
                         .padding(10)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        .lookPanel(t, radius: 12)
                 }
                 if let spot {
                     SpotCard(
@@ -54,10 +56,11 @@ struct RadarTab: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else if !spotHintSeen {
                     Label("Touch and hold the map for rainfall history anywhere", systemImage: "hand.tap")
-                        .font(.caption)
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(.regularMaterial, in: Capsule())
+                        .lookPanel(t, radius: 999)
                 }
                 RadarControls(radar: radar, speed: model.settings.radarSpeed)
             }
@@ -105,15 +108,21 @@ struct RadarTab: View {
         @Bindable var model = model
         return HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(radar.source.displayName)
-                    .font(.subheadline.weight(.semibold))
+                if t.look == .liquid || t.surfaceStyle == .block {
+                    Text(radar.source.displayName)
+                        .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 15))
+                } else {
+                    Text(radar.source.displayName)
+                        .lookLabel(t, size: 12, color: t.ink)
+                }
                 Text(radar.source == .noaa ? "U.S. base reflectivity" : "Global composite · past 2 hr")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
+                    .foregroundStyle(t.ink2)
             }
+            .foregroundStyle(t.ink)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .lookPanel(t, radius: 12)
 
             Spacer()
 
@@ -136,13 +145,14 @@ struct RadarTab: View {
                     }
                 } label: {
                     Image(systemName: "square.3.layers.3d")
-                        .mapButtonStyle()
+                        .mapButtonStyle(t)
                 }
+                .accessibilityLabel("Radar and map options")
                 Button {
                     focus = MapFocus(coordinate: startingCoordinate, span: 4)
                 } label: {
                     Image(systemName: "location.fill")
-                        .mapButtonStyle()
+                        .mapButtonStyle(t)
                 }
                 .accessibilityLabel("Center on selected location")
                 Button {
@@ -150,7 +160,7 @@ struct RadarTab: View {
                     Task { await radar.load(preference: model.settings.radarSource, latitude: point.latitude, longitude: point.longitude, force: true) }
                 } label: {
                     Image(systemName: "arrow.clockwise")
-                        .mapButtonStyle()
+                        .mapButtonStyle(t)
                 }
                 .accessibilityLabel("Reload radar")
             }
@@ -212,6 +222,7 @@ struct RadarTab: View {
 /// Play / scrub controls and the color legend.
 private struct RadarControls: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     let radar: RadarViewModel
     let speed: Double
 
@@ -223,6 +234,7 @@ private struct RadarControls: View {
                 } label: {
                     Image(systemName: radar.isPlaying ? "pause.fill" : "play.fill")
                         .font(.title2)
+                        .foregroundStyle(t.controlTint ?? t.accent)
                         .frame(width: 36, height: 36)
                 }
                 .disabled(radar.frames.count < 2)
@@ -230,17 +242,18 @@ private struct RadarControls: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(timeLabel)
-                        .font(.headline.monospacedDigit())
+                        .font(t.look == .liquid ? .headline.monospacedDigit() : t.font(.textStrong, 17).monospacedDigit())
                     Text(relativeLabel)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink2)
                 }
                 Spacer()
                 if radar.isLoading {
                     ProgressView()
                 }
                 Button("Now") { radar.showLatest() }
-                    .font(.subheadline.weight(.semibold))
+                    .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 15))
+                    .foregroundStyle(t.controlTint ?? t.accent)
                     .disabled(radar.frames.isEmpty)
             }
 
@@ -260,8 +273,9 @@ private struct RadarControls: View {
 
             RadarLegend(source: radar.source)
         }
+        .foregroundStyle(t.ink)
         .padding(14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .lookPanel(t, radius: 18)
     }
 
     private var timeLabel: String {
@@ -281,6 +295,7 @@ private struct RadarControls: View {
 
 /// Reflectivity color scale matching each source's palette.
 struct RadarLegend: View {
+    @Environment(\.lookTokens) private var t
     let source: RadarSource
 
     var body: some View {
@@ -297,11 +312,11 @@ struct RadarLegend: View {
                 Spacer()
                 Text("Extreme")
             }
-            .font(.system(size: 9, weight: .medium))
-            .foregroundStyle(.secondary)
+            .font(t.look == .liquid ? .system(size: 9, weight: .medium) : t.font(.label, 9, fixed: true))
+            .foregroundStyle(t.ink2)
             Link(source.attribution, destination: source.attributionURL)
-                .font(.system(size: 9))
-                .foregroundStyle(.secondary)
+                .font(t.look == .liquid ? .system(size: 9) : t.font(.text, 9, fixed: true))
+                .foregroundStyle(t.ink2)
         }
     }
 
@@ -318,10 +333,11 @@ struct RadarLegend: View {
 }
 
 private extension Image {
-    func mapButtonStyle() -> some View {
+    func mapButtonStyle(_ t: LookTokens) -> some View {
         self
             .font(.body.weight(.semibold))
+            .foregroundStyle(t.look == .liquid ? Color.primary : t.ink)
             .frame(width: 44, height: 44)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .lookPanel(t, radius: 12)
     }
 }

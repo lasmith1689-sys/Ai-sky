@@ -75,6 +75,7 @@ struct RadarSpot: Identifiable, Equatable {
 /// Actions for a touched-and-held spot: its rainfall history, the Time Machine, or saving it.
 struct SpotCard: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     let spot: RadarSpot
     let onShow: (ForecastSheet) -> Void
     let onClose: () -> Void
@@ -87,18 +88,18 @@ struct SpotCard: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(spot.displayName)
-                        .font(.headline)
+                        .font(t.look == .liquid ? .headline : t.font(.textStrong, 17))
                         .lineLimit(1)
                     Text(spot.subtitle ?? spot.coordinateText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink2)
                         .lineLimit(1)
                 }
                 Spacer()
                 Button(action: onClose) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(t.ink3)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Close")
@@ -111,12 +112,13 @@ struct SpotCard: View {
             }
             if let message {
                 Text(message)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                    .foregroundStyle(t.ink2)
             }
         }
+        .foregroundStyle(t.ink)
         .padding(14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .lookPanel(t, radius: 18)
     }
 
     private func action(_ title: String, systemImage: String, perform: @escaping () -> Void) -> some View {
@@ -125,13 +127,14 @@ struct SpotCard: View {
                 Image(systemName: systemImage)
                     .font(.title3)
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
+            .foregroundStyle(t.look == .liquid ? Color.accentColor : t.ink)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
-            .background(Color.accentColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background((t.look == .liquid ? Color.accentColor.opacity(0.15) : t.surfaceAlt), in: RoundedRectangle(cornerRadius: t.surfaceStyle == .hairline ? 0 : 12, style: .continuous))
         }
         .buttonStyle(.plain)
     }

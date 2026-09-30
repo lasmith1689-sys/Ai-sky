@@ -6,6 +6,7 @@ import SwiftUI
 struct DayDetailView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.lookTokens) private var t
     let snapshot: WeatherSnapshot
     let day: DailyForecast
 
@@ -13,22 +14,21 @@ struct DayDetailView: View {
         let timeZone = snapshot.timeZone
         NavigationStack {
             ZStack {
-                SkyBackground(condition: day.condition, isDaylight: true).ignoresSafeArea()
+                LookPageBackground(condition: day.condition, isDaylight: true).ignoresSafeArea()
                 ScrollView {
                     DayDetailContent(day: day, hours: hoursOfDay, timeZone: timeZone)
-                        .padding(16)
+                        .padding(.horizontal, t.gutter)
+                        .padding(.vertical, 16)
                 }
             }
-            .foregroundStyle(.white)
-            .navigationTitle(model.formatter.fullDay(day.date, timeZone: timeZone))
-            .navigationBarTitleDisplayMode(.inline)
+            .foregroundStyle(t.ink)
+            .lookNavigationTitle(model.formatter.fullDay(day.date, timeZone: timeZone))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
             }
         }
-        .environment(\.colorScheme, .dark)
         .presentationDetents([.large])
     }
 
@@ -42,6 +42,7 @@ struct DayDetailView: View {
 /// A day's summary, hourly charts and statistics; shared by forecast days and the Time Machine.
 struct DayDetailContent: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     let day: DailyForecast?
     let hours: [HourlyForecast]
     let timeZone: TimeZone
@@ -50,35 +51,42 @@ struct DayDetailContent: View {
 
     var body: some View {
         let formatter = model.formatter
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: t.sectionSpacing) {
             if let day {
                 HStack(spacing: 12) {
-                    ConditionIcon(day.condition)
-                        .font(.system(size: 44))
-                    VStack(alignment: .leading) {
-                        Text(day.condition.description)
-                            .font(.title2.weight(.semibold))
+                    if t.look == .liquid {
+                        ConditionIcon(day.condition)
+                            .font(.system(size: 44))
+                    } else {
+                        OutlineConditionIcon(day.condition)
+                            .font(.system(size: 36, weight: .light))
+                            .foregroundStyle(t.look == .chroma ? ChromaPalette.cobalt : t.ink2)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(t.look == .liquid ? day.condition.description : sentenceCase(day.condition.description))
+                            .font(t.look == .liquid ? .title2.weight(.semibold) : t.font(.headline, 24))
                         Text("High \(formatter.temperature(day.high)) · Low \(formatter.temperature(day.low))")
-                            .font(.headline)
-                            .foregroundStyle(.white.opacity(0.85))
+                            .font(t.look == .liquid ? .headline : t.font(.textMedium, 16))
+                            .foregroundStyle(t.ink2)
                     }
                 }
             }
             if !hours.isEmpty {
                 Text(ForecastNarrator.daySummary(hours: hours, now: hours[0].date, timeZone: timeZone, formatter: formatter))
-                    .font(.callout)
+                    .font(t.look == .liquid ? .callout : t.font(t.look == .editorial ? .number : .text, t.bodySize + 1))
+                    .fixedSize(horizontal: false, vertical: true)
 
-                WeatherCard(title: "Temperature", systemImage: "thermometer.medium") {
+                WeatherCard(title: "Temperature", systemImage: "thermometer.medium", tone: .navy) {
                     HourlyMetricChart(hours: hours, metric: .temperature, formatter: formatter, timeZone: timeZone)
                         .frame(height: 150)
                 }
                 if isPast {
-                    WeatherCard(title: "Precipitation", systemImage: "drop.fill", accessory: totalText(formatter: formatter)) {
+                    WeatherCard(title: "Precipitation", systemImage: "drop.fill", accessory: totalText(formatter: formatter), tone: .cobalt) {
                         HourlyMetricChart(hours: hours, metric: .amount, formatter: formatter, timeZone: timeZone)
                             .frame(height: 120)
                     }
                 } else {
-                    WeatherCard(title: "Chance of Precipitation", systemImage: "drop.fill") {
+                    WeatherCard(title: "Chance of Precipitation", systemImage: "drop.fill", tone: .cobalt) {
                         HourlyMetricChart(hours: hours, metric: .precipitation, formatter: formatter, timeZone: timeZone)
                             .frame(height: 120)
                     }
@@ -89,7 +97,7 @@ struct DayDetailContent: View {
                 }
             }
             if let day {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                     stats(day: day, formatter: formatter)
                 }
             }

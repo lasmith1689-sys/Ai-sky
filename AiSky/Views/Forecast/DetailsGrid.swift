@@ -4,6 +4,7 @@ import SwiftUI
 /// Grid of current-condition details.
 struct DetailsGrid: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     let snapshot: WeatherSnapshot
     let now: Date
 
@@ -11,7 +12,8 @@ struct DetailsGrid: View {
         let formatter = model.formatter
         let current = snapshot.conditions(at: now)
         let today = snapshot.day(containing: now)
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+        let gap: CGFloat = t.surfaceStyle == .hairline ? 20 : (t.look == .chroma ? 10 : 12)
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: gap), GridItem(.flexible(), spacing: gap)], spacing: t.surfaceStyle == .hairline ? 8 : gap) {
             DetailTile(
                 title: "Feels Like",
                 systemImage: "thermometer.medium",
@@ -35,7 +37,7 @@ struct DetailsGrid: View {
             }
 
             if let speed = current.windSpeed {
-                DetailTile(title: "Wind", systemImage: "wind", value: formatter.windSpeed(speed), detail: windDetail(current, formatter)) {
+                DetailTile(title: "Wind", systemImage: "wind", value: formatter.windSpeed(speed), detail: windDetail(current, formatter), tone: .navy) {
                     if let direction = current.windDirection {
                         WindCompass(direction: direction)
                             .frame(width: 64, height: 64)
@@ -50,7 +52,8 @@ struct DetailsGrid: View {
                     title: "UV Index",
                     systemImage: "sun.max.fill",
                     value: "\(Int(uv.rounded())) \(category.name)",
-                    detail: UVCategory.protectionAdvice(hours: snapshot.hourly, day: now, timeZone: snapshot.timeZone, formatter: formatter)
+                    detail: UVCategory.protectionAdvice(hours: snapshot.hourly, day: now, timeZone: snapshot.timeZone, formatter: formatter),
+                    tone: .mustard
                 ) {
                     ScaleBar(
                         colors: [UVCategory.low, .moderate, .high, .veryHigh, .extreme].map(Palette.uv),
@@ -69,7 +72,8 @@ struct DetailsGrid: View {
                     value: formatter.time(afterSunset ? nextSunrise ?? sunrise : nextEvent, timeZone: snapshot.timeZone),
                     detail: beforeSunrise || afterSunset
                         ? "Sunset: \(formatter.time(sunset, timeZone: snapshot.timeZone))"
-                        : "Sunrise: \(formatter.time(sunrise, timeZone: snapshot.timeZone))"
+                        : "Sunrise: \(formatter.time(sunrise, timeZone: snapshot.timeZone))",
+                    tone: .cobalt
                 ) {
                     SunArc(progress: sunProgress(sunrise: sunrise, sunset: sunset))
                         .frame(height: 38)
@@ -113,7 +117,8 @@ struct DetailsGrid: View {
                 title: "Moon",
                 systemImage: "moon.stars.fill",
                 value: "\(Int((moon.illumination * 100).rounded()))%",
-                detail: "\(moon.phase.name). Next full moon \(formatter.monthDay(moon.nextFullMoon, timeZone: snapshot.timeZone))."
+                detail: "\(moon.phase.name). Next full moon \(formatter.monthDay(moon.nextFullMoon, timeZone: snapshot.timeZone)).",
+                tone: .green
             ) {
                 Image(systemName: moon.phase.symbolName)
                     .font(.system(size: 34))
@@ -145,21 +150,23 @@ struct DetailsGrid: View {
 
 /// Compass rose with an arrow pointing where the wind is blowing to.
 struct WindCompass: View {
+    @Environment(\.lookTokens) private var t
     /// Direction the wind comes from, in degrees.
     let direction: Double
 
     var body: some View {
         ZStack {
-            Circle().stroke(.white.opacity(0.3), lineWidth: 1.5)
+            Circle().stroke(t.line.opacity(t.look == .liquid ? 1.4 : 1), lineWidth: 1.5)
             ForEach(Array(["N", "E", "S", "W"].enumerated()), id: \.offset) { index, letter in
                 Text(letter)
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .font(t.look == .liquid ? .system(size: 9, weight: .bold) : t.font(.label, 9, fixed: true))
+                    .foregroundStyle(t.ink2)
                     .offset(y: -24)
                     .rotationEffect(.degrees(Double(index) * 90))
             }
             Image(systemName: "location.north.fill")
                 .font(.system(size: 20))
+                .foregroundStyle(t.look == .instrument ? t.now : t.ink)
                 .rotationEffect(.degrees(direction + 180))
         }
         .accessibilityLabel("Wind from \(WeatherFormatter.compassDirectionName(direction))")
@@ -168,6 +175,7 @@ struct WindCompass: View {
 
 /// Arc showing the sun's position between sunrise and sunset.
 struct SunArc: View {
+    @Environment(\.lookTokens) private var t
     /// 0...1 between sunrise and sunset, or nil at night.
     let progress: Double?
 
@@ -180,9 +188,9 @@ struct SunArc: View {
                 path.addQuadCurve(to: CGPoint(x: width, y: height), control: CGPoint(x: width / 2, y: -height * 0.9))
             }
             ZStack(alignment: .topLeading) {
-                path.stroke(.white.opacity(0.35), style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
+                path.stroke(t.ink3, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
                 Rectangle()
-                    .fill(.white.opacity(0.3))
+                    .fill(t.line)
                     .frame(height: 1)
                     .offset(y: height)
                 if let progress {
@@ -191,8 +199,8 @@ struct SunArc: View {
                     let x = width * t
                     let y = pow(1 - t, 2) * height + 2 * (1 - t) * t * (-height * 0.9) + pow(t, 2) * height
                     Circle()
-                        .fill(Color.yellow)
-                        .shadow(color: .yellow.opacity(0.8), radius: 4)
+                        .fill(t.look == .liquid ? Color.yellow : t.sun)
+                        .shadow(color: (t.look == .liquid ? Color.yellow : t.sun).opacity(0.8), radius: 4)
                         .frame(width: 10, height: 10)
                         .offset(x: x - 5, y: y - 5)
                 }

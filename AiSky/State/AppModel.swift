@@ -53,6 +53,10 @@ final class AppModel {
     var pendingSection: ForecastSection?
     /// Sheet to open over the forecast (set by deep links, consumed by `ForecastView`).
     var pendingSheet: ForecastSheet?
+    /// Debug builds only: `-AiSkyLook <id>` shows a look without saving it.
+    var lookOverride: Look?
+    /// Debug builds only: the CI smoke test's `-AiSkyScreen dayDetail` opens the first day.
+    var debugOpensDayDetail = false
 
     @ObservationIgnored private var lastActiveRefresh: Date?
     private let notificationRouter = NotificationRouter()
@@ -84,18 +88,30 @@ final class AppModel {
     #if DEBUG
     /// Debug-only launch arguments used by the CI smoke test (handy in the Simulator too):
     /// `-AiSkyDemoLibrary` fills an empty library with sample places;
-    /// `-AiSkyScreen radar|radarSpot|locations|settings|<forecast section>|rainHistory|timeMachine` opens that screen.
+    /// `-AiSkyDemoWeather` shows sample weather (rain in a few minutes) everywhere;
+    /// `-AiSkyLook <id>` shows a look without saving it;
+    /// `-AiSkyScreen radar|radarSpot|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail`
+    /// opens that screen.
     private func applyDebugLaunchArguments() {
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains("-AiSkyDemoLibrary"), savedLocations.isEmpty {
             savedLocations = Array(SampleData.savedLocations.dropFirst())
             store.saveSavedLocations(savedLocations)
         }
+        if let index = arguments.firstIndex(of: "-AiSkyLook"), arguments.indices.contains(index + 1) {
+            lookOverride = Look(rawValue: arguments[index + 1])
+        }
         if let index = arguments.firstIndex(of: "-AiSkyScreen"), arguments.indices.contains(index + 1) {
             switch arguments[index + 1] {
             case "radar", "radarSpot": selectedTab = .radar
             case "locations": selectedTab = .locations
+            case "addLocation":
+                selectedTab = .locations
+                isAddingLocation = true
             case "settings": selectedTab = .settings
+            case "dayDetail":
+                selectedTab = .forecast
+                debugOpensDayDetail = true
             default:
                 selectedTab = .forecast
                 pendingSection = ForecastSection(rawValue: arguments[index + 1])
@@ -108,6 +124,15 @@ final class AppModel {
     // MARK: Derived data
 
     var formatter: WeatherFormatter { WeatherFormatter(units: settings.units) }
+
+    /// The look on screen: the saved one, unless a debug launch argument overrides it.
+    var look: Look { lookOverride ?? settings.look }
+
+    /// Picks a look in Settings (saved and shared with the widgets by ``settingsChanged(from:to:)``).
+    func setLook(_ look: Look) {
+        lookOverride = nil
+        settings.look = look
+    }
 
     var showsCurrentLocation: Bool {
         locationManager.isAuthorized && currentLocation != nil

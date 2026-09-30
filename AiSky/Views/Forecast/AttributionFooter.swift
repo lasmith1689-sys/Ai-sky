@@ -4,6 +4,7 @@ import SwiftUI
 /// Data sources, required attributions and freshness.
 struct AttributionFooter: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.lookTokens) private var t
     let snapshot: WeatherSnapshot
     let now: Date
 
@@ -13,12 +14,11 @@ struct AttributionFooter: View {
         VStack(spacing: 8) {
             ForEach(snapshot.notes, id: \.self) { note in
                 Label(note, systemImage: "info.circle")
-                    .font(.caption)
                     .multilineTextAlignment(.center)
             }
 
             Text(WeatherFormatter.updatedText(since: snapshot.fetchedAt, now: now))
-                .font(.caption.weight(.semibold))
+                .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
 
             if snapshot.source == .appleWeather {
                 if let appleAttribution {
@@ -29,10 +29,8 @@ struct AttributionFooter: View {
                     }
                     .frame(height: 14)
                     Link("Data sources & legal", destination: appleAttribution.legalPageURL)
-                        .font(.caption)
                 } else {
                     Text("Weather data by Apple Weather")
-                        .font(.caption)
                 }
             }
 
@@ -41,14 +39,14 @@ struct AttributionFooter: View {
                      ? "Weather & air quality data by Open-Meteo.com (CC BY 4.0)"
                      : "Air quality & precipitation history by Open-Meteo.com (CC BY 4.0)")
             }
-            .font(.caption)
 
             if snapshot.location.isLikelyInUnitedStates && snapshot.source == .openMeteo {
                 Text("Alerts from the National Weather Service")
-                    .font(.caption)
             }
         }
-        .foregroundStyle(.white.opacity(0.7))
+        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+        .foregroundStyle(t.ink2)
+        .tint(t.ink2)
         .frame(maxWidth: .infinity)
         .padding(.top, 8)
         .task(id: snapshot.source) {

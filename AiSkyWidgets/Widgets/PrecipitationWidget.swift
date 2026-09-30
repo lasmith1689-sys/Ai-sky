@@ -34,6 +34,7 @@ struct PrecipitationWidgetView: View {
         if let snapshot = entry.snapshot, let location = entry.location {
             let totals = PrecipitationTotals.compute(for: snapshot, now: entry.date)
             let formatter = entry.formatter
+            let t = entry.tokens
             switch family {
             case .accessoryRectangular:
                 VStack(alignment: .leading, spacing: 1) {
@@ -56,19 +57,20 @@ struct PrecipitationWidgetView: View {
                                 x: .value("Day", formatter.monthDay(bar.date, timeZone: snapshot.timeZone)),
                                 y: .value("Amount", formatter.precipitationValue(bar.total))
                             )
-                            .foregroundStyle(bar.forecast > bar.observed ? Palette.rain.opacity(0.45) : Palette.rain)
+                            .foregroundStyle(bar.forecast > bar.observed ? t.rain.opacity(0.45) : t.rain)
                         }
                         .chartYAxis(.hidden)
                         .chartXAxis(.hidden)
+                        .widgetAccentable()
                         Text("Daily totals · lighter = forecast")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.white.opacity(0.7))
+                            .font(t.look == .liquid ? .system(size: 9) : t.font(.text, 9))
+                            .foregroundStyle(t.ink2)
                     }
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(t.ink)
             default:
                 stats(totals: totals, formatter: formatter, location: location)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(t.ink)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
         } else {
@@ -77,28 +79,38 @@ struct PrecipitationWidgetView: View {
     }
 
     private func stats(totals: PrecipitationTotals, formatter: WeatherFormatter, location: WeatherLocation) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
+        let t = entry.tokens
+        return VStack(alignment: .leading, spacing: 3) {
             WidgetLocationName(location: location)
-                .font(.caption.weight(.semibold))
+                .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
+                .widgetAccentable()
             stat("Past 24 hrs", amount(totals.past24Hours, formatter), prominent: true)
             stat("Past 7 days", amount(totals.past7Days, formatter))
             stat("Next 24 hrs", amount(totals.next24Hours, formatter))
             Spacer(minLength: 0)
             if let last = totals.lastPrecipitation {
                 Text(lastText(last.date))
-                    .font(.system(size: 10))
-                    .foregroundStyle(.white.opacity(0.75))
+                    .font(t.look == .liquid ? .system(size: 10) : t.font(.text, 10))
+                    .foregroundStyle(t.ink2)
             }
         }
     }
 
     private func stat(_ title: String, _ value: String, prominent: Bool = false) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title.uppercased())
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(.white.opacity(0.7))
-            Text(value)
-                .font(prominent ? .title3.weight(.semibold) : .subheadline.weight(.semibold))
+        let t = entry.tokens
+        return VStack(alignment: .leading, spacing: 0) {
+            if t.look == .liquid {
+                Text(title.uppercased())
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(t.ink2)
+                Text(value)
+                    .font(prominent ? .title3.weight(.semibold) : .subheadline.weight(.semibold))
+            } else {
+                Text(title)
+                    .lookLabel(t, size: 9, color: t.ink2)
+                Text(value)
+                    .font(t.font(prominent ? .display : .textStrong, prominent ? 22 : 15))
+            }
         }
     }
 

@@ -76,6 +76,7 @@ struct LocationsWidgetView: View {
 
     var body: some View {
         let formatter = entry.settings.formatter
+        let t = LookTokens.tokens(for: entry.settings.look)
         VStack(spacing: 0) {
             if entry.rows.isEmpty {
                 Text("Add places in Ai Sky to see them here.")
@@ -84,30 +85,32 @@ struct LocationsWidgetView: View {
             }
             ForEach(Array(entry.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 {
-                    Divider().overlay(.white.opacity(0.25))
+                    Rectangle().fill(t.line).frame(height: 1)
                 }
                 Link(destination: URL(string: "aisky://forecast/\(row.location.id)")!) {
                     HStack(spacing: 8) {
                         VStack(alignment: .leading, spacing: 1) {
                             WidgetLocationName(location: row.location)
-                                .font(.subheadline.weight(.semibold))
+                                .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
+                                .widgetAccentable()
                             if let summary = row.summary {
                                 Text(summary.condition.description)
-                                    .font(.caption2)
-                                    .foregroundStyle(.white.opacity(0.75))
+                                    .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
+                                    .foregroundStyle(t.ink2)
                             }
                         }
                         Spacer()
                         if let summary = row.summary {
-                            ConditionIcon(summary.condition, isDaylight: summary.isDaylight)
+                            WidgetConditionIcon(condition: summary.condition, isDaylight: summary.isDaylight, tokens: t)
                                 .font(.body)
                             Text(formatter.temperature(summary.temperature))
-                                .font(.title3.weight(.medium))
+                                .font(t.look == .liquid ? .title3.weight(.medium) : t.font(.display, 22))
                                 .frame(minWidth: 40, alignment: .trailing)
+                                .widgetAccentable()
                             if let high = summary.high, let low = summary.low {
                                 Text("\(formatter.temperature(high)) / \(formatter.temperature(low))")
-                                    .font(.caption2)
-                                    .foregroundStyle(.white.opacity(0.75))
+                                    .font(t.look == .liquid ? .caption2 : t.font(.number, 11))
+                                    .foregroundStyle(t.ink2)
                                     .frame(width: 58, alignment: .trailing)
                             }
                         } else {
@@ -118,9 +121,13 @@ struct LocationsWidgetView: View {
                 }
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(t.ink)
         .containerBackground(for: .widget) {
-            Palette.skyGradient(for: entry.rows.first?.summary?.condition ?? .partlyCloudy, isDaylight: entry.rows.first?.summary?.isDaylight ?? true)
+            LookWidgetBackground(
+                tokens: t,
+                condition: entry.rows.first?.summary?.condition ?? .partlyCloudy,
+                isDaylight: entry.rows.first?.summary?.isDaylight ?? true
+            )
         }
     }
 }

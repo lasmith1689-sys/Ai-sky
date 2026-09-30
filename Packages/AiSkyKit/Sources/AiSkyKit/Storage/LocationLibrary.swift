@@ -7,7 +7,7 @@ public enum LocationLibraryError: Error, Equatable, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .limitReached(let max):
-            return "Your library is full. You can save up to \(max) locations — remove one to add another."
+            return "Your library is full. You can save up to \(max) places. Remove one to add another."
         case .duplicate(let name):
             return "\(name) is already in your library."
         }

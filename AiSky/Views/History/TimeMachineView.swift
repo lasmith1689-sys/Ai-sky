@@ -5,6 +5,7 @@ import SwiftUI
 /// Push it inside a `NavigationStack` (see ``TimeMachineSheet``).
 struct TimeMachineView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     let location: WeatherLocation
     let calendar: Calendar
 
@@ -23,21 +24,21 @@ struct TimeMachineView: View {
 
     var body: some View {
         ZStack {
-            SkyBackground(condition: day?.summary?.condition ?? .partlyCloudy, isDaylight: true)
+            LookPageBackground(condition: day?.summary?.condition ?? .partlyCloudy, isDaylight: true)
                 .ignoresSafeArea()
                 .animation(.easeInOut, value: day?.summary?.condition)
             ScrollView {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: t.sectionSpacing) {
                     dateControls
                     jumpChips
                     content
                 }
-                .padding(16)
+                .padding(.horizontal, t.gutter)
+                .padding(.vertical, 16)
             }
         }
-        .foregroundStyle(.white)
-        .navigationTitle("Time Machine")
-        .navigationBarTitleDisplayMode(.inline)
+        .foregroundStyle(t.ink)
+        .lookNavigationTitle("Time Machine")
         .task(id: date) {
             await load()
         }
@@ -52,12 +53,12 @@ struct TimeMachineView: View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(model.formatter.longDate(date, timeZone: calendar.timeZone))
-                    .font(.title3.weight(.semibold))
+                    .font(t.look == .liquid ? .title3.weight(.semibold) : t.font(.headline, 20))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(relativeDescription)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
+                    .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                    .foregroundStyle(t.ink2)
             }
             HStack(spacing: 10) {
                 stepButton(systemImage: "chevron.left", days: -1)
@@ -71,8 +72,12 @@ struct TimeMachineView: View {
                     .disabled(date >= latest)
             }
         }
-        .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .padding(t.surfaceStyle == .hairline ? 0 : 12)
+        .padding(.bottom, t.surfaceStyle == .hairline ? 12 : 0)
+        .lookSurface(t, radius: t.cardRadius)
+        .overlay(alignment: .bottom) {
+            if t.surfaceStyle == .hairline { LookRule(strong: true) }
+        }
     }
 
     /// The picker keeps a time of day; always store local midnight.
@@ -89,8 +94,10 @@ struct TimeMachineView: View {
         } label: {
             Image(systemName: systemImage)
                 .font(.headline)
+                .foregroundStyle(t.ink)
                 .frame(width: 34, height: 34)
-                .background(Color.white.opacity(0.14), in: Circle())
+                .background(t.look == .liquid ? Color.white.opacity(0.14) : t.surfaceAlt, in: Circle())
+                .overlay(Circle().strokeBorder(t.surfaceStyle == .hairline ? t.line : Color.clear, lineWidth: 1))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(days < 0 ? "Previous day" : "Next day")
@@ -120,10 +127,11 @@ struct TimeMachineView: View {
             date = max(calendar.date(byAdding: .year, value: -years, to: today) ?? today, earliest)
         } label: {
             Text(title)
-                .font(.caption.weight(.semibold))
+                .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
+                .foregroundStyle(t.ink)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(Color.white.opacity(0.14), in: Capsule())
+                .background(t.look == .liquid ? Color.white.opacity(0.14) : t.surfaceAlt, in: Capsule())
         }
         .buttonStyle(.plain)
     }
@@ -155,15 +163,15 @@ struct TimeMachineView: View {
                 isPast: !day.isForecast && !day.isToday
             )
             Label(day.sourceDescription, systemImage: "info.circle")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.7))
+                .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                .foregroundStyle(t.ink2)
         } else if let errorMessage, !isLoading {
             ErrorCard(message: errorMessage) {
                 Task { await load() }
             }
         } else {
             ProgressView()
-                .tint(.white)
+                .tint(t.ink2)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 40)
         }
@@ -203,6 +211,5 @@ struct TimeMachineSheet: View {
                     }
                 }
         }
-        .environment(\.colorScheme, .dark)
     }
 }

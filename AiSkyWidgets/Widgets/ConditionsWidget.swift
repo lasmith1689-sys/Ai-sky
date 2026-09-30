@@ -2,7 +2,7 @@ import AiSkyKit
 import SwiftUI
 import WidgetKit
 
-/// Current conditions for any saved place — Home Screen and Lock Screen.
+/// Current conditions for any saved place, on the Home Screen and Lock Screen.
 struct ConditionsWidget: Widget {
     let kind = "AiSkyConditions"
 
@@ -64,33 +64,38 @@ private struct SmallConditionsView: View {
 
     var body: some View {
         let formatter = entry.formatter
+        let t = entry.tokens
         VStack(alignment: .leading, spacing: 2) {
             WidgetLocationName(location: location)
-                .font(.subheadline.weight(.semibold))
+                .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
+                .widgetAccentable()
             Text(formatter.temperature(current.temperature))
-                .font(.system(size: 44, weight: .light))
+                .font(t.look == .liquid ? .system(size: 44, weight: .light) : t.font(.display, 46))
                 .minimumScaleFactor(0.6)
+                .widgetAccentable()
             Spacer(minLength: 0)
-            ConditionIcon(current.condition, isDaylight: current.isDaylight)
+            WidgetConditionIcon(condition: current.condition, isDaylight: current.isDaylight, tokens: t)
                 .font(.title3)
             Text(current.condition.description)
-                .font(.caption.weight(.semibold))
+                .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
                 .lineLimit(1)
             if entry.nextHour.isPrecipitationExpected {
                 Text(entry.nextHour.shortText)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Palette.rain)
+                    .font(t.look == .liquid ? .caption2.weight(.semibold) : t.font(.textStrong, 11))
+                    .foregroundStyle(t.rainText)
                     .lineLimit(1)
             } else {
                 Text("Feels \(formatter.temperature(current.apparentTemperature))")
-                    .font(.caption2.weight(.medium))
+                    .font(t.look == .liquid ? .caption2.weight(.medium) : t.font(.text, 11))
+                    .foregroundStyle(t.ink2)
             }
             if let today = entry.today {
                 Text("H:\(formatter.temperature(today.high)) L:\(formatter.temperature(today.low))")
-                    .font(.caption2.weight(.medium))
+                    .font(t.look == .liquid ? .caption2.weight(.medium) : t.font(.text, 11))
+                    .foregroundStyle(t.ink2)
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(t.ink)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }
@@ -103,42 +108,48 @@ private struct MediumConditionsView: View {
 
     var body: some View {
         let formatter = entry.formatter
+        let t = entry.tokens
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 0) {
                     WidgetLocationName(location: location)
-                        .font(.subheadline.weight(.semibold))
+                        .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
+                        .widgetAccentable()
                     Text(formatter.temperature(current.temperature))
-                        .font(.system(size: 40, weight: .light))
+                        .font(t.look == .liquid ? .system(size: 40, weight: .light) : t.font(.display, 42))
+                        .widgetAccentable()
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    ConditionIcon(current.condition, isDaylight: current.isDaylight)
+                    WidgetConditionIcon(condition: current.condition, isDaylight: current.isDaylight, tokens: t)
                         .font(.title3)
                     Text(current.condition.description)
-                        .font(.caption.weight(.semibold))
+                        .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
                         .lineLimit(1)
-                    Text("Feels \(formatter.temperature(current.apparentTemperature))")
-                        .font(.caption2)
-                    if let today = entry.today {
-                        Text("H:\(formatter.temperature(today.high)) L:\(formatter.temperature(today.low))")
-                            .font(.caption2)
+                    Group {
+                        Text("Feels \(formatter.temperature(current.apparentTemperature))")
+                        if let today = entry.today {
+                            Text("H:\(formatter.temperature(today.high)) L:\(formatter.temperature(today.low))")
+                        }
                     }
+                    .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
+                    .foregroundStyle(t.ink2)
                 }
             }
             if entry.nextHour.isPrecipitationExpected {
                 Text(entry.nextHour.text)
-                    .font(.caption2.weight(.semibold))
+                    .font(t.look == .liquid ? .caption2.weight(.semibold) : t.font(.textStrong, 11))
+                    .foregroundStyle(t.rainText)
                     .lineLimit(1)
             }
             HStack(spacing: 0) {
                 let hours = snapshot.upcomingHours(from: entry.date, limit: 6)
                 ForEach(Array(hours.enumerated()), id: \.element.id) { index, hour in
-                    WidgetHourColumn(hour: hour, formatter: formatter, timeZone: snapshot.timeZone, isFirst: index == 0)
+                    WidgetHourColumn(hour: hour, formatter: formatter, timeZone: snapshot.timeZone, isFirst: index == 0, tokens: t)
                 }
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(t.ink)
     }
 }
 
@@ -150,43 +161,50 @@ private struct LargeConditionsView: View {
 
     var body: some View {
         let formatter = entry.formatter
+        let t = entry.tokens
         let days = snapshot.upcomingDays(from: entry.date, limit: 5)
         let rangeLow = days.map(\.low).min() ?? 0
         let rangeHigh = days.map(\.high).max() ?? 1
         VStack(alignment: .leading, spacing: 8) {
             MediumConditionsView(entry: entry, snapshot: snapshot, location: location, current: current)
             if let nextHour = snapshot.nextHour, entry.nextHour.isPrecipitationExpected {
-                MinutePrecipitationChart(forecast: nextHour, now: entry.date, showsGuides: false, showsAxis: false)
-                    .frame(height: 34)
+                MinuteBars(forecast: nextHour, now: entry.date, wetColor: t.rain, dryColor: t.track)
+                    .frame(height: 30)
             }
-            Divider().overlay(.white.opacity(0.3))
+            Rectangle().fill(t.line).frame(height: 1)
             VStack(spacing: 5) {
                 ForEach(days) { day in
                     HStack(spacing: 8) {
                         Text(formatter.dayLabel(day.date, timeZone: snapshot.timeZone, now: entry.date))
-                            .font(.caption.weight(.semibold))
+                            .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
                             .frame(width: 64, alignment: .leading)
-                        ConditionIcon(day.condition)
+                        WidgetConditionIcon(condition: day.condition, tokens: t)
                             .font(.caption)
                             .frame(width: 20)
                         Text(chance(day, formatter))
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(Palette.rain)
+                            .font(t.look == .liquid ? .caption2.weight(.bold) : t.font(.textStrong, 10))
+                            .foregroundStyle(t.rainText)
                             .frame(width: 30, alignment: .leading)
                         Text(formatter.temperature(day.low))
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.7))
+                            .font(t.look == .liquid ? .caption : t.font(.number, 12))
+                            .foregroundStyle(t.ink2)
                             .frame(width: 30, alignment: .trailing)
-                        TemperatureRangeBar(low: day.low, high: day.high, rangeLow: rangeLow, rangeHigh: rangeHigh)
+                        if t.usesTemperatureColors {
+                            TemperatureRangeBar(low: day.low, high: day.high, rangeLow: rangeLow, rangeHigh: rangeHigh)
+                        } else {
+                            LookRangeBar(low: day.low, high: day.high, rangeLow: rangeLow, rangeHigh: rangeHigh,
+                                         height: 4, fill: t.look == .chroma ? ChromaPalette.mustard : t.ink, track: t.track)
+                                .widgetAccentable()
+                        }
                         Text(formatter.temperature(day.high))
-                            .font(.caption.weight(.semibold))
+                            .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.number, 12))
                             .frame(width: 30, alignment: .trailing)
                     }
                 }
             }
             Spacer(minLength: 0)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(t.ink)
     }
 
     private func chance(_ day: DailyForecast, _ formatter: WeatherFormatter) -> String {

@@ -7,6 +7,7 @@ import SwiftUI
 struct RainHistoryView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.lookTokens) private var t
     @State private var history: RainHistoryModel
 
     init(location: WeatherLocation, snapshot: WeatherSnapshot?) {
@@ -16,22 +17,22 @@ struct RainHistoryView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                SkyBackground(condition: .rain, isDaylight: true)
+                LookPageBackground(condition: .rain, isDaylight: true)
                     .ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
-                        PeriodChips(selection: $history.choice)
+                    VStack(alignment: .leading, spacing: t.sectionSpacing) {
+                        LookChips(options: RainHistoryModel.Choice.allCases, selection: $history.choice, title: \.title)
                         if history.choice == .custom {
                             customRangePicker
                         }
                         content
                     }
-                    .padding(16)
+                    .padding(.horizontal, t.gutter)
+                    .padding(.vertical, 16)
                 }
             }
-            .foregroundStyle(.white)
-            .navigationTitle("Rainfall · \(history.location.name)")
-            .navigationBarTitleDisplayMode(.inline)
+            .foregroundStyle(t.ink)
+            .lookNavigationTitle("Rainfall · \(history.location.name)")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -41,7 +42,6 @@ struct RainHistoryView: View {
                 TimeMachineView(location: history.location, timeZone: history.calendar.timeZone, date: date)
             }
         }
-        .environment(\.colorScheme, .dark)
         .task {
             await history.load()
         }
@@ -60,7 +60,7 @@ struct RainHistoryView: View {
             }
         } else if !history.hasData {
             ProgressView("Loading rainfall history…")
-                .tint(.white)
+                .tint(t.ink2)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 40)
         } else {
@@ -69,7 +69,7 @@ struct RainHistoryView: View {
             let summary = history.record.summary(for: range)
             let chart = history.record.bars(for: range)
             TotalCard(summary: summary, formatter: formatter, calendar: history.calendar, normalsState: history.normalsState, isLoading: history.isLoading)
-            WeatherCard(title: chartTitle(chart.0), systemImage: "chart.bar.fill") {
+            WeatherCard(title: chartTitle(chart.0), systemImage: "chart.bar.fill", tone: .cobalt) {
                 RainfallBarChart(bars: chart.1, granularity: chart.0, formatter: formatter, calendar: history.calendar)
                     .frame(height: 170)
                 if history.record.normals != nil && chart.0 != .day {
@@ -77,7 +77,7 @@ struct RainHistoryView: View {
                 }
             }
             if summary.dayCount >= 14 {
-                WeatherCard(title: "Running Total", systemImage: "chart.line.uptrend.xyaxis") {
+                WeatherCard(title: "Running Total", systemImage: "chart.line.uptrend.xyaxis", tone: .navy) {
                     CumulativeRainChart(points: history.record.cumulative(for: range), formatter: formatter, calendar: history.calendar)
                         .frame(height: 150)
                     if history.record.normals != nil {
@@ -88,8 +88,8 @@ struct RainHistoryView: View {
             RainStatsGrid(summary: summary, normals: history.record.normals, formatter: formatter, timeZone: history.calendar.timeZone)
             WetDaysCard(summary: summary, record: history.record, formatter: formatter)
             Text("Totals for the last three months come from Open-Meteo's weather-model analyses; older days come from ERA5 and ECMWF reanalysis. They're estimates for the area, not rain-gauge readings. Normals are the 1991–2020 average.")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.7))
+                .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                .foregroundStyle(t.ink2)
         }
     }
 
@@ -98,8 +98,8 @@ struct RainHistoryView: View {
             DatePicker("From", selection: $history.customStart, in: history.earliestDate...history.today, displayedComponents: .date)
             DatePicker("To", selection: $history.customEnd, in: history.earliestDate...history.today, displayedComponents: .date)
             Text("Any dates since 1940, up to ten years at a time.")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.7))
+                .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                .foregroundStyle(t.ink2)
         }
         .environment(\.timeZone, history.calendar.timeZone)
         .onChange(of: history.customStart) { _, _ in customRangeChanged() }
@@ -112,20 +112,7 @@ struct RainHistoryView: View {
     }
 
     private var legend: some View {
-        HStack(spacing: 14) {
-            HStack(spacing: 4) {
-                RoundedRectangle(cornerRadius: 2).fill(Palette.rain).frame(width: 10, height: 8)
-                Text("This period")
-            }
-            HStack(spacing: 4) {
-                Rectangle()
-                    .fill(Color.white.opacity(0.8))
-                    .frame(width: 12, height: 2)
-                Text("Normal (1991–2020)")
-            }
-        }
-        .font(.caption2)
-        .foregroundStyle(.white.opacity(0.75))
+        RainLegend()
     }
 
     private func chartTitle(_ granularity: RainfallGranularity) -> String {
@@ -138,37 +125,34 @@ struct RainHistoryView: View {
     }
 }
 
-// MARK: - Period chips
+// MARK: - Legend
 
-private struct PeriodChips: View {
-    @Binding var selection: RainHistoryModel.Choice
+/// "This period" bars against the dashed normal, inside a card that has set the tokens.
+private struct RainLegend: View {
+    @Environment(\.lookTokens) private var t
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(RainHistoryModel.Choice.allCases) { option in
-                    let selected = option == selection
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { selection = option }
-                    } label: {
-                        Text(option.title)
-                            .font(.subheadline.weight(.semibold))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 7)
-                            .background(selected ? Color.white.opacity(0.9) : Color.white.opacity(0.14), in: Capsule())
-                            .foregroundStyle(selected ? Color.black : Color.white)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(selected ? .isSelected : [])
-                }
+        HStack(spacing: 14) {
+            HStack(spacing: 4) {
+                RoundedRectangle(cornerRadius: 2).fill(t.rain).frame(width: 10, height: 8)
+                Text("This period")
+            }
+            HStack(spacing: 4) {
+                Rectangle()
+                    .fill(t.ink)
+                    .frame(width: 12, height: 2)
+                Text("Normal (1991–2020)")
             }
         }
+        .font(t.look == .liquid ? .caption2 : t.font(.label, 10))
+        .foregroundStyle(t.ink2)
     }
 }
 
 // MARK: - Total
 
 private struct TotalCard: View {
+    @Environment(\.lookTokens) private var t
     let summary: RainfallRecord.Summary
     let formatter: WeatherFormatter
     let calendar: Calendar
@@ -179,33 +163,33 @@ private struct TotalCard: View {
         WeatherCard(title: "Total", systemImage: "drop.fill", accessory: rangeText) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(formatter.precipitation(summary.total))
-                    .font(.system(size: 44, weight: .semibold))
+                    .font(t.look == .liquid ? .system(size: 44, weight: .semibold) : t.font(t.look == .chroma ? .headline : .numberLight, 44))
                     .contentTransition(.numericText())
                 if isLoading {
-                    ProgressView().tint(.white)
+                    ProgressView().tint(t.ink2)
                 }
             }
             if summary.snowfall >= 0.1 {
                 Label("Including \(formatter.snowfall(summary.snowfall)) of snow", systemImage: "snowflake")
-                    .font(.subheadline)
+                    .font(t.look == .liquid ? .subheadline : t.font(.text, t.bodySize))
             }
             if let normalText {
                 Label(normalText, systemImage: normalSymbol)
-                    .font(.subheadline.weight(.medium))
+                    .font(t.look == .liquid ? .subheadline.weight(.medium) : t.font(.textMedium, t.bodySize))
             } else if normalsState == .loading {
                 Label("Comparing with 1991–2020 normals…", systemImage: "hourglass")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.75))
+                    .font(t.look == .liquid ? .subheadline : t.font(.text, t.bodySize))
+                    .foregroundStyle(t.ink2)
             }
             if let lastYear = summary.lastYear {
                 Label("Same days last year: \(formatter.precipitation(lastYear))", systemImage: "calendar.badge.clock")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.9))
+                    .font(t.look == .liquid ? .subheadline : t.font(.text, t.bodySize))
+                    .foregroundStyle(t.ink2)
             }
             if summary.missingDays > 0 {
                 Text(summary.missingDays == 1 ? "1 day isn't available yet." : "\(summary.missingDays) days aren't available yet.")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.7))
+                    .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                    .foregroundStyle(t.ink2)
             }
         }
     }
@@ -252,6 +236,7 @@ private func chartDate(_ date: Date, calendar: Calendar) -> Date {
 }
 
 private struct RainfallBarChart: View {
+    @Environment(\.lookTokens) private var t
     let bars: [RainfallRecord.Bar]
     let granularity: RainfallGranularity
     let formatter: WeatherFormatter
@@ -264,7 +249,7 @@ private struct RainfallBarChart: View {
                     x: .value("Period", chartDate(bar.start, calendar: calendar), unit: unit),
                     y: .value("Precipitation", formatter.precipitationValue(bar.amount))
                 )
-                .foregroundStyle(Palette.rain.opacity(bar.isIncomplete ? 0.6 : 1))
+                .foregroundStyle(t.rain.opacity(bar.isIncomplete ? 0.6 : 1))
                 .cornerRadius(2)
             }
             if granularity != .day {
@@ -275,7 +260,7 @@ private struct RainfallBarChart: View {
                         y: .value("Normal", formatter.precipitationValue(bar.normal ?? 0))
                     )
                     .lineStyle(StrokeStyle(lineWidth: 2))
-                    .foregroundStyle(Color.white.opacity(0.8))
+                    .foregroundStyle(t.ink)
                 }
             }
         }
@@ -284,18 +269,20 @@ private struct RainfallBarChart: View {
                 AxisValueLabel {
                     if let date = value.as(Date.self) {
                         Text(label(date))
-                            .foregroundStyle(Color.white.opacity(0.7))
+                            .font(t.look == .liquid ? .caption2 : t.font(.label, 10, relativeTo: .caption2))
+                            .foregroundStyle(t.ink2)
                     }
                 }
             }
         }
         .chartYAxis {
             AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { value in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
+                AxisGridLine().foregroundStyle(t.grid)
                 AxisValueLabel {
                     if let amount = value.as(Double.self) {
                         Text(axisLabel(amount))
-                            .foregroundStyle(Color.white.opacity(0.7))
+                            .font(t.look == .liquid ? .caption2 : t.font(.label, 10, relativeTo: .caption2))
+                            .foregroundStyle(t.ink2)
                     }
                 }
             }
@@ -357,6 +344,7 @@ private struct RainfallBarChart: View {
 }
 
 private struct CumulativeRainChart: View {
+    @Environment(\.lookTokens) private var t
     let points: [RainfallRecord.CumulativePoint]
     let formatter: WeatherFormatter
     let calendar: Calendar
@@ -369,13 +357,13 @@ private struct CumulativeRainChart: View {
                     yStart: .value("Base", 0.0),
                     yEnd: .value("Total", formatter.precipitationValue(point.total))
                 )
-                .foregroundStyle(LinearGradient(colors: [Palette.rain.opacity(0.45), Palette.rain.opacity(0.05)], startPoint: .top, endPoint: .bottom))
+                .foregroundStyle(LinearGradient(colors: [t.rain.opacity(0.45), t.rain.opacity(0.05)], startPoint: .top, endPoint: .bottom))
                 LineMark(
                     x: .value("Date", chartDate(point.date, calendar: calendar)),
                     y: .value("Total", formatter.precipitationValue(point.total)),
                     series: .value("Series", "Observed")
                 )
-                .foregroundStyle(Palette.rain)
+                .foregroundStyle(t.rain)
                 .lineStyle(StrokeStyle(lineWidth: 2.5))
             }
             if points.contains(where: { $0.normal != nil }) {
@@ -385,7 +373,7 @@ private struct CumulativeRainChart: View {
                         y: .value("Normal", formatter.precipitationValue(point.normal ?? 0)),
                         series: .value("Series", "Normal")
                     )
-                    .foregroundStyle(Color.white.opacity(0.8))
+                    .foregroundStyle(t.ink)
                     .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                 }
             }
@@ -395,18 +383,20 @@ private struct CumulativeRainChart: View {
                 AxisValueLabel {
                     if let date = value.as(Date.self) {
                         Text(label(date))
-                            .foregroundStyle(Color.white.opacity(0.7))
+                            .font(t.look == .liquid ? .caption2 : t.font(.label, 10, relativeTo: .caption2))
+                            .foregroundStyle(t.ink2)
                     }
                 }
             }
         }
         .chartYAxis {
             AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { value in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
+                AxisGridLine().foregroundStyle(t.grid)
                 AxisValueLabel {
                     if let amount = value.as(Double.self) {
                         Text(String(format: formatter.units.precipitation == .inches ? "%.1f" : "%.0f", amount))
-                            .foregroundStyle(Color.white.opacity(0.7))
+                            .font(t.look == .liquid ? .caption2 : t.font(.label, 10, relativeTo: .caption2))
+                            .foregroundStyle(t.ink2)
                     }
                 }
             }
@@ -464,6 +454,7 @@ private struct RainStatsGrid: View {
 
 /// Days with measurable precipitation, newest first; each opens in the Time Machine.
 private struct WetDaysCard: View {
+    @Environment(\.lookTokens) private var t
     let summary: RainfallRecord.Summary
     let record: RainfallRecord
     let formatter: WeatherFormatter
@@ -478,27 +469,27 @@ private struct WetDaysCard: View {
         WeatherCard(title: "Wet Days", systemImage: "list.bullet", accessory: days.isEmpty ? nil : "Tap for hourly details") {
             if days.isEmpty {
                 Text("No measurable precipitation in this period.")
-                    .font(.callout)
+                    .font(t.look == .liquid ? .callout : t.font(.text, t.bodySize))
             } else {
                 VStack(spacing: 0) {
                     ForEach(Array(days.prefix(Self.limit)), id: \.date) { sample in
-                        Divider().overlay(.white.opacity(0.15))
+                        LookRule()
                         NavigationLink(value: sample.date) {
                             HStack {
                                 Text(formatter.mediumDate(sample.date, timeZone: record.calendar.timeZone))
-                                    .font(.body)
+                                    .font(t.look == .liquid ? .body : t.font(.text, t.bodySize + 1))
                                 Spacer()
                                 if let snow = sample.snowfall, snow >= 0.1 {
                                     Image(systemName: "snowflake")
                                         .font(.caption)
-                                        .foregroundStyle(Palette.snow)
+                                        .foregroundStyle(t.rainText)
                                 }
                                 Text(formatter.precipitation(sample.amount))
-                                    .font(.body.weight(.semibold))
+                                    .font(t.look == .liquid ? .body.weight(.semibold) : t.font(.number, t.bodySize + 1))
                                     .monospacedDigit()
                                 Image(systemName: "chevron.right")
                                     .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.white.opacity(0.5))
+                                    .foregroundStyle(t.ink3)
                             }
                             .padding(.vertical, 9)
                             .contentShape(Rectangle())
@@ -508,8 +499,8 @@ private struct WetDaysCard: View {
                 }
                 if days.count > Self.limit {
                     Text("Showing the \(Self.limit) most recent of \(days.count) wet days.")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink2)
                 }
             }
         }

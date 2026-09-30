@@ -5,6 +5,7 @@ import UIKit
 /// The location library: device location plus up to 20 saved places.
 struct LocationsTab: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lookTokens) private var t
     @State private var renaming: SavedLocation?
     @State private var renameText = ""
 
@@ -15,7 +16,11 @@ struct LocationsTab: View {
                 currentLocationSection
                 savedSection
             }
-            .navigationTitle("Locations")
+            .font(t.look == .liquid ? .body : t.font(.text, 16))
+            .lookList(t)
+            .navigationTitle(t.look == .liquid ? "Places" : "")
+            .navigationBarTitleDisplayMode(t.look == .liquid ? .large : .inline)
+            .toolbarBackground(t.look == .liquid ? Color.clear : t.background, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     EditButton()
@@ -75,14 +80,16 @@ struct LocationsTab: View {
                     LocationRow(location: location, summary: model.weather.summary(for: location.id), formatter: model.formatter)
                 }
                 .buttonStyle(.plain)
+                .lookRow(t)
             } else if model.locationManager.isDenied {
                 Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         UIApplication.shared.open(url)
                     }
                 } label: {
-                    Label("Location access is off — open Settings", systemImage: "location.slash")
+                    Label("Location access is off. Open Settings", systemImage: "location.slash")
                 }
+                .lookRow(t)
             } else {
                 Button {
                     if model.locationManager.canRequestAuthorization {
@@ -93,19 +100,27 @@ struct LocationsTab: View {
                 } label: {
                     Label(model.locationManager.isUpdating ? "Finding your location…" : "Use My Location", systemImage: "location.fill")
                 }
+                .lookRow(t)
             }
         } header: {
-            Text("My Location")
+            VStack(alignment: .leading, spacing: 18) {
+                if t.look != .liquid {
+                    LookScreenTitle(title: "Places")
+                }
+                SettingsHeader(title: "My Location")
+            }
+            .textCase(nil)
         }
     }
 
     private var savedSection: some View {
         Section {
             if model.savedLocations.isEmpty {
-                Text("Save up to \(LocationLibrary.maximumLocations) places — home, work, the cabin — and swipe between them in the Forecast tab or pin them to widgets.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                Text("Save up to \(LocationLibrary.maximumLocations) places (home, work, the cabin) and swipe between them in the Forecast tab or pin them to widgets.")
+                    .font(t.look == .liquid ? .callout : t.font(.text, 15))
+                    .foregroundStyle(t.ink2)
                     .padding(.vertical, 6)
+                    .lookRow(t)
             }
             ForEach(model.savedLocations) { saved in
                 let location = WeatherLocation(saved: saved)
@@ -115,6 +130,7 @@ struct LocationsTab: View {
                     LocationRow(location: location, summary: model.weather.summary(for: location.id), formatter: model.formatter)
                 }
                 .buttonStyle(.plain)
+                .lookRow(t)
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         model.removeLocations(ids: [saved.id])
@@ -153,19 +169,20 @@ struct LocationsTab: View {
             .onMove { model.moveLocations(from: $0, to: $1) }
         } header: {
             HStack {
-                Text("Saved Places")
+                SettingsHeader(title: "Saved Places")
                 Spacer()
-                Text("\(model.savedLocations.count) of \(LocationLibrary.maximumLocations)")
+                SettingsHeader(title: "\(model.savedLocations.count) of \(LocationLibrary.maximumLocations)")
             }
         } footer: {
             if !model.canAddLocation {
-                Text("Your library is full. Delete a place to add another.")
+                SettingsFooter(text: "Your library is full. Delete a place to add another.")
             }
         }
     }
 }
 
 struct LocationRow: View {
+    @Environment(\.lookTokens) private var t
     let location: WeatherLocation
     let summary: LocationWeatherSummary?
     let formatter: WeatherFormatter
@@ -177,33 +194,42 @@ struct LocationRow: View {
                     if location.isCurrentLocation {
                         Image(systemName: "location.fill")
                             .font(.caption)
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(t.controlTint ?? t.ink2)
                     }
                     Text(location.name)
-                        .font(.headline)
+                        .font(t.look == .liquid ? .headline : t.font(.textStrong, 17))
+                        .foregroundStyle(t.ink)
                         .lineLimit(1)
                 }
                 Text(secondaryText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                    .foregroundStyle(t.ink2)
                     .lineLimit(1)
                 if let summary {
                     Text(summary.condition.description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(t.look == .liquid ? .caption : t.font(.text, 12))
+                        .foregroundStyle(t.ink2)
                 }
             }
             Spacer()
             if let summary {
-                ConditionIcon(summary.condition, isDaylight: summary.isDaylight)
-                    .font(.title2)
+                Group {
+                    if t.look == .liquid {
+                        ConditionIcon(summary.condition, isDaylight: summary.isDaylight)
+                    } else {
+                        OutlineConditionIcon(summary.condition, isDaylight: summary.isDaylight)
+                            .foregroundStyle(t.ink2)
+                    }
+                }
+                .font(.title2)
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(formatter.temperature(summary.temperature))
-                        .font(.system(size: 30, weight: .light))
+                        .font(t.look == .liquid ? .system(size: 30, weight: .light) : t.font(t.look == .chroma ? .headline : .numberLight, 30))
+                        .foregroundStyle(t.ink)
                     if let high = summary.high, let low = summary.low {
                         Text("H:\(formatter.temperature(high)) L:\(formatter.temperature(low))")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(t.look == .liquid ? .caption : t.font(.number, 12))
+                            .foregroundStyle(t.ink2)
                     }
                 }
                 .frame(minWidth: 70, alignment: .trailing)

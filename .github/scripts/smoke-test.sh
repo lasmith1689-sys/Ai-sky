@@ -64,6 +64,21 @@ capture 14-day-detail dayDetail 8
 capture 15-add-location addLocation 6
 capture 16-forecast-large-text forecast 10 -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
 
+# Every look, on sample weather (rain starting in a few minutes) so each look's rain states show.
+# -AiSkyLook shows a look without saving it.
+for look in liquid obsidian instrument editorial horizon chroma; do
+  capture "$look-1-forecast" forecast 12 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-2-daily" daily 7 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-3-precipitation" precipitation 7 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-4-details" details 7 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-5-day-detail" dayDetail 8 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-6-places" locations 8 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-7-settings" settings 6 -AiSkyDemoWeather -AiSkyLook "$look"
+  capture "$look-8-radar" radar 15 -AiSkyDemoWeather -AiSkyLook "$look"
+done
+capture editorial-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook editorial -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
+capture chroma-9-large-text forecast 10 -AiSkyDemoWeather -AiSkyLook chroma -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
+
 if [ "$failures" -gt 0 ]; then
   find ~/Library/Logs/DiagnosticReports -name "AiSky*" -mmin -20 -print -exec head -120 {} \; 2>/dev/null
   exit 1
@@ -72,13 +87,13 @@ echo "✅ Ai Sky opened every screen without crashing"
 
 # The debug build logs whether every bundled font resolved (a wrong PostScript name silently
 # falls back to the system font).
-fonts=$(xcrun simctl spawn "$UDID" log show --last 30m --style compact \
-  --predicate 'subsystem == "com.lasmith1689.AiSky" AND category == "Fonts"' 2>/dev/null | grep -E "Instrument fonts" | tail -n 1)
+fonts=$(xcrun simctl spawn "$UDID" log show --last 60m --style compact \
+  --predicate 'subsystem == "com.lasmith1689.AiSky" AND category == "Fonts"' 2>/dev/null | grep -E "Look fonts" | tail -n 1)
 if [[ "$fonts" == *"missing"* ]]; then
-  echo "::error title=Fonts::${fonts##*Instrument fonts}"
+  echo "::error title=Fonts::${fonts##*Look fonts}"
   exit 1
 elif [ -n "$fonts" ]; then
-  echo "::notice title=Fonts::Instrument fonts${fonts##*Instrument fonts}"
+  echo "::notice title=Fonts::Look fonts${fonts##*Look fonts}"
 else
   echo "::warning title=Fonts::No font check found in the app log"
 fi

@@ -32,6 +32,7 @@ struct NextHourWidgetView: View {
     private var content: some View {
         if let snapshot = entry.snapshot, let location = entry.location {
             let summary = entry.nextHour
+            let t = entry.tokens
             switch family {
             case .accessoryInline:
                 Label(summary.shortText, systemImage: symbol(summary))
@@ -53,38 +54,58 @@ struct NextHourWidgetView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
                         WidgetLocationName(location: location)
-                            .font(.subheadline.weight(.semibold))
+                            .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
+                            .widgetAccentable()
                         Spacer()
-                        Text("Next Hour")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.white.opacity(0.7))
+                        if t.look == .liquid {
+                            Text("Next Hour")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(t.ink2)
+                        } else {
+                            Text("Next Hour")
+                                .lookLabel(t, size: 10, color: t.ink2)
+                        }
                     }
                     Text(summary.text)
-                        .font(.subheadline.weight(.semibold))
+                        .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
+                        .foregroundStyle(summary.isPrecipitationExpected ? t.rainText : t.ink)
                         .lineLimit(2)
                     if let nextHour = snapshot.nextHour, summary.state != .unavailable {
-                        MinutePrecipitationChart(forecast: nextHour, now: entry.date, showsGuides: summary.isPrecipitationExpected, showsAxis: true)
+                        if t.look == .liquid {
+                            MinutePrecipitationChart(forecast: nextHour, now: entry.date, showsGuides: summary.isPrecipitationExpected, showsAxis: true)
+                        } else {
+                            MinuteBars(forecast: nextHour, now: entry.date, wetColor: t.rain, dryColor: t.track)
+                                .widgetAccentable()
+                        }
                     }
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(t.ink)
             default:
                 VStack(alignment: .leading, spacing: 4) {
                     WidgetLocationName(location: location)
-                        .font(.caption.weight(.semibold))
+                        .font(t.look == .liquid ? .caption.weight(.semibold) : t.font(.textStrong, 12))
+                        .widgetAccentable()
                     Image(systemName: symbol(summary))
-                        .symbolRenderingMode(.multicolor)
+                        .symbolRenderingMode(t.look == .liquid ? .multicolor : .monochrome)
+                        .foregroundStyle(summary.isPrecipitationExpected ? t.rainText : t.ink2)
                         .font(.title2)
                     Text(summary.shortText)
-                        .font(.subheadline.weight(.semibold))
+                        .font(t.look == .liquid ? .subheadline.weight(.semibold) : t.font(.textStrong, 14))
                         .lineLimit(2)
                         .minimumScaleFactor(0.8)
                     Spacer(minLength: 0)
                     if let nextHour = snapshot.nextHour, summary.state != .unavailable {
-                        MinutePrecipitationChart(forecast: nextHour, now: entry.date, showsGuides: false, showsAxis: false)
-                            .frame(height: 36)
+                        if t.look == .liquid {
+                            MinutePrecipitationChart(forecast: nextHour, now: entry.date, showsGuides: false, showsAxis: false)
+                                .frame(height: 36)
+                        } else {
+                            MinuteBars(forecast: nextHour, now: entry.date, wetColor: t.rain, dryColor: t.track)
+                                .frame(height: 30)
+                                .widgetAccentable()
+                        }
                     }
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(t.ink)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
         } else {

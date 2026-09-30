@@ -19,6 +19,11 @@ final class WeatherStore {
     /// Forecasts younger than this are shown without refetching.
     static let freshness: TimeInterval = 10 * 60
 
+    #if DEBUG
+    /// `-AiSkyDemoWeather`: sample weather everywhere, for deterministic screenshots of every look.
+    static let usesDemoWeather = ProcessInfo.processInfo.arguments.contains("-AiSkyDemoWeather")
+    #endif
+
     init(repository: WeatherRepository) {
         self.repository = repository
     }
@@ -42,6 +47,9 @@ final class WeatherStore {
     }
 
     func loadCached(for locations: [WeatherLocation]) async {
+        #if DEBUG
+        if Self.usesDemoWeather { return }
+        #endif
         for location in locations where snapshots[location.id] == nil {
             if let cached = await repository.cachedSnapshot(for: location) {
                 snapshots[location.id] = cached
@@ -54,6 +62,15 @@ final class WeatherStore {
     }
 
     func refresh(_ location: WeatherLocation, settings: AppSettings, force: Bool = false) async {
+        #if DEBUG
+        if Self.usesDemoWeather {
+            let snapshot = SampleData.snapshot(now: Date(), location: location)
+            snapshots[location.id] = snapshot
+            summaries[location.id] = snapshot.summary
+            errors[location.id] = nil
+            return
+        }
+        #endif
         if !force, let existing = snapshots[location.id], existing.isFresh(maxAge: Self.freshness),
            existing.location.distance(toLatitude: location.latitude, longitude: location.longitude) < 3 {
             return
@@ -79,6 +96,14 @@ final class WeatherStore {
     }
 
     func refreshSummaries(for locations: [WeatherLocation], settings: AppSettings, force: Bool = false) async {
+        #if DEBUG
+        if Self.usesDemoWeather {
+            for location in locations {
+                summaries[location.id] = SampleData.snapshot(now: Date(), location: location).summary
+            }
+            return
+        }
+        #endif
         let result = await repository.summaries(for: locations, settings: settings, maxAge: force ? 0 : 15 * 60)
         for (id, summary) in result {
             summaries[id] = summary

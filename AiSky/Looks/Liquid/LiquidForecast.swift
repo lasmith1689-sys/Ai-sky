@@ -1,0 +1,338 @@
+import AiSkyKit
+import SwiftUI
+
+// Liquid: the Apple-style option. White type on the condition sky, sections as iOS 26 Liquid
+// Glass cards and the system Liquid Glass tab bar.
+
+/// Soft cloud shapes drifting in the sky gradient, as in the mockup.
+struct LiquidClouds: View {
+    let condition: SkyCondition
+    let isDaylight: Bool
+
+    var body: some View {
+        GeometryReader { proxy in
+            let w = proxy.size.width / 390
+            let strength: Double = {
+                switch condition.family {
+                case .clear: return 0.35
+                case .partlyCloudy: return 1
+                case .cloudy, .fog, .windy: return 0.8
+                default: return 0.55
+                }
+            }() * (isDaylight ? 1 : 0.35)
+            ZStack(alignment: .topLeading) {
+                Capsule()
+                    .fill(Color.white.opacity(0.55 * strength))
+                    .frame(width: 300 * w, height: 120 * w)
+                    .blur(radius: 34)
+                    .offset(x: -60 * w, y: 150 * w)
+                Capsule()
+                    .fill(Color.white.opacity(0.42 * strength))
+                    .frame(width: 280 * w, height: 110 * w)
+                    .blur(radius: 38)
+                    .offset(x: 170 * w, y: 90 * w)
+                Capsule()
+                    .fill(Palette.color(hex: 0xFFF4E4, opacity: 0.45 * strength))
+                    .frame(width: 360 * w, height: 160 * w)
+                    .blur(radius: 46)
+                    .offset(x: 40 * w, y: 520 * w)
+            }
+            .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+struct LiquidHero: View {
+    let context: ForecastContext
+
+    var body: some View {
+        let current = context.current
+        let formatter = context.formatter
+        VStack(spacing: 0) {
+            HStack(spacing: 6) {
+                if context.location.isCurrentLocation {
+                    Image(systemName: "location.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                }
+                Text(context.location.name)
+                    .font(.title2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+            Text(subtitle)
+                .font(.footnote.weight(.medium))
+                .opacity(0.78)
+                .padding(.top, 2)
+            Text(formatter.temperature(current.temperature))
+                .font(.system(size: 124, weight: .thin))
+                .tracking(-5)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+                .contentTransition(.numericText())
+                .cssLineHeight(1, size: 124, face: .system(.thin))
+                .padding(.leading, 26) // optically center, ignoring the degree sign
+                .padding(.top, 10)
+                .accessibilityLabel("Temperature \(formatter.temperature(current.temperature, includeUnit: true))")
+            Text(current.condition.description)
+                .font(.title3.weight(.medium))
+                .padding(.top, 2)
+            Text(rangeLine)
+                .font(.subheadline.weight(.medium))
+                .opacity(0.86)
+                .padding(.top, 3)
+            if !context.window.isPrecipitating,
+               let comparison = YesterdayComparison.text(for: context.snapshot, now: context.now, formatter: formatter) {
+                Text(comparison)
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .opacity(0.8)
+                    .padding(.top, 8)
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 20)
+        .padding(.bottom, 8)
+    }
+
+    private var subtitle: String {
+        let time = context.formatter.time(context.now, timeZone: context.timeZone)
+        return context.location.isCurrentLocation ? "My Location · \(time)" : time
+    }
+
+    private var rangeLine: String {
+        let formatter = context.formatter
+        var parts = ["Feels \(formatter.temperature(context.current.apparentTemperature))"]
+        if let today = context.today {
+            parts.append("H \(formatter.temperature(today.high))  L \(formatter.temperature(today.low))")
+        }
+        return parts.joined(separator: "  ·  ")
+    }
+}
+
+struct LiquidNextHour: View {
+    let context: ForecastContext
+
+    var body: some View {
+        let window = context.window
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: window.isPrecipitating ? symbol(window) : "cloud")
+                    .font(.system(size: 17, weight: .regular))
+                Text(window.liquidTitle)
+                    .font(.callout.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 6)
+                if let detail = window.liquidDetail(clock: context.shortClock) {
+                    Text(detail)
+                        .font(.footnote)
+                        .opacity(0.8)
+                        .lineLimit(1)
+                }
+            }
+            if let forecast = context.snapshot.nextHour, window.state != .unavailable {
+                MinutePrecipitationChart(forecast: forecast, now: context.now, showsGuides: false, showsAxis: false, tint: .white)
+                    .frame(height: 56)
+                    .overlay(alignment: .bottom) {
+                        Rectangle().fill(Color.white.opacity(0.35)).frame(height: 1)
+                    }
+                    .opacity(window.isPrecipitating ? 1 : 0.7)
+                    .padding(.top, 12)
+                HStack {
+                    ForEach(["Now", "15m", "30m", "45m", "60m"], id: \.self) { label in
+                        Text(label)
+                        if label != "60m" { Spacer(minLength: 0) }
+                    }
+                }
+                .font(.caption2.weight(.semibold))
+                .opacity(0.72)
+                .padding(.top, 6)
+                if let rate = context.snapshot.current.precipitationIntensity, rate >= 0.05 {
+                    Text("Now: \(PrecipitationIntensity(millimetersPerHour: rate).displayName.lowercased()) \(context.snapshot.current.condition.precipitationKind.noun), \(context.formatter.precipitationRate(rate))")
+                        .font(.caption)
+                        .opacity(0.8)
+                        .padding(.top, 6)
+                }
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 18)
+        .padding(.top, 16)
+        .padding(.bottom, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .lookSurface(context.tokens, radius: 26)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Next hour. \(NextHourSummarizer.summarize(context.snapshot.nextHour, now: context.now).text)")
+    }
+
+    private func symbol(_ window: NextHourWindow) -> String {
+        switch window.kind {
+        case .snow: return "cloud.snow"
+        case .sleet, .mixed, .hail: return "cloud.sleet"
+        default: return window.intensity >= .moderate ? "cloud.heavyrain" : "cloud.rain"
+        }
+    }
+}
+
+/// Hour columns with sunrise and sunset slotted in, like Apple Weather.
+struct LiquidHourly: View {
+    let context: ForecastContext
+
+    private enum Item: Identifiable {
+        case hour(HourlyForecast)
+        case sun(Date, rising: Bool)
+
+        var id: String {
+            switch self {
+            case .hour(let hour): return "h\(hour.date.timeIntervalSince1970)"
+            case .sun(let date, let rising): return "\(rising ? "r" : "s")\(date.timeIntervalSince1970)"
+            }
+        }
+
+        var date: Date {
+            switch self {
+            case .hour(let hour): return hour.date
+            case .sun(let date, _): return date
+            }
+        }
+    }
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(alignment: .top, spacing: 0) {
+                ForEach(items) { item in
+                    column(item)
+                        .containerRelativeFrame(.horizontal, count: 6, spacing: 0)
+                }
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 14)
+        .lookSurface(context.tokens, radius: 26)
+    }
+
+    private var items: [Item] {
+        let hours = context.hours(48)
+        guard let first = hours.first?.date, let last = hours.last?.date else { return [] }
+        let sun = context.sunEvents(from: first, to: last).map { Item.sun($0.date, rising: $0.rising) }
+        return (hours.map(Item.hour) + sun).sorted { $0.date < $1.date }
+    }
+
+    @ViewBuilder
+    private func column(_ item: Item) -> some View {
+        switch item {
+        case .hour(let hour):
+            let chance = hour.precipitationChance ?? 0
+            VStack(spacing: 7) {
+                Text(context.isNow(hour) ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone))
+                    .font(.footnote.weight(.semibold))
+                ConditionIcon(hour.condition, isDaylight: hour.isDaylight)
+                    .font(.system(size: 22))
+                    .frame(height: 26)
+                Text(chance >= 0.15 ? context.formatter.chance(chance) : " ")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(context.tokens.rainText)
+                Text(context.temperature(hour.temperature))
+                    .font(.title3.weight(.medium))
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .accessibilityElement(children: .combine)
+        case .sun(let date, let rising):
+            VStack(spacing: 7) {
+                Text(context.shortClock(date))
+                    .font(.footnote.weight(.semibold))
+                Image(systemName: rising ? "sunrise" : "sunset")
+                    .font(.system(size: 20))
+                    .foregroundStyle(context.tokens.sun)
+                    .frame(height: 26)
+                Text(rising ? "Sunrise" : "Sunset")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Palette.color(hex: 0xFFE2BD))
+                Text(context.temperature(context.snapshot.conditions(at: date).temperature))
+                    .font(.title3.weight(.medium))
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .accessibilityElement(children: .combine)
+        }
+    }
+}
+
+struct LiquidDaily: View {
+    let context: ForecastContext
+
+    var body: some View {
+        let days = context.days()
+        let rangeLow = days.map(\.low).min() ?? 0
+        let rangeHigh = days.map(\.high).max() ?? 1
+        VStack(alignment: .leading, spacing: 0) {
+            CardHeader(title: "\(days.count)-Day Forecast", systemImage: "calendar")
+            Text(ForecastNarrator.weekSummary(days: days, now: context.now, timeZone: context.timeZone, formatter: context.formatter))
+                .font(.subheadline)
+                .opacity(0.9)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+            ForEach(days) { day in
+                Rectangle().fill(Color.white.opacity(0.18)).frame(height: 1)
+                Button {
+                    context.onSelectDay(day)
+                } label: {
+                    row(day, rangeLow: rangeLow, rangeHigh: rangeHigh)
+                }
+                .buttonStyle(.plain)
+            }
+            Rectangle().fill(Color.white.opacity(0.18)).frame(height: 1)
+            Button(action: context.onTimeMachine) {
+                CardLinkRow(title: "Time Machine", systemImage: "clock.arrow.circlepath", detail: "Any date since 1940")
+                    .padding(.top, 8)
+            }
+            .buttonStyle(.plain)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 14)
+        .lookSurface(context.tokens, radius: 26)
+    }
+
+    private func row(_ day: DailyForecast, rangeLow: Double, rangeHigh: Double) -> some View {
+        let label = context.formatter.dayLabel(day.date, timeZone: context.timeZone, now: context.now)
+        let today = context.isToday(day)
+        return HStack(spacing: 12) {
+            Text(label)
+                .font(.callout.weight(.semibold))
+                .frame(width: 84, alignment: .leading)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            VStack(spacing: 0) {
+                ConditionIcon(day.condition)
+                    .font(.system(size: 20))
+                if let chance = day.precipitationChance, chance >= 0.15 {
+                    Text(context.formatter.chance(chance))
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(context.tokens.rainText)
+                }
+            }
+            .frame(width: 32)
+            Text(context.temperature(day.low))
+                .font(.callout)
+                .opacity(0.72)
+                .frame(width: 36, alignment: .trailing)
+            TemperatureRangeBar(low: day.low, high: day.high, rangeLow: rangeLow, rangeHigh: rangeHigh, current: today ? context.current.temperature : nil, trackColor: .white.opacity(0.2))
+            Text(context.temperature(day.high))
+                .font(.callout.weight(.semibold))
+                .frame(width: 36, alignment: .trailing)
+        }
+        .frame(minHeight: 50)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label): \(day.condition.description), high \(context.temperature(day.high)), low \(context.temperature(day.low))")
+    }
+}
