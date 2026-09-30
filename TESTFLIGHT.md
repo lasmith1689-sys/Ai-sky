@@ -110,7 +110,7 @@ can also start one yourself: on GitHub, open **Actions** ▸ **TestFlight** and 
 
 Building and uploading takes about 15 minutes. Apple then processes the build, usually within
 5–30 minutes, and emails you when it's ready. After that, a new build goes up when you click
-**Run workflow**, or when a pushed commit's message contains `[ship]`. Other pushes only run CI, so
+**Run workflow**, or when a pushed commit's message starts with `[ship]`. Other pushes only run CI, so
 work in progress doesn't reach your phone.
 
 ## 7. Install on your iPhone

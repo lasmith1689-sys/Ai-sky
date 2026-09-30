@@ -1,18 +1,18 @@
 name: TestFlight
 
 # Signs the App Store build and uploads it to TestFlight. Runs only when started by hand
-# (Actions > TestFlight > Run workflow) or on a push whose head commit message contains
-# [ship], so work in progress doesn't land on your phone. CI still builds every push.
+# (Actions > TestFlight > Run workflow) or on a push whose head commit message starts
+# with [ship], so work in progress doesn't land on your phone. CI still builds every push.
 on:
   push:
     branches: [main, "claude/**"]
   workflow_dispatch:
 
 concurrency:
-  # Every push still starts a run (its job is skipped without [ship]). Keep those runs in their own
-  # group so a later push can't cancel an upload that's in progress.
-  group: testflight-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[ship]') }}
-  cancel-in-progress: true
+  # Real uploads and skipped runs get separate groups, and an upload is never cancelled: a later
+  # push can't kill an upload in progress, and a second upload waits for the first.
+  group: testflight-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[ship]') }}
+  cancel-in-progress: ${{ !(github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[ship]')) }}
 
 permissions:
   contents: read
@@ -20,7 +20,7 @@ permissions:
 jobs:
   testflight:
     name: App Store build (uploads to TestFlight when set up)
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[ship]')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[ship]')
     runs-on: macos-26
     timeout-minutes: 45
     steps:
