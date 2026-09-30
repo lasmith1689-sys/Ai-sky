@@ -251,7 +251,7 @@ public struct LookTokens {
         line: .white.opacity(0.22), rule: .white.opacity(0.22), track: .white.opacity(0.2),
         ink: .white, ink2: .white.opacity(0.82), ink3: .white.opacity(0.66),
         accent: .white, onAccent: hex(0x1D3F73),
-        rain: .white.opacity(0.6), rainText: hex(0xD7ECFF), now: .white, sun: hex(0xFFD9A8),
+        rain: .white.opacity(0.6), rainText: hex(0xE2F1FF), now: .white, sun: hex(0xFFD9A8),
         chartLine: .white, chartArea: .white.opacity(0.3), grid: .white.opacity(0.16),
         usesTemperatureColors: true, usesSky: true,
         display: .system(.thin), headline: .system(.semibold), text: .system(.regular),

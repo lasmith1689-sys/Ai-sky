@@ -256,6 +256,7 @@ struct LiquidHourly: View {
             }
             .lineLimit(1)
             .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             .accessibilityElement(children: .combine)
         case .sun(let date, let rising):
             VStack(spacing: 7) {
@@ -273,6 +274,7 @@ struct LiquidHourly: View {
             }
             .lineLimit(1)
             .minimumScaleFactor(0.7)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             .accessibilityElement(children: .combine)
         }
     }

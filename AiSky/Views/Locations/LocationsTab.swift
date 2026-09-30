@@ -197,7 +197,7 @@ struct LocationRow: View {
                     if location.isCurrentLocation {
                         Image(systemName: "location.fill")
                             .font(.caption)
-                            .foregroundStyle(t.controlTint ?? t.ink2)
+                            .foregroundStyle(t.look == .instrument ? t.now : t.ink2)
                     }
                     Text(location.name)
                         .font(t.look == .liquid ? .headline : t.font(.textStrong, 17))

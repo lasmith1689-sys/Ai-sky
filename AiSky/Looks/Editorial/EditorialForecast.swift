@@ -38,17 +38,23 @@ struct EditorialHero: View {
         let current = context.current
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: 10) {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Text(context.location.name)
-                        .lookLabel(t, color: t.ink2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer(minLength: 8)
-                    Text(dateline)
-                        .lookLabel(t, color: t.ink2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                // One line when it fits; the dateline drops under the place at large text sizes.
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: 10) {
+                        placeName
+                        Spacer(minLength: 8)
+                        Text(dateline)
+                            .lookLabel(t, color: t.ink2)
+                            .lineLimit(1)
+                            .fixedSize()
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        placeName
+                        Text(dateline)
+                            .lookLabel(t, color: t.ink2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 LookRule(strong: true)
             }
@@ -88,6 +94,14 @@ struct EditorialHero: View {
             LookRule()
         }
         .padding(.top, 6)
+    }
+
+    private var placeName: some View {
+        Text(context.location.name)
+            .lookLabel(t, color: t.ink2)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .accessibilityAddTraits(.isHeader)
     }
 
     /// "Tuesday 29 September · 3:12 PM".

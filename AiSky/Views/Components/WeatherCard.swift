@@ -403,7 +403,7 @@ struct LookSurfaceModifier: ViewModifier {
             // under the dark color scheme the sky pages use).
             if #available(iOS 26.0, *) {
                 content
-                    .glassEffect(.clear.tint(Color.white.opacity(0.16)), in: shape)
+                    .glassEffect(.clear.tint(Color.white.opacity(0.12)), in: shape)
                     .overlay(shape.strokeBorder(Color.white.opacity(0.28), lineWidth: 1))
             } else {
                 content

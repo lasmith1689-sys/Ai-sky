@@ -250,6 +250,7 @@ struct ObsidianHourly: View {
         }
         .lineLimit(1)
         .minimumScaleFactor(0.7)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)

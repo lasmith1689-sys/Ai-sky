@@ -95,23 +95,23 @@ public enum Palette {
         }
     }
 
-    /// Full-screen sky background for a condition.
+    /// Full-screen sky background for a condition. Day skies stay dark enough for white type.
     public static func skyGradient(for condition: SkyCondition, isDaylight: Bool) -> LinearGradient {
         let colors: [UInt32]
         switch (condition.family, isDaylight) {
-        case (.clear, true): colors = [0x2E7BD6, 0x5EA8F2, 0x9CCBF7]
+        case (.clear, true): colors = [0x2A6FC4, 0x4A8FDB, 0x6FA9E6]
         case (.clear, false): colors = [0x0B1026, 0x1B2552, 0x2E3C78]
         case (.partlyCloudy, true): colors = [0x2B5EA8, 0x4F86C9, 0x8DB5DF]
         case (.partlyCloudy, false): colors = [0x10162E, 0x252F57, 0x3D4870]
-        case (.cloudy, true), (.windy, true): colors = [0x5D6D82, 0x7F8EA2, 0xA6B1BF]
+        case (.cloudy, true), (.windy, true): colors = [0x4A5A70, 0x617187, 0x78879B]
         case (.cloudy, false), (.windy, false): colors = [0x1A1F2B, 0x2E3545, 0x454D60]
-        case (.fog, true): colors = [0x7D8590, 0x9BA2AA, 0xBFC3C8]
+        case (.fog, true): colors = [0x626A76, 0x78808B, 0x8E959F]
         case (.fog, false): colors = [0x22262D, 0x3A3F48, 0x51565F]
-        case (.lightRain, true), (.rain, true): colors = [0x3F5670, 0x5A7089, 0x7C8FA4]
+        case (.lightRain, true), (.rain, true): colors = [0x3A5068, 0x51667F, 0x6A7D94]
         case (.lightRain, false), (.rain, false): colors = [0x121A26, 0x223044, 0x34465E]
         case (.heavyRain, _): colors = [0x1D2A3C, 0x2F4058, 0x475C78]
         case (.storm, _): colors = [0x1E1B33, 0x352F57, 0x4C4470]
-        case (.sleet, true), (.snow, true): colors = [0x7D93AD, 0xA3B5CA, 0xCAD6E4]
+        case (.sleet, true), (.snow, true): colors = [0x5F7593, 0x7A8FAA, 0x95A7BF]
         case (.sleet, false), (.snow, false): colors = [0x1E2635, 0x364257, 0x51607A]
         }
         return LinearGradient(colors: colors.map { color(hex: $0) }, startPoint: .top, endPoint: .bottom)

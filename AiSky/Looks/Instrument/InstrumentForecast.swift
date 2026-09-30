@@ -427,6 +427,7 @@ private struct InstrumentHourStrip: View {
         }
         .lineLimit(1)
         .minimumScaleFactor(0.7)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(now ? "Now" : context.formatter.hour(hour.date, timeZone: context.timeZone)): \(context.temperature(hour.temperature)), \(hour.condition.description), \(context.formatter.percent(chance)) chance of precipitation")
     }

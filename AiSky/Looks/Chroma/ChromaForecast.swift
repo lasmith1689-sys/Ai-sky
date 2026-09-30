@@ -177,6 +177,7 @@ struct ChromaHourly: View {
         }
         .lineLimit(1)
         .minimumScaleFactor(0.7)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .foregroundStyle(ink)
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity, minHeight: 108)
