@@ -20,6 +20,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Show toolchain
         run: |
@@ -58,10 +60,10 @@ jobs:
     name: iOS app + widgets (build & Simulator smoke test)
     runs-on: macos-26
     timeout-minutes: 50
-    permissions:
-      contents: write # only to force-push screenshots to the ci-screenshots branch
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Pick a simulator
         id: sim
@@ -121,22 +123,64 @@ jobs:
       - name: Check each look's screens (OCR)
         run: bash .github/scripts/verify-screens.sh ocr.txt
 
-      - name: Publish screenshots to the ci-screenshots branch
-        if: always() && github.event_name == 'push'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare screenshots for review
+        if: always()
         run: |
+          mkdir -p published/full
           ls screenshots/*.png >/dev/null 2>&1 || exit 0
-          out=$(mktemp -d)
-          mkdir -p "$out/full"
           for file in screenshots/*.png; do
             name=$(basename "$file" .png)
             # About 700 px wide for quick review, plus full resolution for close inspection.
-            sips -Z 1500 -s format jpeg -s formatOptions 72 "$file" --out "$out/$name.jpg" >/dev/null
-            sips -s format jpeg -s formatOptions 86 "$file" --out "$out/full/$name.jpg" >/dev/null
+            sips -Z 1500 -s format jpeg -s formatOptions 72 "$file" --out "published/$name.jpg" >/dev/null
+            sips -s format jpeg -s formatOptions 86 "$file" --out "published/full/$name.jpg" >/dev/null
           done
-          cp ocr.txt "$out/" 2>/dev/null || true
-          cd "$out"
+          cp ocr.txt published/ 2>/dev/null || true
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: |
+            screenshots
+            ocr.txt
+          if-no-files-found: ignore
+
+      - name: Upload screenshots for the ci-screenshots branch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-screenshots
+          path: published
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # The only job with write access: it force-pushes the screenshots the app job produced to the
+  # ci-screenshots branch. It runs no code from the repository.
+  publish:
+    name: Publish screenshots
+    needs: app
+    if: always() && github.event_name == 'push' && needs.app.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download screenshots
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: published-screenshots
+          path: published
+
+      - name: Push to the ci-screenshots branch
+        if: steps.download.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd published
+          ls *.jpg >/dev/null 2>&1 || exit 0
           git init -q -b ci-screenshots
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -145,20 +189,14 @@ jobs:
           git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/ci-screenshots
           echo "::notice title=Screenshots::Pushed $(ls *.jpg | wc -l | tr -d ' ') screenshots of ${GITHUB_SHA::7} to the ci-screenshots branch."
 
-      - name: Upload screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: simulator-screenshots
-          path: screenshots
-          if-no-files-found: ignore
-
   archive:
     name: App Store archive (dry run, nothing uploaded)
     runs-on: macos-26
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Archive and check entitlements (no App Store Connect secrets)
         env:
