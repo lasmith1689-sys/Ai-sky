@@ -131,11 +131,12 @@ public enum LiquidGlass {
     }
 
     /// Estimated lightest sky behind the hero (just above the middle of the hero block, where the
-    /// clouds drift), before the scrim.
+    /// clouds drift), before the scrim. Measured: the brightest cloud behind the partly cloudy
+    /// hero sits about half way from the sky to white.
     public static func heroBeforeScrim(condition: SkyCondition, isDaylight: Bool) -> ColorContrast.RGB {
         let stops = Palette.skyStops(for: condition, isDaylight: isDaylight).map(ColorContrast.rgb)
         let sky = ColorContrast.blend(stops[1], opacity: 0.56, over: stops[0])
-        let clouds = 0.06 + 0.3 * cloudStrength(for: condition, isDaylight: isDaylight)
+        let clouds = 0.06 + 0.46 * cloudStrength(for: condition, isDaylight: isDaylight)
         return ColorContrast.blend(ColorContrast.white, opacity: clouds, over: sky)
     }
 
