@@ -99,7 +99,7 @@ public enum Palette {
     /// white type in the hero; Liquid's cards add a dark sheen on the gray ones (``LiquidGlass``).
     public static func skyStops(for condition: SkyCondition, isDaylight: Bool) -> [UInt32] {
         switch (condition.family, isDaylight) {
-        case (.clear, true): return [0x2A6FC4, 0x4A8FDB, 0x6FA9E6]
+        case (.clear, true): return [0x2466BB, 0x4285D3, 0x6FA9E6]
         case (.clear, false): return [0x0B1026, 0x1B2552, 0x2E3C78]
         case (.partlyCloudy, true): return [0x2B5EA8, 0x4F86C9, 0x8DB5DF]
         case (.partlyCloudy, false): return [0x10162E, 0x252F57, 0x3D4870]

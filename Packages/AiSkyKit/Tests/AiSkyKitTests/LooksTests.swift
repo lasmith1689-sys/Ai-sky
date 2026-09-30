@@ -1,6 +1,9 @@
 import Foundation
 import XCTest
 @testable import AiSkyKit
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
 
 final class LookSettingTests: XCTestCase {
     func testDefaultIsInstrument() {
@@ -96,6 +99,44 @@ final class LookTokensTests: XCTestCase {
         }
     }
 
+    /// Text inks against the fills they sit on, for every look but Liquid (whose glass over the
+    /// sky is checked in `LiquidGlassTests`), including Chroma's colored blocks.
+    func testTextKeepsContrastOnEverySurface() {
+        for look in Look.allCases where look != .liquid {
+            let tokens = LookTokens.tokens(for: look)
+            assertContrast(tokens, on: [("page", tokens.background), ("card", tokens.surface), ("nested", tokens.surfaceAlt)], "\(look)")
+            if look == .chroma {
+                for tone in [LookTokens.Tone.cobalt, .navy, .green, .mustard] {
+                    let toned = tokens.toned(tone)
+                    assertContrast(toned, on: [("block", toned.surface)], "chroma \(tone)")
+                }
+            }
+        }
+    }
+
+    private func assertContrast(_ tokens: LookTokens, on surfaces: [(String, Color)], _ label: String) {
+        for (surfaceName, surface) in surfaces {
+            let fill = srgb(surface).rgb
+            for (inkName, ink) in [("ink", tokens.ink), ("ink2", tokens.ink2), ("ink3", tokens.ink3), ("rainText", tokens.rainText)] {
+                let (color, opacity) = srgb(ink)
+                let ratio = ColorContrast.ratio(ColorContrast.blend(color, opacity: opacity, over: fill), fill)
+                XCTAssertGreaterThanOrEqual(ratio, 4.5, "\(label): \(inkName) on \(surfaceName) is \(ratio)")
+            }
+        }
+    }
+
+    /// A color's sRGB components and opacity.
+    private func srgb(_ color: Color) -> (rgb: ColorContrast.RGB, opacity: Double) {
+        let resolved = color.resolve(in: EnvironmentValues())
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let converted = resolved.cgColor.converted(to: space, intent: .defaultIntent, options: nil),
+              let c = converted.components, c.count >= 4 else {
+            XCTFail("Couldn't resolve \(color)")
+            return ((0, 0, 0), 1)
+        }
+        return ((Double(c[0]), Double(c[1]), Double(c[2])), Double(c[3]))
+    }
+
     func testTwentyFourHourClock() {
         let date = Fixtures.now.addingTimeInterval(3 * 3600) // 15:20 in Chicago
         XCTAssertEqual(LookClock.time(date, timeZone: Fixtures.chicago, tokens: .instrument, formatter: Fixtures.imperial), "15:20")
@@ -154,20 +195,19 @@ final class LiquidGlassTests: XCTestCase {
         }
     }
 
-    func testHeroKeepsThreeToOne() {
+    func testHeroSmallTextKeepsContrast() {
         for condition in SkyCondition.allCases {
             for daylight in [true, false] {
                 let hero = LiquidGlass.hero(condition: condition, isDaylight: daylight)
-                XCTAssertGreaterThanOrEqual(ColorContrast.ratio(ColorContrast.white, hero), 3.3, "\(condition) day \(daylight)")
+                XCTAssertGreaterThanOrEqual(ColorContrast.ratio(ColorContrast.white, hero), 4.5, "\(condition) day \(daylight)")
             }
         }
-        // Only the bright blue day skies need the scrim.
+        // The bright blue day skies need the strongest scrim; dark skies none.
         XCTAssertGreaterThan(LiquidGlass.heroScrim(for: .partlyCloudy, isDaylight: true), LiquidGlass.heroScrim(for: .clear, isDaylight: true))
-        XCTAssertGreaterThan(LiquidGlass.heroScrim(for: .clear, isDaylight: true), 0)
-        for condition in graySkies {
-            XCTAssertEqual(LiquidGlass.heroScrim(for: condition, isDaylight: true), 0, "\(condition)")
+        XCTAssertGreaterThan(LiquidGlass.heroScrim(for: .clear, isDaylight: true), LiquidGlass.heroScrim(for: .snow, isDaylight: true))
+        for condition in [SkyCondition.clear, .partlyCloudy, .cloudy, .rain, .heavyRain, .thunderstorms] {
+            XCTAssertEqual(LiquidGlass.heroScrim(for: condition, isDaylight: false), 0, "\(condition) at night")
         }
-        XCTAssertEqual(LiquidGlass.heroScrim(for: .clear, isDaylight: false), 0)
     }
 
     func testOnSkyTokens() {
@@ -175,7 +215,7 @@ final class LiquidGlassTests: XCTestCase {
         XCTAssertTrue(gray.isSheened)
         XCTAssertTrue(gray.brightSecondaryText)
         XCTAssertEqual(gray.glassSheen, LiquidGlass.sheen(for: .cloudy, isDaylight: true))
-        XCTAssertEqual(gray.heroScrim, 0)
+        XCTAssertLessThan(gray.heroScrim, 0.2)
         let blue = gray.onSky(.partlyCloudy, isDaylight: true)
         XCTAssertTrue(blue.isSheened)
         XCTAssertEqual(blue.glassSheen, LiquidGlass.sheen(for: .partlyCloudy, isDaylight: true))

@@ -35,7 +35,6 @@
 		A1B2C3D4E5F6000000000210 /* Geist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */; };
 		A1B2C3D4E5F6000000000211 /* Geist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */; };
 		A1B2C3D4E5F6000000000311 /* Geist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */; };
-		A1B2C3D4E5F6000000000212 /* GeistMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000112 /* GeistMono-Medium.ttf */; };
 		A1B2C3D4E5F6000000000213 /* GeistMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */; };
 		A1B2C3D4E5F6000000000313 /* GeistMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */; };
 		A1B2C3D4E5F6000000000214 /* InstrumentSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */; };
@@ -57,7 +56,6 @@
 		A1B2C3D4E5F600000000021D /* NewsreaderHeadline-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */; };
 		A1B2C3D4E5F600000000021E /* NewsreaderText-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */; };
 		A1B2C3D4E5F600000000031E /* NewsreaderText-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */; };
-		A1B2C3D4E5F600000000021F /* NewsreaderText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011F /* NewsreaderText-Medium.ttf */; };
 		A1B2C3D4E5F6000000000220 /* NewsreaderText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */; };
 		A1B2C3D4E5F6000000000320 /* NewsreaderText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */; };
 		A1B2C3D4E5F6000000000502 /* Barlow-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000402 /* Barlow-OFL.txt */; };
@@ -124,7 +122,6 @@
 		A1B2C3D4E5F600000000010F /* Geist-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Light.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Medium.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Regular.ttf"; sourceTree = "<group>"; };
-		A1B2C3D4E5F6000000000112 /* GeistMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeistMono-Medium.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeistMono-Regular.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-Medium.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -137,7 +134,6 @@
 		A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderDisplay-Light.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderHeadline-Regular.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderText-Italic.ttf"; sourceTree = "<group>"; };
-		A1B2C3D4E5F600000000011F /* NewsreaderText-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderText-Medium.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderText-Regular.ttf"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000402 /* Barlow-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Barlow-OFL.txt"; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000403 /* BarlowCondensed-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "BarlowCondensed-OFL.txt"; sourceTree = "<group>"; };
@@ -242,7 +238,6 @@
 				A1B2C3D4E5F600000000010F /* Geist-Light.ttf */,
 				A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */,
 				A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */,
-				A1B2C3D4E5F6000000000112 /* GeistMono-Medium.ttf */,
 				A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */,
 				A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */,
 				A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */,
@@ -255,7 +250,6 @@
 				A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */,
 				A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */,
 				A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */,
-				A1B2C3D4E5F600000000011F /* NewsreaderText-Medium.ttf */,
 				A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */,
 				A1B2C3D4E5F6000000000101 /* Licenses */,
 			);
@@ -393,7 +387,6 @@
 				A1B2C3D4E5F600000000020F /* Geist-Light.ttf in Resources */,
 				A1B2C3D4E5F6000000000210 /* Geist-Medium.ttf in Resources */,
 				A1B2C3D4E5F6000000000211 /* Geist-Regular.ttf in Resources */,
-				A1B2C3D4E5F6000000000212 /* GeistMono-Medium.ttf in Resources */,
 				A1B2C3D4E5F6000000000213 /* GeistMono-Regular.ttf in Resources */,
 				A1B2C3D4E5F6000000000214 /* InstrumentSans-Medium.ttf in Resources */,
 				A1B2C3D4E5F6000000000215 /* InstrumentSans-Regular.ttf in Resources */,
@@ -406,7 +399,6 @@
 				A1B2C3D4E5F600000000021C /* NewsreaderDisplay-Light.ttf in Resources */,
 				A1B2C3D4E5F600000000021D /* NewsreaderHeadline-Regular.ttf in Resources */,
 				A1B2C3D4E5F600000000021E /* NewsreaderText-Italic.ttf in Resources */,
-				A1B2C3D4E5F600000000021F /* NewsreaderText-Medium.ttf in Resources */,
 				A1B2C3D4E5F6000000000220 /* NewsreaderText-Regular.ttf in Resources */,
 				A1B2C3D4E5F6000000000502 /* Barlow-OFL.txt in Resources */,
 				A1B2C3D4E5F6000000000503 /* BarlowCondensed-OFL.txt in Resources */,

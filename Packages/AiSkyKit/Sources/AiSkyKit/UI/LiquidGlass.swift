@@ -46,8 +46,9 @@ public enum ColorContrast {
 /// nights) the blue sheen shrinks toward nothing. Apple's guidance for the clear glass variant
 /// over bright content is the same idea: a dimming layer under it.
 ///
-/// The hero sits on the sky itself; over the bright clouds of a blue day sky a soft scrim in the
-/// sky's own top color keeps it at 3:1 or better (``heroScrim(for:isDaylight:)``).
+/// The hero sits on the sky itself; over the bright clouds of a blue day sky a soft scrim in a
+/// deeper shade of the sky's own top color keeps its small text at 4.5:1 or better
+/// (``heroScrim(for:isDaylight:)``).
 public enum LiquidGlass {
     public enum Tone: Sendable {
         /// Clear and partly cloudy skies: a deep blue sheen.
@@ -99,8 +100,9 @@ public enum LiquidGlass {
     public static let brightInk2 = 0.92
     public static let brightInk3 = 0.82
 
-    /// Relative luminance the sky behind the hero should not exceed (white is about 3.6:1).
-    public static let heroTarget = 0.24
+    /// Relative luminance the sky behind the hero should not exceed (white is about 4.8:1, so its
+    /// 13 and 15 pt lines pass as well as the big temperature).
+    public static let heroTarget = 0.17
 
     /// Color of the sheen under the cards on this sky.
     public static func sheenTint(for condition: SkyCondition, isDaylight: Bool) -> UInt32 {
@@ -140,18 +142,25 @@ public enum LiquidGlass {
         return ColorContrast.blend(ColorContrast.white, opacity: clouds, over: sky)
     }
 
-    /// Opacity of the soft scrim in the sky's top color behind the hero (0 where the hero already
-    /// holds 3:1, which is every sky but the bright blue day ones).
-    public static func heroScrim(for condition: SkyCondition, isDaylight: Bool) -> Double {
+    /// The scrim's color: the sky's top stop at three quarters of its brightness, so it reads as
+    /// the sky deepening behind the hero.
+    public static func heroScrimTint(for condition: SkyCondition, isDaylight: Bool) -> ColorContrast.RGB {
         let top = ColorContrast.rgb(Palette.skyStops(for: condition, isDaylight: isDaylight).first ?? 0)
-        return opacity(of: top, over: heroBeforeScrim(condition: condition, isDaylight: isDaylight), toReach: heroTarget)
+        return (top.red * 0.75, top.green * 0.75, top.blue * 0.75)
+    }
+
+    /// Opacity of the soft scrim behind the hero (0 where the hero already holds 4.5:1, as on
+    /// dark skies; strongest over the bright clouds of a partly cloudy day).
+    public static func heroScrim(for condition: SkyCondition, isDaylight: Bool) -> Double {
+        opacity(of: heroScrimTint(for: condition, isDaylight: isDaylight),
+                over: heroBeforeScrim(condition: condition, isDaylight: isDaylight), toReach: heroTarget)
     }
 
     /// Estimated lightest sky behind the hero, scrim included.
     public static func hero(condition: SkyCondition, isDaylight: Bool) -> ColorContrast.RGB {
-        let top = ColorContrast.rgb(Palette.skyStops(for: condition, isDaylight: isDaylight).first ?? 0)
-        return ColorContrast.blend(top, opacity: heroScrim(for: condition, isDaylight: isDaylight),
-                                   over: heroBeforeScrim(condition: condition, isDaylight: isDaylight))
+        ColorContrast.blend(heroScrimTint(for: condition, isDaylight: isDaylight),
+                            opacity: heroScrim(for: condition, isDaylight: isDaylight),
+                            over: heroBeforeScrim(condition: condition, isDaylight: isDaylight))
     }
 
     /// The smallest opacity of `color` over `background` that brings it to `luminance` or below

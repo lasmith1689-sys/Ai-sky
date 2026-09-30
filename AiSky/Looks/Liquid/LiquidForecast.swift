@@ -115,12 +115,15 @@ struct LiquidHero: View {
         .padding(.bottom, 8)
         .background {
             // Over the bright clouds of a blue day sky, a soft glow of the sky's own deeper top
-            // color sits behind the hero so its white type keeps 3:1 (see `LiquidGlass`).
+            // color sits behind the hero so its white type keeps 4.5:1 (see `LiquidGlass`). It
+            // reaches above the place name so the small top lines sit in its full strength.
             if context.tokens.heroScrim > 0 {
                 Ellipse()
                     .fill(context.tokens.heroScrimColor.opacity(context.tokens.heroScrim))
-                    .padding(.horizontal, -24)
-                    .blur(radius: 36)
+                    .padding(.horizontal, -28)
+                    .padding(.top, -56)
+                    .padding(.bottom, -16)
+                    .blur(radius: 32)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }

@@ -41,7 +41,6 @@
 		<string>Geist-Light.ttf</string>
 		<string>Geist-Medium.ttf</string>
 		<string>Geist-Regular.ttf</string>
-		<string>GeistMono-Medium.ttf</string>
 		<string>GeistMono-Regular.ttf</string>
 		<string>InstrumentSans-Medium.ttf</string>
 		<string>InstrumentSans-Regular.ttf</string>
@@ -54,7 +53,6 @@
 		<string>NewsreaderDisplay-Light.ttf</string>
 		<string>NewsreaderHeadline-Regular.ttf</string>
 		<string>NewsreaderText-Italic.ttf</string>
-		<string>NewsreaderText-Medium.ttf</string>
 		<string>NewsreaderText-Regular.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
