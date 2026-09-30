@@ -20,7 +20,7 @@ public struct NextHourWindow: Equatable, Sendable {
         state = summary.state
         kind = summary.precipitationKind == .none ? .rain : summary.precipitationKind
         intensity = summary.intensity
-        isApproximate = isApproximate
+        self.isApproximate = isApproximate
         switch summary.state {
         case .starting:
             let startsIn = summary.startsIn ?? 0
