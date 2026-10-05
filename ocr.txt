@@ -1,0 +1,2428 @@
+===== 01-forecast.png =====
+  4%  9:41  |  •1l 5
+  8%  ----
+ 10%  1 CHICAGO  |  07:51 CDT
+ 12%  MYLOCATION
+ 20%  50
+ 24%  40  |  °F 60
+ 28%  46
+ 33%  FEELS 43
+ 34%  30  |  70
+ 38%  CLEAR
+ 40%  RANGE 45 • 61
+ 45%  6° colder than yesterday at this time.
+ 50%  NEXT HOUR  |  NO RAIN
+ 59%  NOW  |  15  |  30  |  45  |  60
+ 61%  15 - MINUTE DATA
+ 66%  WIND  |  HUMID  |  UV  |  AQI
+ 69%  3w  |  85%  |  OLOW  |  31 GOOD
+ 75%  NOW  |  08  |  09  |  10  |  11  |  12
+ 80%  45°  |  47°  |  52°  |  56°  |  59°  |  61°
+ 87%  0  |  0  |  0
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 02-next-hour.png =====
+  4%  9:41
+  8%  ---
+ 10%  NEXT HOUR  |  NO RAIN
+ 19%  NOW  |  15  |  30  |  45  |  60
+ 21%  15- MINUTE DATA
+ 26%  WIND  |  HUMID  |  UV  |  AQI
+ 29%  3w  |  85%  |  OLOW  |  31 GOOD
+ 35%  NOW  |  08  |  09  |  10  |  11  |  12
+ 40%  45°  |  47°  |  52°  |  56°  |  59°  |  61°
+ 47%  0  |  0  |  0
+ 52%  10 DAY
+ 55%  No precipitation throughout the week, with high
+ 57%  temperatures peaking at 79° on Saturday.
+ 62%  TODAY  |  45  |  61
+ 66%  TOMORROW  |  -O-  |  46  |  67
+ 71%  WED  |  59  |  76
+ 76%  THU  |  59  |  69
+ 81%  FRI  |  60  |  -  |  67
+ 86%  SAT  |  58  |  79
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 03-hourly.png =====
+  4%  9:41  |  •il
+  9%  WIND  |  HUMID  |  --üv  |  AQI
+ 12%  3w  |  85%  |  OLOW  |  31 GOOD
+ 17%  NOW  |  08  |  09  |  10  |  11  |  12
+ 23%  45°  |  47°  |  52°  |  56°  |  59°  |  61°
+ 30%  0  |  0  |  0  |  0
+ 35%  10 DAY
+ 38%  No precipitation throughout the week, with high
+ 40%  temperatures peaking at 79° on Saturday.
+ 44%  TODAY  |  45  |  61
+ 49%  TOMORROW  |  46  |  67
+ 54%  WED  |  59  |  76
+ 59%  THU  |  59  |  -  |  69
+ 64%  FRI  |  60  |  -  |  67
+ 69%  SAT  |  58  |  79
+ 74%  SUN  |  67  |  78
+ 79%  MON  |  21%  |  60  |  -  |  67
+ 83%  TUE  |  31%  |  60  |  78
+ 88%  WED  |  24%  |  54  |  68
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 04-daily.png =====
+  4%  9:41  |  •ll
+  8%  ----
+ 10%  10 DAY
+ 12%  No precipitation throughout the week, with high
+ 14%  temperatures peaking at 79° on Saturday.
+ 19%  TODAY  |  -O-  |  45  |  61
+ 24%  TOMORROW  |  -ợ-  |  46  |  67
+ 29%  WED  |  59  |  76
+ 34%  THU  |  59  |  69
+ 38%  FRI  |  60  |  -  |  67
+ 43%  SAT  |  58  |  79
+ 48%  SUN  |  67  |  78
+ 53%  MON  |  21%  |  60  |  -  |  67
+ 58%  TUE  |  31%  |  60  |  78
+ 63%  WED  |  24%  |  54  |  68
+ 68%  TIME MACHINE  |  Any date since 1940 >
+ 74%  NEXT 24 HOURS
+ 77%  Clear throughout the day.
+ 81%  TEMP  |  FEELS CHANCE  |  AMOUNT WIND  |  UV HU
+ 87%  60°
+ 90%  55°
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 05-precipitation.png =====
+  4%  9:41
+ 10%  PRECIPITATION  |  LAST RAIN 3 DAYS AGO
+ 13%  Past 24 hrs  |  Next 24 hrs
+ 16%  0.00 in  |  0.00 in
+ 19%  Past hour  |  Today so far  |  Next hour
+ 21%  0.00 in  |  0.00 in  |  0.00 in
+ 24%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 26%  1.46 in  |  4.15 in  |  0.01 in
+ 27%  Today
+ 34%  0.5
+ 41%  0.0-
+ 43%  Sep 21  |  Oct 5  |  Oct 11
+ 45%  Observed  |  Forecast
+ 50%  RAINFALL HISTORY  |  Any dates • vs. normal
+ 56%  AIR QUALITY  |  AQI
+ 61%  31
+ 62%  Good
+ 64%  Primary pollutant: PM2.5
+ 69%  Air quality is satisfactory, and air pollution poses little
+ 71%  or no risk.
+ 74%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 76%  34  |  44  |  52  |  51  |  74
+ 80%  Pollutants
+ 87%  FEELS LIKE  |  HUMIDITY
+ 90%  1Z0
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 06-air-quality.png =====
+  4%  9:41
+ 10%  AIR QUALITY  |  AQI
+ 15%  31
+ 16%  Good
+ 18%  Primary pollutant: PM2.5
+ 24%  Air quality is satisfactory, and air pollution poses little
+ 25%  or no risk.
+ 28%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 30%  34  |  44  |  52  |  51  |  74
+ 34%  Pollutants
+ 41%  FEELS LIKE  |  HUMIDITY
+ 44%  43°  |  85%
+ 52%  It feels colder than the  |  The dew point is 42° right
+ 54%  actual temperature.  |  now. Dry and comfortable.
+ 60%  WIND  |  UV INDEX
+ 64%  3 mph  |  O Low
+ 67%  N
+ 70%  E
+ 77%  From the west. Gusts to  |  Use sun protection 11 AM-
+ 78%  15 mph.  |  5 PM.
+ 85%  SUNSET  |  PRESSURE
+ 88%  6:25 PM  |  30.25 inHg
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 07-details.png =====
+  4%  9:41  |  •1l
+  8%  --÷-
+ 10%  FEELS LIKE  |  HUMIDITY
+ 13%  43°  |  85%
+ 21%  It feels colder than the  |  The dew point is 42° right
+ 23%  actual temperature.  |  now. Dry and comfortable.
+ 29%  WIND  |  UV INDEX
+ 33%  3 mph  |  O Low
+ 36%  N
+ 39%  W  |  E
+ 42%  S
+ 45%  From the west. Gusts to  |  Use sun protection 11 AM-
+ 47%  15 mph.  |  5 PM.
+ 53%  SUNSET  |  PRESSURE
+ 57%  6:25 PM  |  30.25 inHg
+ 60%  =
+ 65%  Steady over the last
+ 67%  Sunrise: 6:51 AM  |  3 hours.
+ 73%  VISIBILITY  |  CLOUD COVER
+ 77%  10 mi  |  0%
+ 86%  Good visibility.  |  Clear
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 08-radar.png =====
+  1%  :Wạusauç
+  4%  9:41
+  7%  Green Bay
+ 10%  NOAA NEXRAD  |  ppleton
+ 11%  5
+ 12%  U.S. base reflectivity
+ 14%  Manitowoc
+ 16%  ROshkosh
+ 17%  1
+ 18%  ake
+ 19%  Sheboygan
+ 25%  41'  |  Michigan
+ 28%  •Muskegon
+ 30%  Madison  |  oMilwaukee
+ 31%  Waukesha®
+ 35%  Hollando
+ 35%  Janesville!  |  •Racine
+ 38%  °Kenosha
+ 43%  ockford®  |  196
+ 47%  46°
+ 49%  •Niles
+ 50%  Chicago
+ 51%  51  |  *Aurora®
+ 52%  •Gary  |  South Bend
+ 55%  Joliet
+ 57%  80
+ 59%  Warsaw®
+ 66%  Wabash River
+ 70%  Touch and hold the map for rainfall history anywhere
+ 72%  Lalayeuer
+ 75%  7:50 AM
+ 76%  Now
+ 78%  Latest
+ 80%  la
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 90%  Rlnnminatan
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 09-locations.png =====
+  4%  9:41  |  •1 S
+ 10%  Edit  |  +
+ 16%  PLACES
+ 20%  MY LOCATION
+ 25%  1 Chicago  |  46°
+ 27%  7:53 AM • IL, United States
+ 29%  Clear  |  H:61° L:45°
+ 36%  SAVED PLACES  |  3 OF 20
+ 42%  Work
+ 43%  59°
+ 44%  8:53 AM • New York, New York, Unite...
+ 46%  Clear  |  H:71° L:52°
+ 52%  Denver
+ 53%  49°
+ 55%  6:53 AM • Colorado, United States
+ 56%  Clear  |  H:87° L: 49°
+ 63%  London
+ 64%  68°
+ 65%  1:53 PM • England, United Kingdom
+ 67%  Clear  |  H:71°L:57°
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 10-settings.png =====
+  4%  9:41  |  •l S
+ 10%  SETTINGS
+ 14%  LOOK
+ 21%  64°  |  64
+ 22%  64
+ 36%  Liquid  |  Obsidian  |  Instrument
+ 41%  Rain arrives in
+ 42%  eighteen minutes.  |  64°  |  64°
+ 45%  64°
+ 58%  Editorial  |  Horizon  |  Chroma "74
+ 62%  Every look shows the same forecast. Widgets follow the look
+ 64%  you pick.
+ 67%  UNITS
+ 72%  Temperature  |  OF=
+ 78%  Wind Speed  |  mph -
+ 84%  Precipitation  |  Inches (in) =
+ 90%  Pressure  |  inHod
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 11-rain-history.png =====
+  4%  9:41  |  •ll
+ 12%  RAINFALL • CHICAGO  |  Done
+ 19%  7 DAYS  |  30 DAYS  |  THIS MONTH  |  THIS YEAR  |  12 MONTHS
+ 24%  TOTAL  |  SEP 6 - OCT 5, 2026
+ 30%  4.15 in
+ 34%  1.04 in above normal • 134%
+ 38%  Same days last year: 0.97 in
+ 44%  DAILY TOTALS
+ 52%  1.0
+ 58%  0.5
+ 64%  0.0
+ 65%  Sep 6  |  Sep 12  |  Sep 18  |  Sep 24  |  Sep 30
+ 71%  RUNNING TOTAL
+ 73%  6.0
+ 78%  4.0
+ 83%  2.0  |  -------
+ 88%  0.0
+ 89%  Sep 6  |  Sep 13  |  Sep 20  |  Sep 27
+ 92%  This period  |  - Normal (1991-2020)
+ 98%  WET DAYS  |  WETTEST DAY
+===== 12-time-machine.png =====
+  4%  9:41  |  •ll
+ 12%  TIME MACHINE  |  Done
+ 20%  Sunday, October 5, 2025
+ 22%  1 year ago
+ 26%  Oct 5, 2025
+ 32%  Today  |  1 year ago  |  10 years ago  |  25 years ago  |  50y
+ 37%  Cloudy
+ 39%  High 84° • Low 64°
+ 43%  Clear throughout the day.
+ 48%  TEMPERATURE
+ 51%  85°
+ 54%  80°
+ 57%  75°
+ 60%  70°
+ 62%  65°
+ 66%  00  |  06  |  12  |  18
+ 72%  PRECIPITATION  |  0.00 IN TOTAL
+ 74%  0.10
+ 80%  0.05
+ 86%  0.00
+ 87%  00  |  06  |  12  |  18
+ 93%  WIND
+ 98%  10
+===== 13-radar-spot.png =====
+  1%  N
+  4%  9:41  |  •ll
+  7%  51  |  oAppleton  |  Cac
+ 10%  NOAA NEXRAD  |  •Manitowoc
+ 12%  U.S. base reflectivity  |  kosh
+ 15%  ake
+ 16%  •Sheboygan
+ 17%  1
+ 22%  41  |  Michigan
+ 26%  Madison  |  •Milwaukee
+ 28%  Waukesha®
+ 31%  Hollando
+ 32%  Janesville d  |  Racine
+ 35%  °Kenosha  |  31
+ 40%  ockford®  |  196
+ 43%  46°
+ 46%  •Niles
+ 47%  Aurora®  |  Chicago
+ 48%  51  |  South Benc
+ 49%  •Gary
+ 51%  Joliet
+ 55%  Warsaw®
+ 59%  Chicago
+ 61%  IL, United States
+ 65%  +
+ 68%  Rainfall  |  Time Machine  |  Save
+ 75%  7:55 AM
+ 76%  Now
+ 78%  Latest
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== 14-day-detail.png =====
+  4%  9:41  |  .ll
+ 12%  MONDAY, OCTOBER 5  |  Done
+ 19%  Clear
+ 22%  High 61° • Low 45°
+ 25%  Clear throughout the day.
+ 30%  TEMPERATURE
+ 35%  60°
+ 38%  55°
+ 41%  50°
+ 45%  45°
+ 48%  00  |  06  |  12  |  18
+ 54%  CHANCE OF PRECIPITATION
+ 56%  100%
+ 59%  75%
+ 62%  50%
+ 65%  25%
+ 68%  0%
+ 69%  00  |  06  |  12  |  18
+ 75%  WIND
+ 78%  10
+ 83%  5
+ 88%  0
+ 89%  00  |  06  |  12  |  18
+ 95%  FEELS LIKE  |  PRECIPITATION
+ 98%  60° / 40°  |  0.00 in
+===== 15-add-location.png =====
+  4%  9:41  |  •ll
+ 12%  Cancel  |  ADDAPLACE
+ 18%  Q, City, address or ZIP
+ 29%  Search for a city, address, ZIP code or landmark. You
+ 31%  have 17 of 20 spots left.
+ 37%  1  |  Save my current location (Chicago)
+===== 16-forecast-large-text.png =====
+  4%  9:41
+  8%  ----
+ 11%  + CHICAGO  |  07:56 CDT
+ 14%  MY LOCATION
+ 24%  50
+ 30%  40  |  °F 60
+ 34%  46
+ 40%  FEELS 43
+ 42%  30  |  70
+ 47%  CLEAR
+ 50%  RANGE 45 • 61
+ 56%  6° colder than yesterday at
+ 59%  this time.
+ 65%  NEXT HOUR  |  NO RAIN
+ 75%  NOW  |  15  |  30  |  45  |  60
+ 79%  15-MINUTE DATA
+ 85%  WIND  |  HUMID  |  UV  |  AQI
+ 89%  3W  |  85%  |  OLOW  |  31GOOD
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== chroma-1-forecast.png =====
+  4%  9:41  |  •0l  |  N
+ 13%  1 CHICAGO  |  8:07 AM
+ 14%  MYLOCATION
+ 24%  72°
+ 35%  Mostly cloudy
+ 38%  Rain in 12 minutes
+ 42%  FEELS 75°  |  HI 72°  |  LO 55°
+ 46%  Rain starting in 12 min, stopping 34 min later.
+ 55%  Rain at 8:18, done by 8:52  |  MODERATE
+ 64%  NOW  |  :15  |  :30  |  :45  |  :60
+ 66%  MINUTE BY MINUTE
+ 72%  NOW  |  9A  |  10A  |  11A  |  12P  |  1P
+ 78%  63°  |  6°  |  69°  |  72°  |  74°  |  76°
+ 82%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-10-dry.png =====
+  4%  9:41  |  N
+ 12%  1 CHICAGO  |  8:15  |  AM
+ 14%  MY LOCATION
+ 24%  72°
+ 35%  Clear
+ 38%  Dry for the next hour
+ 42%  FEELS 75°  |  HI 72°  |  LO 55°
+ 45%  9° warmer than yesterday at this time.
+ 55%  Dry for the next hour
+ 64%  NOW  |  :15  |  :30  |  :45  |  :60
+ 66%  MINUTE BY MINUTE
+ 72%  NOW  |  9A  |  10A  |  11A  |  12P  |  1P
+ 78%  63°  |  6°  |  69°  |  72°  |  74°  |  76°
+ 82%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-11-raining.png =====
+  4%  9:41
+ 10%  Rain now, done by 8:49  |  MODERATE
+ 19%  NOW  |  :15  |  : 30  |  :45  |  :60
+ 22%  Now: moderate rain, 0.05 in/hr
+ 24%  MINUTE BY MINUTE
+ 30%  NOW  |  9A  |  10A  |  11A  |  12P  |  1P
+ 37%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 40%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 47%  Rain today, on Friday, and on Saturday, with high
+ 49%  temperatures peaking at 82° on Wednesday.
+ 53%  Today  |  70%  |  55  |  72
+ 58%  Tomorrow c  |  61  |  77
+ 64%  Wed  |  66  |  82
+ 69%  Thu  |  59  |  75
+ 74%  Fri  |  70%  |  64  |  81
+ 79%  Sat  |  70%  |  57  |  73
+ 84%  Sun  |  63  |  79
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-2-daily.png =====
+  4%  9:41  |  •00l
+  9%  1
+ 10%  Rain today, on Friday, and on Saturday, with high
+ 12%  temperatures peaking at 82° on Wednesday.
+ 17%  Today  |  70%  |  55  |  72
+ 22%  Tomorrow .  |  61  |  77
+ 27%  Wed  |  66  |  82
+ 32%  Thu  |  59  |  75
+ 38%  Fri  |  70%  |  64  |  81
+ 43%  Sat  |  70%  |  57  |  73
+ 48%  Sun  |  63  |  79
+ 53%  Mon  |  55  |  72
+ 58%  Tue  |  61  |  77
+ 63%  Wed  |  66  |  82
+ 69%  Time Machine  |  Any date since 1940 ›
+ 75%  Next 24 Hours
+ 79%  Light rain until 12 PM.
+ 83%  Temp  |  Feels  |  Chance  |  Amount  |  Winc
+ 86%  80°
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-3-precipitation.png =====
+  4%  9:41  |  •0  |  5
+ 10%  Precipitation  |  LAST RAIN 29 HR AGO
+ 14%  Past 24 hrs  |  Next 24 hrs
+ 16%  0.00 in  |  0.14 in
+ 20%  Past hour  |  Today so far  |  Next hour
+ 22%  0.00 in  |  0.00 in  |  0.02 in
+ 25%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 27%  0.43 in  |  2.52 in  |  0.65  |  in
+ 29%  Today
+ 33%  0.4
+ 38%  0.2
+ 43%  0.0
+ 44%  Sep 21  |  Oct  |  5  |  Oct  |  11
+ 47%  Observed  |  • Forecast
+ 50%  Rainfall History  |  Any dates • vs. normal  |  >
+ 57%  Air Quality  |  AQI
+ 63%  42
+ 64%  Good
+ 66%  Primary pollutant: PM2.5
+ 71%  Air quality is satisfactory, and air pollution poses
+ 73%  little or no risk.
+ 76%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 78%  55  |  53  |  55  |  55  |  22
+ 82%  Pollutants & Pollen
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-4-details.png =====
+  4%  9:41
+  9%  1  |  HUMIDITY
+ 10%  FEELS LIKE
+ 13%  75°  |  71%
+ 21%  Humidity is making it  |  The dew point is 62° right
+ 22%  feel warmer.  |  now. Slightly humid.
+ 29%  WIND  |  UV INDEX
+ 32%  11 mph  |  4 Moderate
+ 39%  W  |  E
+ 41%  S
+ 45%  From the southwest.  |  Use sun protection
+ 47%  Gusts to 19 mph.  |  8 AM-7 PM.
+ 53%  SUNSET  |  PRESSURE
+ 57%  6:36 PM  |  29.87 inHg
+ 65%  Falling over the last
+ 67%  Sunrise: 6:42 AM  |  3 hours.
+ 73%  VISIBILITY  |  CLOUD COVER
+ 76%  8.7 mi  |  78%
+ 86%  Good visibility.  |  Mostly Cloudy
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-5-day-detail.png =====
+  4%  9:41
+ 12%  Monday, October 5  |  Done
+ 19%  Light rain
+ 22%  High 72° • Low 55°
+ 25%  Light rain from 8 AM to 12 PM.
+ 30%  Temperature
+ 33%  80°
+ 38%  70°
+ 43%  60°
+ 49%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 56%  Chance of Precipitation
+ 58%  100%
+ 61%  75%
+ 64%  50%
+ 67%  25%
+ 69%  0%  |  Д0000  |  •0000000•
+ 71%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 78%  Wind
+ 83%  10
+ 87%  5
+ 92%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 98%  FEELS LIKE  |  PRECIPITATION
+===== chroma-6-places.png =====
+  4%  9:41
+ 10%  Edit  |  +
+ 17%  Places
+ 23%  MY LOCATION
+ 28%  1 Chicago  |  72°
+ 31%  8:07 AM • IL, United States
+ 32%  Mostly Cloudy  |  H:72° L:55°
+ 39%  SAVED PLACES  |  3 OF 20
+ 45%  Work
+ 46%  72°
+ 47%  9:07 AM • New York, New York,...
+ 49%  Mostly Cloudy  |  H:72° L:55°
+ 56%  Denver
+ 57%  72°
+ 58%  7:07 AM • Colorado, United States
+ 60%  Mostly Cloudy  |  H:72° L:55°
+ 66%  London
+ 67%  72°
+ 69%  2:07 PM • England, United Kingd...
+ 71%  Mostly Cloudy  |  H:72° L:55°
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-7-settings.png =====
+  4%  9:41
+ 12%  Settings
+ 18%  LOOK
+ 24%  64°  |  64
+ 26%  64
+ 40%  Liquid  |  Obsidian  |  Instrument
+ 45%  Rain arrives in
+ 46%  eighteen minutes.  |  64°  |  64°
+ 49%  64°
+ 61%  Editorial  |  Horizon  |  Chroma '74
+ 66%  Every look shows the same forecast. Widgets follow the
+ 67%  look you pick.
+ 71%  UNITS
+ 76%  Temperature
+ 81%  Wind Speed  |  mph -
+ 87%  Precinitation  |  Inches (in) "
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-8-radar.png =====
+  4%  N  |  9:41
+  9%  pleton
+ 10%  NOAA NEXRAD
+ 12%  U.S. base reflectivity  |  •Manitowoc
+ 14%  ~usnkosh
+ 17%  Lake!  |  1
+ 18%  • Sheboygan
+ 24%  Michigan
+ 27%  Muskegon
+ 28%  •Madison -  |  •Milwaukee
+ 30%  Waukesha•
+ 33%  .Racine  |  Holland.
+ 35%  Janesville .
+ 37%  •Kenosha
+ 42%  ockford®
+ 45%  72°
+ 48%  Chiuago  |  •Niles
+ 50%  • "Aurora®
+ 50%  51  |  South Benc
+ 51%  •Gary
+ 53%  Joliet
+ 55%  80
+ 57%  Warsaw®
+ 64%  Wabash River
+ 69%  Bloomington  |  Kokomo•
+ 72%  8:05 AM
+ 73%  Now
+ 75%  Latest
+ 79%  la
+ 83%  Light  |  Moderate  |  Heavy  |  Extreme
+ 84%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== chroma-9-large-text.png =====
+  4%  9:41  |  2
+ 13%  + CHICAGO  |  8:09 AM
+ 17%  MY LOCATION
+ 28%  72°
+ 43%  Mostly cloudy
+ 46%  Rain in 12 minutes
+ 51%  FEELS 75° HI 72° LO 55°
+ 56%  Rain starting in 12 min,
+ 59%  stopping 34 min later.
+ 71%  Rain at 8:20, done MODERATE
+ 74%  by 8:54
+ 84%  NOW  |  :15  |  : 30  |  :45  |  : 60
+ 87%  MINUTCDVMINUTI
+ 92%  Forecast  |  Radar  |  Places  |  Settings
+===== editorial-1-forecast.png =====
+  4%  9:41
+ 10%  CHICAGO - MY LOCATION
+ 13%  MONDAY, OCTOBER 5
+ 15%  8:03 AM
+ 20%  Rain arrives in twelve
+ 25%  minutes and is gone by ten
+ 28%  to nine.
+ 37%  Feels like 75°
+ 39%  High 72°, low 55°
+ 42%  Southwest wind, 11 mph
+ 50%  THE NEXT HOUR  |  Rain, 8:15 to 8:49
+ 58%  8:03  |  8:18  |  8:33  |  8:48  |  9:03
+ 60%  MINUTE BY MINUTE
+ 64%  THIS MORNING
+ 68%  9 AM  |  " Lightrain  |  70%  |  66°
+ 72%  10 AM  |  Light rain  |  70%  |  69°
+ 76%  11 AM  |  Light rain  |  70%  |  72°
+ 80%  12 PM  |  *: Partly cloudy  |  74°
+ 85%  1PM  |  Ö Partly cloudy  |  76°
+ 89%  2PM  |  : Partly cloudy  |  77°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-10-dry.png =====
+  4%  9:41
+ 10%  CHICAGO - MY LOCATION
+ 13%  MONDAY, OCTOBER 5
+ 15%  8:14 AM
+ 20%  Light rain until 12 PM.
+ 24%  9° warmer than yesterday at this time.
+ 29%  Clear
+ 31%  72°  |  Feels like 75°
+ 34%  High 72°, low 55°
+ 36%  Southwest wind, 11 mph
+ 44%  THE NEXT HOUR  |  Dry for the hour
+ 53%  8:14  |  8:29  |  8:44  |  8:59  |  9:14
+ 55%  MINUTE BY MINUTE
+ 59%  THIS MORNING
+ 62%  9AM  |  » Light rain  |  70%  |  66°
+ 66%  10 AM  |  ® Light rain  |  70%  |  69°
+ 71%  11 AM  |  Light rain  |  70%  |  72°
+ 75%  12 PM  |  Ö: Partly cloudy  |  74°
+ 79%  1PM  |  *: Partly cloudy  |  76°
+ 83%  2PM  |  Ö: Partly cloudy  |  77°
+ 88%  3 PM  |  • Mostly cloudy  |  77°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-11-raining.png =====
+  4%  9:41  |  •ll
+  8%  THE NEXT HOUR  |  --  |  Rain until 8:48
+ 14%  ПИ
+ 16%  8:14  |  8:29  |  8:44  |  8:59  |  9:14
+ 19%  Now: moderate rain, 0.05 in/hr
+ 21%  MINUTE BY MINUTE
+ 25%  THIS MORNING
+ 29%  9 AM  |  " Light rain  |  70%  |  66°
+ 33%  10 AM  |  * Light rain  |  70%  |  69°
+ 37%  11 AM  |  „ Light rain  |  70%  |  72°
+ 41%  12 PM  |  Ö: Partly cloudy  |  74°
+ 45%  1PM  |  : Partly cloudy  |  76°
+ 50%  2PM  |  Ö: Partly cloudy  |  77°
+ 54%  3PM  |  • Mostly cloudy  |  77°
+ 58%  4PM  |  Ö Partly cloudy  |  77°
+ 63%  THE NEXT 48 HOURS
+ 68%  THE WEEK AHEAD
+ 72%  Rain today, on Friday, and on Saturday, with high
+ 74%  temperatures peaking at 82° on Wednesday.
+ 78%  Today  |  Light rain  |  70%  |  72° 55°
+ 82%  Tomorrow  |  Partly cloudy  |  77° 61°
+ 87%  Wed  |  Clear  |  82° 66°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-2-daily.png =====
+  4%  9:41
+  8%  THE WEEK AHEAD
+ 12%  Rain today, on Friday, and on Saturday, with high
+ 14%  temperatures peaking at 82° on Wednesday.
+ 18%  Today  |  Light rain  |  70%  |  72° 55°
+ 22%  Tomorrow  |  Partly cloudy  |  77° 61°
+ 27%  Wed  |  Clear  |  82° 66°
+ 31%  Thu  |  Mostly cloudy  |  75° 59°
+ 36%  Fri  |  Thunderstorms  |  70%  |  81º 64°
+ 40%  Sat  |  Rain  |  70%  |  73° 57°
+ 44%  Sun  |  Partly cloudy  |  79° 63°
+ 49%  Mon  |  Clear  |  72° 55°
+ 53%  Tue  |  Mostly clear  |  77° 61°
+ 58%  Wed  |  Cloudy  |  82° 66°
+ 63%  TIME MACHINE  |  Any date since 1940
+ 67%  NEXT 24 HOURS
+ 72%  Light rain until 12 PM.
+ 75%  TEMP  |  FEELS CHANCE AMOUNT WIND UV
+ 79%  80°
+ 84%  70°
+ 90%  60°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-3-precipitation.png =====
+  4%  9:41
+  8%  PRECIPITATION  |  --  |  LAST RAIN 29 HR AGO
+ 12%  Past 24 hrs  |  Next 24 hrs
+ 14%  0.00 in  |  0.14 in
+ 18%  Past hour  |  Today so far  |  Next hour
+ 19%  0.00 in  |  0.00 in  |  0.02 in
+ 23%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 24%  0.43 in  |  2.52 in  |  0.65 in
+ 26%  Today
+ 30%  0.4
+ 35%  0.2
+ 40%  0.0
+ 41%  Sep 21  |  Oct 5  |  Oct 11
+ 44%  • Observed  |  • Forecast
+ 49%  RAINFALL HISTORY  |  Any dates•vs. normal >
+ 54%  AIR QUALITY  |  AQI
+ 59%  42
+ 60%  Good
+ 62%  Primary pollutant: PM2.5
+ 68%  Air quality is satisfactory, and air pollution poses little or
+ 69%  no risk.
+ 72%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 75%  55  |  53  |  55  |  55  |  22
+ 79%  Pollutants & Pollen  |  >
+ 85%  FEELS LIKE  |  HUMIDITY
+ 88%  75°  |  71%
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-4-details.png =====
+  4%  9:41
+  8%  -
+  9%  FEELS LIKE  |  HUMIDITY
+ 12%  75°  |  71%
+ 18%  Humidity is making it  |  The dew point is 62° right now.
+ 20%  feel warmer.  |  Slightly humid.
+ 25%  WIND  |  UV INDEX
+ 29%  11 mph  |  4 Moderate
+ 33%  N
+ 36%  W  |  1  |  E
+ 38%  S
+ 42%  From the southwest. Gusts to  |  Use sun protection 8 AM-
+ 43%  19 mph.  |  7PM.
+ 49%  SUNSET  |  PRESSURE
+ 52%  6:36 PM  |  29.87 inHg
+ 62%  Sunrise: 6:42 AM  |  Falling over the last 3 hours.
+ 68%  VISIBILITY  |  CLOUD COVER
+ 71%  8.7 mi  |  78%
+ 78%  Good visibility.  |  Mostly Cloudy
+ 83%  MOON
+ 87%  34%
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-5-day-detail.png =====
+  4%  9:41
+ 11%  Monday, October 5  |  Done
+ 18%  Light rain
+ 21%  High 72° • Low 55°
+ 26%  Light rain from 8 AM to 12 PM.
+ 30%  TEMPERATURE
+ 33%  80°
+ 38%  70°
+ 44%  60°
+ 49%  12 AM  |  6AM  |  12PM  |  6PM
+ 53%  CHANCE OF PRECIPITATION
+ 56%  100%
+ 59%  75%
+ 62%  50%
+ 65%  25%
+ 68%  0%
+ 73%  WIND
+ 79%  10
+ 83%  5
+ 88%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 94%  FEELS LIKE  |  PRECIPITATION
+ 97%  73°/ 54°  |  0.26 in
+===== editorial-6-places.png =====
+  4%  9:41
+ 10%  Edit  |  +
+ 16%  Places
+ 23%  MY LOCATION
+ 28%  1 Chicago  |  72°
+ 31%  8:04 AM • IL, United States
+ 32%  H:72° L:55°
+ 33%  Mostly Cloudy
+ 39%  SAVED PLACES  |  3 OF 20
+ 45%  Work  |  72°
+ 47%  9:04 AM • New York, New York, Uni...
+ 48%  H:72° L:55°
+ 49%  Mostly Cloudy
+ 55%  Denver  |  72°
+ 58%  7:04 AM • Colorado, United States
+ 59%  H:72° L:55°
+ 60%  Mostly Cloudy
+ 66%  London  |  72°
+ 69%  2:04 PM • England, United Kingdom
+ 70%  H:72° L:55°
+ 71%  Mostly Cloudy
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-7-settings.png =====
+  4%  9:41
+ 11%  Settings
+ 18%  LOOK
+ 24%  64°  |  64
+ 26%  64
+ 40%  Liquid  |  Obsidian  |  Instrument
+ 45%  Rain arrives in
+ 46%  eighteen minutes.  |  64°  |  64°
+ 48%  64°
+ 61%  Editorial  |  Horizon  |  Chroma '74
+ 66%  Every look shows the same forecast. Widgets follow the look
+ 67%  you pick.
+ 70%  UNITS
+ 75%  Temperature  |  OF =
+ 81%  Wind Speed  |  mph -
+ 88%  Precipitation  |  Inches (in) =
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-8-radar.png =====
+  1%  ¡Wausau*
+  4%  9:41
+  7%  reen Bay
+ 10%  NOAA NEXRAD  |  bleton
+ 12%  U.S. base reflectivity
+ 14%  •Manitowoc
+ 16%  Oshkosh
+ 17%  1
+ 18%  Lake
+ 19%  • Sheboygan
+ 25%  Michigan
+ 28%  Muskegon
+ 30%  •Madison  |  •Milwaukee
+ 31%  Waukesha•
+ 34%  ,Racine  |  Holland.
+ 36%  Janesville .
+ 38%  •Kenosha  |  31
+ 43%  ockford®  |  196
+ 47%  72°
+ 49%  •Niles
+ 50%  "Aurora®  |  Chiuago
+ 52%  •Gary  |  South Benc
+ 55%  Joliet
+ 57%  80
+ 59%  Warsaw®
+ 66%  Wabash River
+ 70%  Bloomington  |  Kokomo•
+ 71%  Lafayette
+ 75%  8:05 AM
+ 76%  Now
+ 78%  Latest
+ 80%  ha
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 90%  Rinominaton
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== editorial-9-large-text.png =====
+  4%  9:41
+ 11%  CHICAGO - MY LOCATION
+ 15%  MONDAY, OCTOBER 5
+ 18%  8:08 AM
+ 24%  Rain arrives in
+ 30%  thirteen minutes
+ 36%  and is gone by five
+ 41%  to nine.
+ 49%  Mostly cloudy
+ 50%  72°
+ 52%  Feels like 75°
+ 56%  High 72°, low 55°
+ 59%  Southwest wind,
+ 62%  11 mph
+ 70%  THE NEXT  |  Rain, 8:20 to 8:54
+ 72%  HOUR
+ 79%  ЛЛиШии.
+ 82%  8:08  |  8:23  |  8:38  |  8:53  |  9:08
+ 85%  MINUTE BY MINUTE
+ 90%  TLIC MADNING
+ 93%  FORECAST RADAR  |  PLACES SETTINGS
+===== horizon-1-forecast.png =====
+  4%  9:41  |  •1l 5
+  9%  ....
+ 11%  1 Chicago  |  8:05 AM
+ 14%  My Location
+ 18%  Mostly cloudy
+ 21%  72°  |  Rain in 12 min
+ 23%  Feels 75° • H 72° L55°
+ 29%  Rain starting in 12 min, stopping 34 min later.
+ 33%  NEXT 12 HOURS
+ 38%  Now  |  63°
+ 39%  # Light rain
+ 40%  70%
+ 45%  9 AM  |  66°
+ 47%  70%
+ 52%  10 AM
+ 53%  69°
+ 54%  70%
+ 59%  11 AM
+ 60%  72°
+ 61%  70%
+ 67%  12PM  |  Ö: Partly cloudy  |  74°
+ 74%  1PM  |  76°
+ 81%  2 PM  |  77°
+ 88%  3PM  |  O Mostly cloudy  |  77°
+ 92%  F
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-10-dry.png =====
+  4%  9:41  |  •1l 5
+  9%  1..
+ 11%  1 Chicago  |  8:14 AM
+ 14%  My Location
+ 18%  Clear
+ 21%  72°  |  Dry for the next hour
+ 23%  Feels 75° • H 72° L 55°
+ 29%  9º warmer than yesterday at this time.
+ 33%  NEXT 12 HOURS
+ 38%  Now  |  63°
+ 39%  # Light rain
+ 40%  70%
+ 45%  9 AM  |  66°
+ 47%  70%
+ 52%  10 AM
+ 53%  69°
+ 54%  70%
+ 59%  11 AM
+ 60%  72°
+ 61%  70%
+ 67%  12PM  |  Ö: Partly cloudy  |  74°
+ 74%  1PM  |  76°
+ 81%  2 PM  |  77°
+ 88%  3PM  |  • Mostly cloudy  |  77°
+ 92%  F
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-11-raining.png =====
+  4%  9:41
+  9%  1 . .
+ 10%  NEXT HOUR  |  MINUTE BY MINUTE
+ 13%  Rain stopping in 34 min.
+ 24%  Now  |  15  |  30  |  45  |  60
+ 27%  Now: moderate rain, 0.05 in/hr
+ 34%  THE WEEK
+ 37%  Rain today, on Friday, and on Saturday, with high
+ 39%  temperatures peaking at 82° on Wednesday.
+ 44%  Today  |  70%  |  55  |  72
+ 49%  Tomorrow  |  61  |  77
+ 55%  Wed  |  66  |  82
+ 60%  Thu  |  59  |  75
+ 65%  Fri  |  ",5',  |  70%  |  64  |  81
+ 70%  Sat  |  70%  |  57  |  73
+ 75%  Sun  |  63  |  79
+ 80%  Mon  |  55  |  72
+ 85%  Tue  |  61  |  77
+ 92%  F  |  Q
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-2-daily.png =====
+  4%  9:41
+ 10%  NEXT HOUR  |  MINUTE BY MINUTE
+ 13%  Rain starting in 12 min, stopping 34 min later.
+ 24%  Now  |  15  |  30  |  45  |  60
+ 30%  THE WEEK
+ 34%  Rain today, on Friday, and on Saturday, with high
+ 36%  temperatures peaking at 82° on Wednesday.
+ 41%  Today  |  70%  |  55  |  72
+ 46%  Tomorrow  |  61  |  77
+ 51%  Wed  |  66  |  82
+ 56%  Thu  |  &  |  59  |  75
+ 62%  Fri  |  70%  |  64  |  81
+ 67%  Sat  |  70%  |  57  |  73
+ 72%  Sun  |  63  |  79
+ 77%  Mon  |  -0-  |  55  |  72
+ 82%  Tue  |  61  |  77
+ 87%  Wed  |  66  |  82
+ 92%  F
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-3-precipitation.png =====
+  4%  9:41  |  •l S
+  9%  PRECIPITATION  |  LAST RAIN 29 HR AGO
+ 13%  Past 24 hrs  |  Next 24 hrs
+ 16%  0.00 in  |  0.14 in
+ 20%  Past hour  |  Today so far  |  Next hour
+ 22%  0.00 in  |  0.00 in  |  0.02 in
+ 25%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 27%  0.43 in  |  2.52 in  |  0.65 in
+ 29%  Today
+ 34%  0.4
+ 38%  0.2
+ 43%  0.0
+ 44%  Sep 21  |  Oct 5  |  Oct 11
+ 47%  • Observed  |  Forecast
+ 51%  RAINFALL HISTORY  |  Any dates • vs. normal  |  >
+ 58%  AIR QUALITY  |  AQI
+ 64%  42
+ 65%  Good
+ 67%  Primary pollutant: PM2.5
+ 73%  Air quality is satisfactory, and air pollution poses little or
+ 75%  no risk.
+ 78%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 80%  55  |  53  |  55  |  55  |  22
+ 84%  Pollutants & Pollen
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-4-details.png =====
+  4%  9:41  |  •1l 5
+  9%  1  |  • HUMIDITY
+ 10%  FEELS LIKE
+ 14%  75°  |  71%
+ 21%  Humidity is making it  |  The dew point is 62° right
+ 23%  feel warmer.  |  now. Slightly humid
+ 29%  WIND  |  UV INDEX
+ 33%  11 mph  |  4 Moderate
+ 37%  N
+ 40%  W  |  1  |  E
+ 46%  From the southwest.  |  Use sun protection 8 AM-
+ 48%  Gusts to 19 mph.  |  7PM.
+ 55%  SUNSET  |  PRESSURE
+ 59%  6:36 PM  |  29.87 inHg
+ 67%  Falling over the last
+ 69%  Sunrise: 6:42 AM  |  3 hours
+ 76%  VISIBILITY  |  CLOUD COVER
+ 80%  8.7 mi  |  78%
+ 88%  Good visibility.  |  Mostly Cloudy
+ 92%  F  |  Q
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-5-day-detail.png =====
+  4%  9:41  |  •l S
+ 12%  Monday, October 5  |  Done
+ 19%  Light rain
+ 22%  High 72° • Low 55°
+ 27%  Light rain from 8 AM to 12 PM.
+ 32%  TEMPERATURE
+ 34%  80°
+ 39%  70°
+ 45%  60°
+ 50%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 56%  CHANCE OF PRECIPITATION
+ 59%  100%
+ 61%  75%
+ 64%  50%
+ 67%  25%
+ 70%  0%  |  L
+ 71%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 78%  WIND
+ 83%  10
+ 86%  5
+ 92%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 98%  FEELS LIKE  |  PRECIPITATION
+===== horizon-6-places.png =====
+  4%  9:41  |  •1l 5
+ 10%  Edit  |  +
+ 17%  Places
+ 22%  MY LOCATION
+ 27%  1 Chicago
+ 28%  72°
+ 30%  8:06 AM • IL, United States
+ 32%  Mostly Cloudy  |  H:72° L:55°
+ 39%  SAVED PLACES  |  3 OF 20
+ 45%  Work
+ 46%  72°
+ 48%  9:06 AM • New York, New York, Unit...
+ 50%  Mostly Cloudy  |  H:72° L:55°
+ 56%  Denver
+ 58%  72°
+ 59%  7:06 AM • Colorado, United States
+ 61%  Mostly Cloudy  |  H:72° L:55°
+ 68%  London
+ 69%  72°
+ 71%  2:06 PM • England, United Kingdom
+ 73%  Mostly Cloudy  |  H:72° L:55°
+ 92%  F
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-7-settings.png =====
+  4%  9:41
+ 12%  Settings
+ 17%  LOOK
+ 23%  64°  |  64
+ 25%  64
+ 39%  Liquid  |  Obsidian  |  Instrument
+ 44%  Rain arrives in
+ 45%  eighteen minutes.  |  64°  |  64°
+ 48%  64°
+ 61%  Editorial  |  Horizon  |  Chroma '74
+ 65%  Every look shows the same forecast. Widgets follow the look
+ 67%  you pick.
+ 71%  UNITS
+ 76%  Temperature  |  oF-
+ 82%  Wind Speed  |  mph -
+ 88%  Precipitation  |  Inches (in) ≤
+ 92%  F
+ 95%  Timeline  |  Radar  |  Places  |  Settings
+===== horizon-8-radar.png =====
+  0%  Vausdu
+  4%  N  |  9:41  |  •0l
+  6%  oGreen bay
+ 10%  15  |  NOAA NEXRAD  |  pleton  |  ad
+ 13%  U.S. base reflectivity  |  Manitowoc
+ 15%  Oshkosh
+ 17%  Lake  |  1
+ 19%  oSheboygan
+ 25%  41  |  Michigan
+ 28%  °Muskegon
+ 29%  oMadison  |  •Milwaukee
+ 31%  Waukesha®
+ 34%  •Racine  |  Hollando
+ 36%  Janesville!
+ 38%  °Kenosha
+ 42%  196
+ 43%  Rockford
+ 46%  72°
+ 49%  •Niles
+ 50%  Aurora®  |  Chicago
+ 51%  51'  |  South Benc
+ 52%  •Gary
+ 54%  Joliet
+ 58%  Warsaw®
+ 65%  -Wabash River
+ 69%  Bloomington  |  Kokomo°
+ 72%  UDIANA
+ 74%  8:05 AM
+ 75%  Now
+ 76%  Latestg
+ 80%  la
+ 84%  Light  |  Moderate  |  Heavy  |  Extreme
+ 86%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 94%  Timeline  |  Radar  |  Places  |  Settings
+===== instrument-1-forecast.png =====
+  4%  9:41  |  •il
+  8%  =..-
+ 10%  1 CHICAGO  |  08:01 CDT
+ 12%  MY LOCATION
+ 20%  60
+ 24%  50  |  •F  |  70
+ 27%  72
+ 33%  FEELS 75
+ 34%  40  |  80
+ 38%  MOSTLY CLOUDY
+ 40%  RANGE 55 • 72
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 50%  NEXT HOUR  |  RAIN 08:13 → 08:47
+ 59%  NOW  |  15  |  30  |  45  |  60
+ 61%  MINUTE BY MINUTE
+ 66%  WIND  |  HUMID  |  UV  |  AQI
+ 69%  11 sw  |  71%  |  4 MOD  |  42 GOOD
+ 75%  NOW  |  09  |  10  |  11  |  12  |  13
+ 80%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 85%  -
+ 87%  70  |  70  |  70  |  70  |  10  |  10
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-10-dry.png =====
+  4%  9:41  |  •il
+  8%  -..-
+ 10%  1 CHICAGO  |  08:13 CDT
+ 12%  MY LOCATION
+ 20%  60
+ 24%  50  |  •F  |  70
+ 27%  72
+ 33%  FEELS 75
+ 34%  40  |  80
+ 38%  CLEAR
+ 40%  RANGE 55 • 72
+ 45%  9° warmer than yesterday at this time.
+ 50%  NEXT HOUR  |  NO RAIN
+ 59%  NOW  |  15  |  30  |  45  |  60
+ 61%  MINUTE BY MINUTE
+ 66%  WIND  |  HUMID  |  UV  |  AQI
+ 69%  11 sw  |  71%  |  4 MOD  |  42 GOOD
+ 75%  NOW  |  09  |  10  |  11  |  12  |  13
+ 80%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 85%  -
+ 87%  70  |  70  |  70  |  70  |  10  |  10
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-11-raining.png =====
+  4%  9:41  |  •001
+  8%  -.-
+ 10%  NEXT HOUR  |  RAIN NOW → 08:47
+ 19%  NOW  |  15  |  30  |  45  |  60
+ 21%  MINUTE BY MINUTE
+ 23%  Now: moderate rain, 0.05 in/hr
+ 29%  WIND  |  HUMID  |  UV  |  AQI
+ 31%  11 sw  |  71%  |  4 MOD  |  42 GOOD
+ 37%  NOW  |  09  |  10  |  11  |  12  |  13
+ 42%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 49%  70  |  70  |  70  |  70  |  10  |  10
+ 55%  10 DAY
+ 57%  Rain today, on Friday, and on Saturday, with high
+ 59%  temperatures peaking at 82° on Wednesday.
+ 64%  TODAY  |  70%  |  55  |  72
+ 69%  TOMORROW  |  61  |  77
+ 74%  WED  |  66  |  82
+ 79%  THU  |  59  |  75
+ 84%  FRI  |  70%  |  64  |  81
+ 89%  SAT  |  70%  |  57  |  73
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-2-daily.png =====
+  4%  9:41  |  •ll
+ 10%  10 DAY
+ 12%  Rain today, on Friday, and on Saturday, with high
+ 14%  temperatures peaking at 82° on Wednesday.
+ 19%  TODAY  |  70%  |  55  |  72
+ 24%  TOMORROW  |  77
+ 29%  WED  |  66  |  82
+ 34%  THU  |  59  |  75
+ 39%  FRI  |  70%  |  64  |  81
+ 44%  SAT  |  70%  |  57  |  73
+ 49%  SUN  |  63  |  79
+ 53%  MON  |  55  |  72
+ 58%  TUE  |  61  |  77
+ 63%  WED  |  66  |  82
+ 68%  TIME MACHINE  |  Any date since 1940 >
+ 74%  NEXT 24 HOURS
+ 77%  Light rain until 12 PM.
+ 81%  TEMP  |  FEELS CHANCE  |  AMOUNT WIND  |  UV  |  HU
+ 84%  80°
+ 89%  70°
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-3-precipitation.png =====
+  4%  9:41  |  •0l
+ 10%  PRECIPITATION  |  LAST RAIN 29 HR AGO
+ 13%  Past 24 hrs  |  Next 24 hrs
+ 16%  0.00 in  |  0.14 in
+ 19%  Past hour  |  Today so far  |  Next hour
+ 21%  0.00 in  |  0.00 in  |  0.02 in
+ 24%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 26%  0.43 in  |  2.52 in  |  0.65 in
+ 27%  Today
+ 32%  0.4
+ 37%  0.2
+ 41%  0.0
+ 43%  Sep 21  |  Oct 5  |  Oct 11
+ 45%  Observed  |  • Forecast
+ 50%  RAINFALL HISTORY  |  Any dates • vs. normal
+ 56%  AIR QUALITY  |  AQI
+ 61%  42
+ 62%  Good
+ 64%  Primary pollutant: PM2.5
+ 69%  Air quality is satisfactory, and air pollution poses little
+ 71%  or no risk.
+ 74%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 76%  55  |  53  |  55  |  55  |  22
+ 80%  Pollutants & Pollen
+ 87%  FEELS LIKE  |  HUMIDITY
+ 90%  750  |  710
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-4-details.png =====
+  4%  9:41  |  •il
+  8%  -  |  --
+ 10%  FEELS LIKE  |  HUMIDITY
+ 13%  75°  |  71%
+ 21%  Humidity is making it  |  The dew point is 62° right
+ 23%  feel warmer.  |  now. Slightly humid.
+ 29%  WIND  |  UV INDEX
+ 33%  11 mph  |  4 Moderate
+ 36%  N
+ 39%  1  |  E
+ 45%  From the southwest.  |  Use sun protection 8 AM-
+ 47%  Gusts to 19 mph.  |  7PM.
+ 53%  SUNSET  |  PRESSURE
+ 57%  6:36 PM  |  29.87 inHg
+ 65%  Falling over the last
+ 67%  Sunrise: 6:42 AM  |  3 hours.
+ 73%  VISIBILITY  |  CLOUD COVER
+ 77%  8.7 mi  |  78%
+ 86%  Good visibility.  |  Mostly Cloudy
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-5-day-detail.png =====
+  4%  9:41
+ 12%  MONDAY, OCTOBER 5  |  Done
+ 19%  Light rain
+ 22%  High 72° • Low 55°
+ 25%  Light rain from 8 AM to 12 PM.
+ 30%  TEMPERATURE
+ 32%  80°
+ 37%  70°
+ 43%  60°
+ 48%  00  |  06  |  12  |  18
+ 54%  CHANCE OF PRECIPITATION
+ 56%  100%
+ 59%  75%
+ 62%  50%
+ 65%  25%
+ 68%  0%
+ 69%  00  |  06  |  12  |  18
+ 75%  WIND
+ 80%  10
+ 84%  5
+ 88%  0
+ 89%  00  |  06  |  12  |  18
+ 95%  FEELS LIKE  |  PRECIPITATION
+ 98%  73° / 54°  |  0.26 in
+===== instrument-6-places.png =====
+  4%  9:41  |  •ll
+ 10%  Edit  |  +
+ 16%  PLACES
+ 20%  MY LOCATION
+ 25%  1 Chicago  |  72°
+ 27%  8:02 AM • IL, United States
+ 29%  Mostly Cloudy  |  H:72° L:55°
+ 36%  SAVED PLACES  |  3 OF 20
+ 42%  Work
+ 43%  72°
+ 44%  9:02 AM • New York, New York, Unite...
+ 46%  Mostly Cloudy  |  H:72° L:55°
+ 53%  Denver  |  72°
+ 55%  7:02 AM • Colorado, United States
+ 56%  Mostly Cloudy  |  H:72° L:55°
+ 64%  London  |  72°
+ 65%  2:02 PM • England, United Kingdom
+ 67%  Mostly Cloudy  |  H:72°L:55°
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-7-settings.png =====
+  4%  9:41  |  •l S
+ 10%  SETTINGS
+ 14%  LOOK
+ 21%  64°  |  64
+ 22%  64
+ 36%  Liquid  |  Obsidian  |  Instrument
+ 41%  Rain arrives in
+ 42%  eighteen minutes.  |  64°  |  64°
+ 45%  64°
+ 58%  Editorial  |  Horizon  |  Chroma "74
+ 62%  Every look shows the same forecast. Widgets follow the look
+ 64%  you pick.
+ 67%  UNITS
+ 72%  Temperature  |  OF=
+ 78%  Wind Speed  |  mph -
+ 84%  Precipitation  |  Inches (in) =
+ 90%  Pressure  |  inHod
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== instrument-8-radar.png =====
+  1%  :Wạusauç
+  4%  9:41
+  7%  Green Bay
+ 10%  NOAA NEXRAD  |  ppleton
+ 11%  5
+ 12%  U.S. base reflectivity
+ 14%  Manitowoc
+ 16%  ROshkosh
+ 17%  1
+ 18%  ake
+ 19%  ,Sheboygan
+ 25%  41'  |  Michigan
+ 28%  °Muskegon
+ 30%  Madison  |  oMilwaukee
+ 31%  Waukesha®
+ 35%  Hollando
+ 35%  Janesville!  |  •Racine
+ 38%  °Kenosha
+ 43%  ockford®  |  196
+ 47%  72°
+ 49%  •Niles
+ 50%  Chicago
+ 51%  *Aurora®
+ 52%  •Gary  |  South Benc
+ 55%  Joliet
+ 57%  80
+ 59%  Warsaw®
+ 66%  Wabash River
+ 70%  Bloomington  |  Kokomo °
+ 72%  Lafayette®  |  INIDIA
+ 76%  8:00 AM
+ 76%  Now
+ 78%  Latest
+ 80%  la
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 90%  ORinnminatan
+ 94%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== liquid-1-forecast.png =====
+  4%  9:41  |  •1l 9
+ 13%  1 Chicago
+ 15%  My Location • 7:57 AM
+ 24%  72°
+ 33%  Mostly Cloudy
+ 36%  Feels 75° • H 72° L 55°
+ 42%  Rain in 12 min  |  until about 8:43
+ 53%  Now  |  15m  |  30m  |  45m  |  60m
+ 55%  Minute by minute
+ 61%  Now  |  8 AM  |  9 AM  |  10 AM  |  11 AM  |  12 PM
+ 67%  70%  |  70%  |  70%  |  70%
+ 70%  61°  |  63°  |  66°  |  69°  |  72°  |  74°
+ 77%  10-DAY FORECAST
+ 80%  Rain today, on Friday, and on Saturday, with high
+ 82%  temperatures peaking at 82° on Wednesday.
+ 86%  Today  |  55°  |  72°
+ 88%  70%
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-2-daily.png =====
+  4%  9:41  |  •0l
+ 10%  10-DAY FORECAST
+ 13%  Rain today, on Friday, and on Saturday, with high
+ 15%  temperatures peaking at 82° on Wednesday.
+ 19%  Today  |  55°  |  72°
+ 20%  70%
+ 25%  Tomorrow  |  61°  |  77°
+ 31%  Wed  |  66°  |  82°
+ 37%  Thu  |  59°  |  75°
+ 42%  Fri  |  64°  |  81°
+ 44%  70%
+ 48%  Sat  |  57°  |  73°
+ 50%  70%
+ 54%  Sun  |  63°  |  79°
+ 60%  Mon  |  55°  |  72°
+ 66%  Tue  |  61°  |  77°
+ 71%  Wed  |  66°  |  82°
+ 77%  Time Machine  |  Any date since 1940
+ 84%  W NEXT 24 HOURS
+ 87%  Light rain until 11 AM.
+ 90%  Tomn  |  Eoale  |  Chanco  |  Amount  |  Wind
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-3-precipitation.png =====
+  4%  9:41
+ 10%  PRECIPITATION  |  Last rain 29 hr ago
+ 12%  Past 24 hrs  |  Next 24 hrs
+ 15%  0.00 in  |  0.11 in
+ 18%  Past hour  |  Today so far  |  Next hour
+ 20%  0.00 in  |  0.00 in  |  0.02 in
+ 23%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 25%  0.43 in  |  2.52 in  |  0.62 in
+ 27%  Today
+ 31%  0.4
+ 36%  0.2
+ 41%  0.0
+ 42%  Sep 21  |  Oct 5  |  Oct 11
+ 45%  • Observed  |  • Forecast
+ 50%  Rainfall
+ 51%  Any dates • vs. normal
+ 52%  History
+ 59%  AIR QUALITY  |  AQI
+ 64%  42
+ 65%  Good
+ 67%  Primary pollutant: PM2.5
+ 72%  Air quality is satisfactory, and air pollution poses little
+ 74%  or no risk.
+ 77%  Today  |  Tomorrow  |  Wed  |  Thu  |  Fri
+ 79%  55  |  52  |  55  |  54  |  22
+ 83%  Pollutants & Pollen
+ 90%  FEELS LIKE  |  HUMIDITY
+ 93%  (((o)
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+ 99%  1e  |  dew poin
+===== liquid-4-details.png =====
+  4%  9:41  |  •il
+ 10%  S FEELS LIKE  |  HUMIDITY
+ 13%  75°  |  71%
+ 18%  The dew point is 62°
+ 21%  Humidity is making it  |  right now. Slightly
+ 23%  teel warmer.  |  humid.
+ 29%  WIND  |  * UVINDEX
+ 33%  11 mph  |  4 Moderate
+ 36%  N
+ 39%  W  |  E
+ 42%  S
+ 45%  From the southwest.  |  Use sun protection
+ 47%  Gusts to 19 mph.  |  8 AM-7 PM.
+ 54%  SUNSET  |  PRESSURE
+ 58%  6:36 PM  |  29.87 inHg
+ 65%  Falling over the last
+ 67%  Sunrise: 6:42 AM  |  3 hours.
+ 74%  VISIBILITY  |  • CLOUD COVER
+ 77%  8.7 mi  |  78%
+ 87%  Good visibility.  |  Mostly Cloudy
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-5-day-detail.png =====
+  4%  9:41  |  •1l -
+ 12%  Monday, October 5  |  Done
+ 19%  Light Rain
+ 22%  High 72° • Low 55°
+ 26%  Light rain from 7 AM to 11 AM.
+ 31%  J TEMPERATURE
+ 33%  80°
+ 38%  70°
+ 44%  60°
+ 49%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 55%  CHANCE OF PRECIPITATION
+ 57%  100%
+ 60%  75%
+ 63%  50%
+ 66%  25%
+ 69%  0%
+ 70%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 76%  WIND
+ 81%  10
+ 85%  5
+ 90%  12 AM  |  6 AM  |  12 PM  |  6 PM
+ 97%  j FEELS LIKE  |  PRECIPITATION
+===== liquid-6-places.png =====
+  4%  9:41
+ 10%  Edit  |  +
+ 16%  Places
+ 22%  My Location
+ 27%  1 Chicago  |  72°
+ 30%  7:58 AM • IL, United States
+ 31%  Mostly Cloudy  |  H:72° L:55°
+ 39%  Saved Places  |  3 of 20
+ 44%  Work
+ 45%  72°
+ 47%  8:58 AM • New York, New York,...
+ 49%  Mostly Cloudy  |  H:72° L:55°
+ 55%  Denver
+ 56%  72°
+ 58%  6:58 AM • Colorado, United States
+ 59%  Mostly Cloudy  |  H:72° L:55°
+ 66%  London  |  72°
+ 68%  1:58 PM • England, United Kingd...
+ 70%  Mostly Cloudy  |  H:72° L:55°
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-7-settings.png =====
+  4%  9:41
+ 16%  Settings
+ 22%  Look
+ 28%  64°V
+ 30%  64
+ 44%  Liquid  |  Obsidian  |  Instrument
+ 49%  Rain arrives in
+ 50%  eighteen minutes.  |  64°  |  64°
+ 53%  64°
+ 66%  Editorial  |  Horizon  |  Chroma '74
+ 70%  Every look shows the same forecast. Widgets follow the
+ 72%  look you pick.
+ 76%  Units
+ 81%  Temperature  |  OF=
+ 87%  Wind Speed  |  mph -
+ 93%  tion  |  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+ 99%  Pressure  |  inHg =
+===== liquid-8-radar.png =====
+  1%  :Wạusauę
+  4%  9:41
+  7%  Green Bay
+ 11%  5  |  NOAA NEXRAD  |  pleton
+ 13%  U.S. base reflectivity
+ 14%  •Manitowoc
+ 16%  ROshkosh
+ 17%  1
+ 18%  ake
+ 19%  Sheboygan
+ 25%  41  |  Michigan
+ 28%  °Muskegon
+ 30%  •Madison  |  •Milwaukee
+ 31%  Waukesha°
+ 34%  Hollando
+ 35%  Janesville.  |  Racine
+ 38%  °Kenosha
+ 43%  ockford®
+ 47%  72°
+ 49%  •Niles
+ 50%  Aurora®  |  Chicago
+ 52%  51  |  South Benc
+ 53%  oGary
+ 55%  Joliet
+ 59%  Warsawo
+ 66%  Wabesh RiVGT
+ 70%  Bloomington  |  Kokomo®
+ 71%  Lafayette®  |  INIDIA NA
+ 75%  8:00 AM
+ 76%  Now
+ 78%  Latest
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 90%  Rlnaminatan
+ 93%  (((•)))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-clear-night.png =====
+  4%  9:41  |  •115
+ 13%  1 Chicago
+ 16%  My Location • 8:16 AM
+ 24%  72°
+ 33%  Clear
+ 36%  Feels 75° • H 72° L 55°
+ 39%  9° warmer than yesterday at this time.
+ 45%  No rain for the next hour
+ 55%  Now  |  15m  |  30m  |  45m  |  60m
+ 57%  Minute by minute
+ 64%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 73%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  ((()))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-clear.png =====
+  4%  9:41  |  •1l 9
+ 13%  1 Chicago
+ 15%  My Location • 8:15 AM
+ 24%  72°
+ 33%  Clear
+ 36%  Feels 75° • H 72° L 55°
+ 39%  9° warmer than yesterday at this time.
+ 45%  No rain for the next hour
+ 55%  Now  |  15m  |  30m  |  45m  |  60m
+ 57%  Minute by minute
+ 64%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 73%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  ((()))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-cloudy-night.png =====
+  4%  9:41  |  •1 9
+ 13%  1 Chicago
+ 15%  My Location • 8:17 AM
+ 24%  72°
+ 33%  Cloudy
+ 36%  Feels 75° • H 72° L 55°
+ 39%  9° warmer than yesterday at this time.
+ 45%  No rain for the next hour
+ 55%  Now  |  15m  |  30m  |  45m  |  60m
+ 57%  Minute by minute
+ 64%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 73%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  700
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-drizzle.png =====
+  4%  9:41  |  •1l 9
+ 13%  1 Chicago
+ 16%  My Location • 8:16 AM
+ 24%  72°
+ 33%  Drizzle
+ 36%  Feels 75° • H 72° L 55°
+ 43%  Rain ending in 34 min  |  until about 8:50
+ 53%  Now  |  15m  |  30m  |  45m  |  60m
+ 55%  Minute by minute
+ 57%  Now: moderate rain, 0.05 in/hr
+ 63%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 72%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 84%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-fog.png =====
+  4%  9:41  |  •1l5
+ 13%  1 Chicago
+ 16%  My Location • 8:16 AM
+ 24%  72°
+ 33%  Fog
+ 36%  Feels 75° • H 72° L 55°
+ 39%  9° warmer than yesterday at this time.
+ 45%  No rain for the next hour
+ 55%  Now  |  15m  |  30m  |  45m  |  60m
+ 57%  Minute by minute
+ 64%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 73%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-partlyCloudy.png =====
+  4%  9:41  |  •1l 9
+ 13%  1 Chicago
+ 16%  My Location • 8:16 AM
+ 24%  72°
+ 33%  Partly Cloudy
+ 36%  Feels 75° • H 72° L 55°
+ 39%  9° warmer than yesterday at this time.
+ 45%  No rain for the next hour
+ 55%  Now  |  15m  |  30m  |  45m  |  60m
+ 57%  Minute by minute
+ 64%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 73%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  ((()))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-rain.png =====
+  4%  9:41  |  •1l5
+ 13%  1 Chicago
+ 16%  My Location • 8:16 AM
+ 24%  72°
+ 33%  Rain
+ 36%  Feels 75° • H 72° L55°
+ 43%  Rain ending in 35 min  |  until about 8:50
+ 53%  Now  |  15m  |  30m  |  45m  |  60m
+ 55%  Minute by minute
+ 57%  Now: moderate rain, 0.05 in/hr
+ 63%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 72%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 84%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== liquid-sky-snow.png =====
+  4%  9:41  |  •1l5
+ 13%  1 Chicago
+ 15%  My Location • 8:17 AM
+ 24%  72°
+ 33%  Snow
+ 36%  Feels 75° • H 72° L55°
+ 42%  Snow ending in 34 min  |  until about 8:51
+ 53%  Now  |  15m  |  30m  |  45m  |  60m
+ 55%  Minute by minute
+ 57%  Now: moderate snow, 0.05 in/hr
+ 63%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 70%  70%  |  70%  |  70%  |  70%
+ 72%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 79%  10-DAY FORECAST
+ 82%  Rain today, on Friday, and on Saturday, with high
+ 85%  temperatures peaking at 82° on Wednesday.
+ 89%  Today  |  55°  |  72°
+ 90%  70%
+ 93%  (((o))
+ 96%  Forecast  |  Radar  |  Places  |  Settings
+===== obsidian-1-forecast.png =====
+  4%  9:41
+  8%  ----
+ 10%  1 CHICAGO  |  MON  |  07:59
+ 13%  MY LOCATION
+ 22%  72°
+ 34%  Mostly cloudy.
+ 37%  Rain in 12 min, gone by 8:45.
+ 43%  FEELS  |  HIGH  |  LOW
+ 46%  75°  |  72°  |  55°
+ 52%  NEXT HOUR  |  RAIN  |  08:11 TO  |  08:45
+ 64%  NOW  |  +15  |  +30  |  +45  |  +60
+ 66%  MINUTE BY MINUTE
+ 70%  HOURLY  |  48 HOURS
+ 74%  NOW  |  08  |  09  |  10  |  11  |  12
+ 80%  61°  |  63°  |  66°  |  69°  |  72°  |  74°
+ 83%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 88%  10 DAYS
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-10-dry.png =====
+  4%  9:41
+  8%  ----
+ 10%  1 CHICAGO  |  MON  |  08 :13
+ 13%  MY LOCATION
+ 22%  72°
+ 34%  Clear.
+ 37%  No rain in the next hour.
+ 41%  9° warmer than yesterday at this time.
+ 47%  FEELS  |  HIGH  |  LOW
+ 49%  75°  |  72°  |  55°
+ 55%  NEXT HOUR  |  DRY
+ 67%  NOW  |  +15  |  +30  |  +45  |  +60
+ 69%  MINUTE  |  BY  |  MINUTE
+ 74%  HOURLY  |  48 HOURS
+ 78%  NOW  |  09  |  10  |  11  |  12  |  13
+ 83%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 86%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-11-raining.png =====
+  4%  9:41  |  .0l
+  8%  NEXT HOUR  |  ----  |  RAIN UNTIL  |  08:47
+ 19%  NOW  |  +15  |  +30  |  +45  |  +60
+ 23%  Now: moderate rain, 0.05 in/hr  |  MINUTE BY MINUTE
+ 27%  HOURLY  |  48 HOURS
+ 31%  NOW  |  09  |  10  |  11  |  12  |  13
+ 36%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 39%  70%  |  70%  |  70%  |  70%  |  10%  |  10%
+ 45%  10 DAYS
+ 48%  Rain today, on Friday, and on Saturday, with high
+ 50%  temperatures peaking at 82° on Wednesday.
+ 55%  Today  |  70%  |  55  |  72
+ 60%  Tomorrow  |  10%  |  61  |  77
+ 64%  Wed  |  10%  |  66  |  82
+ 69%  Thu  |  10%  |  59  |  75
+ 74%  Fri  |  70%  |  64  |  81
+ 78%  Sat  |  70%  |  57  |  73
+ 83%  Sun  |  10%  |  63  |  79
+ 88%  Mon  |  10%  |  55  |  72
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-2-daily.png =====
+  4%  9:41
+  8%  10 DAYS  |  ----
+ 11%  Rain today, on Friday, and on Saturday, with high
+ 13%  temperatures peaking at 82° on Wednesday.
+ 18%  Today  |  70%  |  55  |  72
+ 23%  Tomorrow  |  10%  |  61  |  77
+ 27%  Wed  |  10%  |  66  |  82
+ 32%  Thu  |  10%  |  59  |  75
+ 37%  Fri  |  70%  |  64  |  81
+ 41%  Sat  |  70%  |  57  |  73
+ 46%  Sun  |  •10%  |  63  |  79
+ 51%  Mon  |  10%  |  55  |  72
+ 55%  Tue  |  10%  |  61  |  77
+ 60%  Wed  |  10%  |  66  |  82
+ 65%  TIME MACHINE  |  Any date since 1940
+ 70%  NEXT 24 HOURS
+ 74%  Light rain until 11 AM.
+ 78%  TEMP  |  FEELS  |  CHANCE  |  AMOUNT  |  WIND UV HUN
+ 81%  80°
+ 87%  70°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-3-precipitation.png =====
+  4%  9:41  |  .8ll
+  8%  PRECIPITATION  |  ---  |  LAST RAIN  |  29 HR  |  AGO
+ 12%  Past 24 hrs  |  Next 24 hrs
+ 15%  0.00 in  |  0.11 in
+ 19%  Past hour  |  Today so far  |  Next hour
+ 21%  0.00 in  |  0.00 in  |  0.02 in
+ 24%  Past 7 days  |  Past 30 days  |  Next 7 days
+ 26%  0.43 in  |  2.52 in  |  0.62 in
+ 28%  Today
+ 33%  0.4
+ 37%  0.2
+ 42%  0.0
+ 43%  Sep  |  21  |  Oct 5  |  Oct 11
+ 46%  • Observed  |  • Forecast
+ 52%  RAINFALL HISTORY  |  Any dates • vs. normal
+ 56%  AIR  |  QUALITY  |  AQI
+ 63%  42
+ 64%  Good
+ 66%  Primary pollutant: PM2.5
+ 72%  Air quality is satisfactory, and air pollution poses little
+ 74%  or no risk.
+ 77%  Today  |  TomorIow  |  Wed  |  Thu  |  Fri
+ 80%  55  |  52  |  55  |  54  |  22
+ 84%  Pollutants & Pollen
+ 90%  rrrltur  |  HIMTA TTV
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-4-details.png =====
+  4%  9:41
+  8%  ----
+  9%  FEELS  |  LIKE  |  HUMIDITY
+ 13%  75°  |  71%
+ 18%  Humidity is making it  |  The dew point is 62° right
+ 20%  feel warmer.  |  now. Slightly humid.
+ 26%  WIND  |  UV INDEX
+ 29%  11 mph  |  4 Moderate
+ 33%  N
+ 36%  1  |  E
+ 42%  From the southwest. Gusts  |  Use sun protection 8 AM-
+ 44%  to 19 mph.  |  7PM.
+ 50%  SUNSET  |  PRESSURE
+ 54%  6:36 PM  |  29.87 inHg
+ 62%  Falling over the last
+ 64%  Sunrise: 6:42 AM  |  3 hours.
+ 69%  VISIBILITY  |  CLOUD COVER
+ 73%  8.7 mi  |  78%
+ 80%  Good visibility.  |  Mostly Cloudy
+ 85%  MOON
+ 89%  34%
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-5-day-detail.png =====
+  4%  9:41
+ 12%  MONDAY, OCTOBER  |  5  |  Done
+ 19%  Light rain
+ 22%  High 72° • Low 55°
+ 27%  Light rain from 8 AM to 12 PM.
+ 32%  TEMPERATURE
+ 35%  80°
+ 40%  70°
+ 46%  60°
+ 51%  00  |  06  |  12  |  18
+ 55%  CHANCE OF PRECIPITATION
+ 58%  100%
+ 61%  75%
+ 64%  50%
+ 67%  25%
+ 69%  0%  |  nnn•|  |  •OC
+ 71%  00  |  06  |  12  |  18
+ 76%  WIND
+ 81%  10
+ 85%  5
+ 90%  00  |  06  |  12  |  18
+ 96%  FEELS  |  LIKE  |  PRECIPITATION
+ 99%  |  |  nDcin
+===== obsidian-6-places.png =====
+  4%  9:41
+ 10%  Edit  |  +
+ 17%  Places.
+ 22%  MY LOCATION
+ 28%  1 Chicago  |  72°
+ 30%  8:00 AM • IL, United States
+ 32%  Mostly Cloudy  |  H:72° L:55°
+ 39%  SAVED PLACES  |  3  |  OF 20
+ 45%  Work
+ 46%  72°
+ 47%  9:00 AM • New York, New York,...
+ 49%  Mostly Cloudy  |  H:72° L:55°
+ 56%  Denver
+ 57%  72°
+ 59%  7:00 AM • Colorado, United States
+ 60%  Mostly Cloudy  |  H:72° L:55°
+ 67%  London  |  72°
+ 70%  2:00 PM • England, United Kingd...
+ 72%  Mostly Cloudy  |  H:72° L:55°
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-7-settings.png =====
+  4%  9:41
+ 12%  Settings.
+ 17%  LOOK
+ 24%  64°  |  64
+ 25%  64
+ 39%  Liquid  |  Obsidian  |  Instrument
+ 44%  Rain arrives in
+ 45%  eighteen minutes.  |  64°  |  64°
+ 48%  64°
+ 61%  Editorial  |  Horizon  |  Chroma '74
+ 65%  Every look shows the same forecast. Widgets follow the look
+ 67%  you pick.
+ 70%  UNITS
+ 76%  Temperature
+ 81%  Wind Speed  |  mph -
+ 87%  Precipitation  |  Inches (in) =
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== obsidian-8-radar.png =====
+  1%  Wausau ¿
+  4%  9:41
+  7%  Green Bay
+ 10%  NOAA NEXRAD  |  ppleton  |  ad
+ 12%  U.S. base reflectivity
+ 14%  •Manitowoc
+ 15%  Roshkosh
+ 17%  Lake  |  1
+ 19%  oSheboygan
+ 25%  41  |  Michigan
+ 28%  Muskegon
+ 30%  •Madison  |  •Milwaukee
+ 31%  Waukesha®
+ 34%  Hollando
+ 35%  Janesvilleo  |  •Racine
+ 38%  °Kenosha  |  31
+ 43%  ockford®
+ 47%  72°
+ 49%  oNiles
+ 50%  *Aurora®  |  Chicago
+ 52%  51'  |  South Benc
+ 53%  •Gary
+ 55%  Joliet
+ 59%  Warsaw 0
+ 65%  Wabash RiveT
+ 70%  •Bloomington  |  Kokomo°
+ 71%  Lafavette °
+ 74%  8:00 AM
+ 76%  Now
+ 77%  Latest
+ 85%  Light  |  Moderate  |  Heavy  |  Extreme
+ 87%  Radar: NOAA NWS NEXRAD via lowa Environmental Mesonet
+ 90%  ODlanmi
+ 93%  FORECAST  |  RADAR  |  PLACES  |  SETTINGS
+===== widgets-editorial-1-tinted.png =====
+  4%  9:41  |  •oll
+ 10%  Widgets • Editorial • Tinted (approximation)
+ 14%  Chicago  |  Chicago
+ 17%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  72°  |  Mostly Cloudy
+ 41%  Feels 75°
+ 42%  H:72° L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  NOW  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 51%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  NEXT HOUR
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 86%  42  |  Rain in 12 min
+ 88%  Lock Screen • rectangular
+ 90%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55  |  72  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-editorial-1.png =====
+  4%  9:41  |  .odl
+ 10%  Widgets • Editorial • Full color
+ 14%  Chicago  |  Chicago
+ 17%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°  |  clllihllhlllll,
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  72°  |  Mostly Cloudy
+ 41%  Feels 75°
+ 42%  H:72° L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  NOW  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 51%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  NEXT HOUR
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 86%  42  |  Rain in 12 min
+ 88%  Lock Screen • rectangular
+ 90%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55 72  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-editorial-2-tinted.png =====
+  4%  9:41  |  •ll  |  C2
+ 10%  Widgets • Editorial • Tinted (approximation)
+ 14%  Chicago
+ 17%  72°  |  Mostly Cloudy
+ 18%  Feels 75°
+ 20%  H:72° L:55°
+ 22%  Rain starting in 12 min, stopping 34 min later.
+ 25%  NOW  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 29%  63°  |  66  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 44%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 64%  0.00 in
+ 67%  PAST 7 DAYS
+ 68%  0.43 in
+ 70%  NEXT 24 HRS
+ 72%  0.14 in
+ 75%  Last rain 29 hr ago  |  Daily totals forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-editorial-2.png =====
+  4%  9:41  |  •oll
+ 10%  Widgets • Editorial • Full color
+ 14%  Chicago
+ 17%  72°  |  Mostly Cloudy
+ 18%  Feels 75°
+ 20%  H:72° L:55°
+ 22%  Rain starting in 12 min, stopping 34 min later.
+ 24%  NOW  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1PM
+ 29%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 44%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 64%  0.00 in
+ 67%  PAST 7 DAYS
+ 68%  0.43 in
+ 70%  NEXT 24 HRS
+ 72%  0.14 in
+ 75%  Last rain 29 hr ago  |  Daily totals forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-editorial-3-tinted.png =====
+  4%  9:41  |  CI
+ 10%  Widgets • Editorial • Tinted (approximation)
+ 17%  Chicago  |  54°  |  64° / 46°
+ 18%  Clear
+ 24%  Chicago  |  s: 61°  |  70° / 50°
+ 26%  Partly Cloudy
+ 32%  Work  |  6  |  ) C  |  75° / 54°
+ 34%  Rain
+ 41%  Denver  |  75°  |  81° / 57°
+ 42%  Cloudy
+ 49%  London  |  82°  |  86° / 61°
+ 50%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 64%  0.00 in  |  Next 24h 0.13 in
+ 67%  PAST 7 DAYS
+ 68%  0.43 in  |  Rainfall • rectangular
+ 70%  NEXT 24 HRS
+ 72%  0.13 in  |  Rain in 12 min
+ 73%  11/
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
+===== widgets-editorial-3.png =====
+  4%  9:41
+ 10%  Widgets • Editorial • Full color
+ 16%  Chicago  |  -฿: 54°  |  64° /46°
+ 18%  Clear
+ 24%  Chicago  |  #: 61°  |  70° / 50°
+ 26%  PartlyCloudy
+ 32%  Work  |  68°  |  75° / 54°
+ 34%  Rain
+ 41%  Denver  |  75°  |  81° / 57°
+ 43%  Cloudy
+ 49%  London  |  82°  |  86° / 61°
+ 50%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 64%  0.00 in  |  Next 24h 0.13 in
+ 67%  PAST 7 DAYS  |  Rainfall • rectangular
+ 68%  0.43 in
+ 70%  NEXT 24 HRS
+ 72%  0.13 in  |  Rain in 12 min
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
+===== widgets-instrument-1-tinted.png =====
+  4%  9:41  |  •ll
+ 10%  Widgets • Instrument • Tinted (approximation)
+ 14%  Chicago  |  Chicago
+ 18%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  Mostly Cloudy
+ 40%  72°  |  Feels 75°
+ 42%  H:72° L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  NOW  |  09  |  10  |  11  |  12
+ 51%  63  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  NEXT HOUR
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 85%  Rain in 12 min
+ 87%  42
+ 88%  Lock Screen • rectangular
+ 91%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55  |  72  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-instrument-1.png =====
+  4%  9:41  |  •ll
+ 10%  Widgets • Instrument • Full color
+ 14%  Chicago  |  Chicago
+ 18%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  Mostly Cloudy
+ 40%  72°  |  Feels 75°
+ 42%  H:72° L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  NOW  |  09  |  10  |  11  |  12  |  13
+ 51%  63  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  NEXT HOUR
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 85%  Rain in 12 min
+ 87%  42
+ 88%  Lock Screen • rectangular
+ 91%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55 72  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-instrument-2-tinted.png =====
+  4%  9:41  |  oll
+ 10%  Widgets • Instrument • Tinted (approximation)
+ 15%  Chicago
+ 17%  Mostly Cloudy
+ 18%  72°  |  Feels 75°
+ 20%  H:72° L:55°
+ 23%  Rain starting in 12 min, stopping 34 min later.
+ 25%  NOW  |  09  |  11  |  12  |  13
+ 29%  63  |  66°  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 44%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 65%  0.00 in
+ 67%  PAST 7 DAYS
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 73%  0.14 in
+ 75%  Last rain 29 hr ago  |  Daily totals • forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-instrument-2.png =====
+  4%  9:41  |  •il
+ 10%  Widgets • Instrument • Full color
+ 15%  Chicago
+ 17%  Mostly Cloudy
+ 18%  72°  |  Feels 75°
+ 20%  H:72° L:55°
+ 23%  Rain starting in 12 min, stopping 34 min later.
+ 25%  NOW  |  09  |  10  |  11  |  12  |  13
+ 29%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 44%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 65%  0.00 in
+ 67%  PAST 7 DAYS
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 73%  0.14 in
+ 75%  Last rain 29 hr ago  |  Daily totals • forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-instrument-3-tinted.png =====
+  4%  9:41  |  •l 5
+ 10%  Widgets • Instrument • Tinted (approximation)
+ 17%  Chicago  |  54°  |  64° / 46°
+ 18%  Clear
+ 25%  Chicago  |  61°  |  70° / 50°
+ 26%  Partly Cloudy
+ 33%  Work  |  68°  |  75°/54°
+ 34%  Rain
+ 41%  Denver  |  75°  |  81° / 57°
+ 43%  Cloudy
+ 49%  London  |  82°  |  86° / 61°
+ 50%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 65%  0.00 in  |  Next 24h 0.14 in
+ 67%  PAST 7 DAYS  |  Rainfall • rectangular
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  Rain in 12 min
+ 73%  0.14 in  |  11/
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
+===== widgets-instrument-3.png =====
+  4%  9:41  |  •ll a
+ 10%  Widgets • Instrument • Full color
+ 17%  Chicago  |  54°  |  64° / 46°
+ 18%  Clear
+ 25%  Chicago  |  61°  |  70° / 50°
+ 26%  Partly Cloudy
+ 33%  Work  |  68°  |  75°/54°
+ 35%  Rain
+ 41%  Denver  |  75°  |  81° / 57°
+ 43%  Cloudy
+ 49%  London  |  82°  |  86° / 61°
+ 50%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 65%  0.00 in  |  Next 24h 0.14 in
+ 67%  PAST 7 DAYS  |  Rainfall • rectangular
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  Rain in 12 min
+ 73%  0.14 in
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
+===== widgets-liquid-1-tinted.png =====
+  4%  9:41  |  oll
+ 10%  Widgets • Liquid • Tinted (approximation)
+ 14%  Chicago  |  Chicago
+ 18%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  Mostly Cloudy
+ 40%  72°  |  Feels 75°
+ 42%  H:72°L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 51%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  Next Hour
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 85%  Rain in 12 min
+ 87%  42
+ 88%  Lock Screen • rectangular
+ 91%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55  |  72  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-liquid-1.png =====
+  4%  9:41  |  •il
+ 10%  Widgets • Liquid • Full color
+ 14%  Chicago  |  Chicago
+ 18%  72°
+ 20%  Rain in 12 min
+ 25%  Mostly Cloudy
+ 27%  Rain in 12 min
+ 28%  H:72° L:55°
+ 32%  Conditions • small  |  Next Hour • small
+ 37%  Chicago
+ 39%  Mostly Cloudy
+ 40%  72°  |  Feels 75°
+ 42%  H:72° L:55°
+ 45%  Rain starting in 12 min, stopping 34 min later.
+ 47%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 51%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 54%  Conditions • medium
+ 59%  Chicago  |  Next Hour
+ 62%  Rain starting in 12 min, stopping 34 min later.
+ 64%  HEAVY
+ 66%  MED
+ 69%  LIGHT
+ 73%  Now  |  10m  |  20m  |  30m  |  40m  |  50m
+ 77%  Next Hour • medium
+ 81%  Chicago  |  Chicago
+ 83%  AIR QUALITY  |  72° . Feels 75°
+ 85%  Rain in 12 min
+ 87%  42
+ 88%  Lock Screen • rectangular
+ 91%  Good
+ 94%  72°  |  42
+ 96%  Primary: PM2.5  |  55  |  72°  |  AQI
+ 99%  Air Quality • small  |  Circular • circular  |  AQI • circular
+===== widgets-liquid-2-tinted.png =====
+  4%  9:41  |  oll
+ 10%  Widgets • Liquid • Tinted (approximation)
+ 14%  Chicago
+ 17%  Mostly Cloudy
+ 18%  72°  |  Feels 75°
+ 20%  H:72° L:55°
+ 22%  Rain starting in 12 min, stopping 34 min later.
+ 24%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 29%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 43%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 65%  0.00 in
+ 67%  PAST 7 DAYS
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  0.13 in
+ 75%  Last rain 29 hr ago  |  Daily totals • forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-liquid-2.png =====
+  4%  9:41  |  •il
+ 10%  Widgets • Liquid • Full color
+ 14%  Chicago
+ 17%  Mostly Cloudy
+ 18%  72°  |  Feels 75°
+ 20%  H:72° L:55°
+ 22%  Rain starting in 12 min, stopping 34 min later.
+ 24%  Now  |  9 AM  |  10 AM  |  11 AM  |  12 PM  |  1 PM
+ 29%  63°  |  66°  |  69°  |  72°  |  74°  |  76°
+ 37%  Today  |  70%  |  55°  |  72°
+ 39%  Tomorrow  |  61°  |  77°
+ 41%  Wed  |  66°  |  82°
+ 43%  Thu  |  59°  |  75°
+ 46%  Fri  |  70%  |  64°  |  81°
+ 56%  Conditions • large
+ 61%  Chicago
+ 63%  PAST 24 HRS
+ 65%  0.00 in
+ 67%  PAST 7 DAYS
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  0.13 in
+ 75%  Last rain 29 hr ago  |  Daily totals • forecast right of the line
+ 79%  Rainfall • medium
+===== widgets-liquid-3-tinted.png =====
+  4%  9:41  |  oll
+ 10%  Widgets • Liquid • Tinted (approximation)
+ 16%  Chicago  |  54°  |  64° / 46°
+ 18%  Clear
+ 24%  Chicago  |  61°  |  70° / 50°
+ 26%  Partly Cloudy
+ 32%  Work  |  68°
+ 33%  75° / 54°
+ 34%  Rain
+ 41%  Denver  |  75°
+ 41%  81° / 57°
+ 43%  Cloudy
+ 49%  London  |  82°  |  86° / 61°
+ 51%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 64%  0.00 in  |  Next 24h 0.13 in
+ 67%  PAST 7 DAYS  |  Rainfall • rectangular
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  0.13 in  |  Rain in 12 min
+ 73%  11/
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
+===== widgets-liquid-3.png =====
+  4%  9:41  |  •ll S
+ 10%  Widgets • Liquid • Full color
+ 16%  Chicago  |  54°  |  64° / 46°
+ 18%  Clear
+ 25%  Chicago  |  61°  |  70° / 50°
+ 26%  Partly Cloudy
+ 32%  Work  |  68°
+ 33%  75° / 54°
+ 34%  Rain
+ 41%  Denver  |  75°
+ 41%  81° / 57°
+ 43%  Cloudy
+ 49%  London  |  82°
+ 49%  86° / 61°
+ 50%  Snow
+ 56%  My Places • large
+ 60%  Chicago  |  Rainfall
+ 63%  PAST 24 HRS  |  Past 24h 0.00 in
+ 65%  0.00 in  |  Next 24h 0.13 in
+ 67%  PAST 7 DAYS  |  Rainfall • rectangular
+ 69%  0.43 in
+ 71%  NEXT 24 HRS
+ 72%  0.13 in  |  Rain in 12 min
+ 75%  Last rain 29 hr ago
+ 79%  Rainfall • small  |  Next Hour • rectangular
