@@ -113,12 +113,11 @@ struct EditorialHero: View {
             .accessibilityAddTraits(.isHeader)
     }
 
-    /// "Tuesday 29 September · 3:12 PM".
+    /// "Tuesday, September 29 · 3:12 PM", or "Tuesday 29 September · 15:12"
+    /// in the UK: the day and month in the phone's own order.
     private var dateline: String { "\(day) · \(time)" }
 
-    private var day: String {
-        LookClock.twentyFourHour(context.now, timeZone: context.timeZone, pattern: "EEEE d MMMM")
-    }
+    private var day: String { context.formatter.fullDay(context.now, timeZone: context.timeZone) }
 
     private var time: String { context.formatter.time(context.now, timeZone: context.timeZone) }
 
