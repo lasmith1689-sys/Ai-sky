@@ -172,7 +172,7 @@ struct RadarTab: View {
     private var sourceSubtitle: String {
         switch radar.source {
         case .noaa:
-            return radar.timeline?.hasForecast == true ? "Past 50 min · HRRR forecast 2 hr" : "U.S. base reflectivity · past 50 min"
+            return radar.timeline?.hasForecast == true ? "Past 50 min · HRRR forecast" : "U.S. base reflectivity · past 50 min"
         case .rainViewer:
             return "Global composite · past 2 hr"
         }

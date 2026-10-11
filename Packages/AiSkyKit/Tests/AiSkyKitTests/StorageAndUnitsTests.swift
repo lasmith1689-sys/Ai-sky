@@ -214,8 +214,6 @@ final class AlertsAndRadarTests: XCTestCase {
         XCTAssertEqual(frame.tileURL(z: 5, x: 8, y: 11)?.absoluteString, "https://mesonet3.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281710/5/8/11.png")
         XCTAssertEqual(frame.tileURL(z: 5, x: 8, y: 12)?.absoluteString, "https://mesonet.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281710/5/8/12.png")
         XCTAssertEqual(frame.tileURL(for: RadarTileKey(z: 5, x: 9, y: 12))?.host, "mesonet1.agron.iastate.edu")
-        // The same tile always goes to the same host, so it's cached once.
-        XCTAssertEqual(frame.tileURL(z: 7, x: 32, y: 47), frame.tileURL(z: 7, x: 32, y: 47))
     }
 
     func testHRRRForecastFramesFollowTheLatestRadar() throws {

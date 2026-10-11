@@ -60,7 +60,13 @@ struct RadarMapView: UIViewRepresentable {
         longPress.minimumPressDuration = 0.45
         mapView.addGestureRecognizer(longPress)
         context.coordinator.apply(style: mapStyle, to: mapView)
-        context.coordinator.installRadar(on: mapView)
+        var radarLevel = MKOverlayLevel.aboveRoads
+        #if DEBUG
+        if RadarViewModel.debugScreen == "radarTiles" {
+            radarLevel = .aboveLabels // the CI test pattern must not sit under the map's labels
+        }
+        #endif
+        context.coordinator.installRadar(on: mapView, level: radarLevel)
         if let focus {
             mapView.setRegion(Self.region(for: focus), animated: false)
             context.coordinator.lastFocusID = focus.id
@@ -119,9 +125,9 @@ struct RadarMapView: UIViewRepresentable {
             }
         }
 
-        /// Adds the single radar overlay, under the map's labels, and routes tile arrivals to its renderer.
-        func installRadar(on mapView: MKMapView) {
-            mapView.addOverlay(radarOverlay, level: .aboveRoads)
+        /// Adds the single radar overlay (under the map's labels) and routes tile arrivals to its renderer.
+        func installRadar(on mapView: MKMapView, level: MKOverlayLevel) {
+            mapView.addOverlay(radarOverlay, level: level)
             parent.store.onTileLoaded = { [weak self] frameID, key in
                 self?.radarRenderer?.tileDidLoad(frameID: frameID, key: key)
             }

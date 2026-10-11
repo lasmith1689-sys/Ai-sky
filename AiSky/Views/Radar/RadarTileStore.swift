@@ -216,6 +216,10 @@ final class RadarTileStore: @unchecked Sendable {
             guard let self else { return }
             let image = status == 200 ? data.flatMap(Self.decode) : nil
             let kind = Self.kind(of: url)
+            // Cache before clearing the request, so a draw in between doesn't start a second download.
+            if let image {
+                self.store(image, cacheKey: cacheKey)
+            }
             let isIdle: Bool = self.lock.withLock {
                 self.removeRequestLocked(requestID, cacheKey: cacheKey)
                 if image != nil {
@@ -228,9 +232,7 @@ final class RadarTileStore: @unchecked Sendable {
                 }
                 return self.inFlight.isEmpty
             }
-            if let image {
-                self.store(image, cacheKey: cacheKey)
-            } else {
+            if image == nil {
                 let reason = status.map { "HTTP \($0)" } ?? (error?.localizedDescription ?? "no data")
                 Self.logger.error("Radar tile failed: \(reason, privacy: .public) \(url.absoluteString, privacy: .public)")
             }
