@@ -165,6 +165,12 @@ public enum GeoMath {
         return 2 * r * atan2(sqrt(a), sqrt(max(0, 1 - a)))
     }
 
+    /// Rough bounding box of the contiguous U.S. (the NEXRAD `USCOMP` mosaic and the HRRR model
+    /// cover this, but not Alaska, Hawaii, Puerto Rico or Guam).
+    public static func isInContiguousUnitedStates(latitude: Double, longitude: Double) -> Bool {
+        (24.0...50.0).contains(latitude) && (-125.5 ... -66.0).contains(longitude)
+    }
+
     /// Rough bounding boxes for NEXRAD coverage (CONUS, Alaska, Hawaii, Puerto Rico, Guam).
     public static func isInUnitedStatesCoverage(latitude: Double, longitude: Double) -> Bool {
         let boxes: [(ClosedRange<Double>, ClosedRange<Double>)] = [

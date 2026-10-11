@@ -95,7 +95,7 @@ final class AppModel {
     /// `-AiSkyDemoWeather` shows sample weather (rain in a few minutes) everywhere, and
     /// `-AiSkyDemoSky <condition>[-night]` sets its current sky (see `WeatherStore.demoSky`);
     /// `-AiSkyLook <id>` shows a look without saving it;
-    /// `-AiSkyScreen radar|radarSpot|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail|widgets|widgets2|widgets3`
+    /// `-AiSkyScreen radar|radarSpot|radarForecast|radarTiles|locations|addLocation|settings|<forecast section>|rainHistory|timeMachine|dayDetail|widgets|widgets2|widgets3`
     /// opens that screen (`widgets` pages are the DEBUG widget gallery; `-AiSkyWidgetMode tinted` tints them).
     private func applyDebugLaunchArguments() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -111,7 +111,7 @@ final class AppModel {
         }
         if let index = arguments.firstIndex(of: "-AiSkyScreen"), arguments.indices.contains(index + 1) {
             switch arguments[index + 1] {
-            case "radar", "radarSpot": selectedTab = .radar
+            case "radar", "radarSpot", "radarForecast", "radarTiles": selectedTab = .radar
             case "locations": selectedTab = .locations
             case "addLocation":
                 selectedTab = .locations

@@ -95,6 +95,59 @@ for look in liquid obsidian instrument editorial horizon chroma; do
   expect "$look-8-radar" "(NEXRAD|RainViewer) && Now"
 done
 
+# Radar with a forecast: the last frame is a forecast, labeled as one.
+expect 17-radar-forecast "NEXRAD && HRRR forecast && Forecast . && Now && !unavailable"
+
+# The radar renderer's geometry. The test pattern draws each tile's address ("z7 x32 y47") in the
+# middle of the tile, so the labels read back must be upright (OCR can't read them otherwise), all
+# at one zoom, west to east along each row, rows north to south, and around the map's center tile.
+python3 - "$OCR" <<'PY' || failures=$((failures + 1))
+import math, re, sys
+text = open(sys.argv[1]).read()
+match = re.search(r"===== 18-radar-tiles\.png =====\n(.*?)(?=\n=====|\Z)", text, re.S)
+if not match:
+    print("::error title=Screens::18-radar-tiles: no screenshot text")
+    sys.exit(1)
+rows = []
+for line in match.group(1).splitlines():
+    m = re.match(r"\s*(\d+)%\s+(.*)", line)
+    if not m:
+        continue
+    labels = [tuple(map(int, t)) for t in re.findall(r"z\s*(\d+)[\s|]+x\s*(\d+)[\s|]+y\s*(\d+)", m.group(2), re.I)]
+    if labels:
+        rows.append((int(m.group(1)), labels))
+labels = [label for _, row in rows for label in row]
+problems = []
+if len(labels) < 3 or len(rows) < 2:
+    problems.append(f"read {len(labels)} tile labels in {len(rows)} rows (need 3 in 2 rows)")
+zooms = {label[0] for label in labels}
+if len(zooms) > 1:
+    problems.append(f"mixed zooms {sorted(zooms)}")
+for percent, row in rows:
+    if len({label[2] for label in row}) != 1:
+        problems.append(f"row at {percent}% mixes tile rows {row}")
+    columns = [label[1] for label in row]
+    if columns != sorted(set(columns)):
+        problems.append(f"row at {percent}% isn't west to east: {row}")
+tile_rows = [row[0][2] for _, row in sorted(rows)]
+if tile_rows != sorted(set(tile_rows)):
+    problems.append(f"rows aren't north to south: {tile_rows}")
+def tile(lat, lon, z):
+    n = 2 ** z
+    r = math.radians(lat)
+    return int((lon + 180) / 360 * n), int((1 - math.log(math.tan(r) + 1 / math.cos(r)) / math.pi) / 2 * n)
+if labels and len(zooms) == 1:
+    z = labels[0][0]
+    # The map opens on the selected place (Chicago in CI) or, without one, the middle of the U.S.
+    centers = [tile(41.8781, -87.6298, z), tile(39.5, -98.35, z)]
+    if not any(abs(l[1] - cx) <= 1 and abs(l[2] - cy) <= 1 for l in labels for cx, cy in centers):
+        problems.append(f"no tile near the map's center {centers} at zoom {z}: {labels}")
+if problems:
+    print("::error title=Screens::18-radar-tiles: " + "; ".join(problems))
+    sys.exit(1)
+print(f"ok 18-radar-tiles ({len(labels)} tiles at zoom {labels[0][0]} in {len(rows)} rows)")
+PY
+
 if [ "$failures" -gt 0 ]; then
   echo "::error title=Screens::$failures screen(s) didn't show what they should"
   exit 1

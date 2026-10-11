@@ -26,11 +26,13 @@ struct MapFocus: Equatable {
     static func == (lhs: MapFocus, rhs: MapFocus) -> Bool { lhs.id == rhs.id }
 }
 
-/// MKMapView wrapper (SwiftUI's `Map` can't host tile overlays) that animates radar frames by
-/// keeping every frame's overlay loaded and only showing the current one.
+/// MKMapView wrapper (SwiftUI's `Map` can't host custom overlays) with one radar overlay that
+/// draws the current frame from `RadarTileStore`.
 struct RadarMapView: UIViewRepresentable {
+    var store: RadarTileStore
     var frames: [RadarFrame]
-    var currentFrameID: String?
+    var currentFrame: RadarFrame?
+    var currentIndex: Int
     var opacity: Double
     var mapStyle: MapStylePreference
     var pins: [RadarPin]
@@ -58,6 +60,7 @@ struct RadarMapView: UIViewRepresentable {
         longPress.minimumPressDuration = 0.45
         mapView.addGestureRecognizer(longPress)
         context.coordinator.apply(style: mapStyle, to: mapView)
+        context.coordinator.installRadar(on: mapView)
         if let focus {
             mapView.setRegion(Self.region(for: focus), animated: false)
             context.coordinator.lastFocusID = focus.id
@@ -69,8 +72,8 @@ struct RadarMapView: UIViewRepresentable {
         let coordinator = context.coordinator
         coordinator.parent = self
         coordinator.apply(style: mapStyle, to: mapView)
-        coordinator.syncOverlays(frames: frames, on: mapView)
-        coordinator.showFrame(id: currentFrameID, opacity: opacity)
+        coordinator.showFrame(currentFrame, opacity: opacity)
+        store.setFrames(frames, currentIndex: currentIndex)
         coordinator.syncPins(pins, on: mapView)
         coordinator.syncSpot(spot, on: mapView)
         if let focus, focus.id != coordinator.lastFocusID {
@@ -90,9 +93,9 @@ struct RadarMapView: UIViewRepresentable {
         var parent: RadarMapView
         var lastFocusID: UUID?
         private var appliedStyle: MapStylePreference?
-        private var overlays: [String: RadarTileOverlay] = [:]
-        private var renderers: [String: MKTileOverlayRenderer] = [:]
-        private var visibleFrameID: String?
+        private let radarOverlay = RadarOverlay()
+        private var radarRenderer: RadarOverlayRenderer?
+        private var visibleFrame: RadarFrame?
         private var visibleOpacity: Double = 0
         private var annotations: [String: PinAnnotation] = [:]
         private var spotAnnotation: MKPointAnnotation?
@@ -116,32 +119,24 @@ struct RadarMapView: UIViewRepresentable {
             }
         }
 
-        func syncOverlays(frames: [RadarFrame], on mapView: MKMapView) {
-            let wanted = Set(frames.map(\.id))
-            for (id, overlay) in overlays where !wanted.contains(id) {
-                mapView.removeOverlay(overlay)
-                overlays[id] = nil
-                renderers[id] = nil
-            }
-            for frame in frames where overlays[frame.id] == nil {
-                let overlay = RadarTileOverlay(frame: frame)
-                overlays[frame.id] = overlay
-                mapView.addOverlay(overlay, level: .aboveRoads)
+        /// Adds the single radar overlay, under the map's labels, and routes tile arrivals to its renderer.
+        func installRadar(on mapView: MKMapView) {
+            mapView.addOverlay(radarOverlay, level: .aboveRoads)
+            parent.store.onTileLoaded = { [weak self] frameID, key in
+                self?.radarRenderer?.tileDidLoad(frameID: frameID, key: key)
             }
         }
 
-        func showFrame(id: String?, opacity: Double) {
-            guard id != visibleFrameID || opacity != visibleOpacity else { return }
-            // Show the new frame before hiding the old one to avoid a flash of empty map.
-            if let id, let renderer = renderers[id] {
-                renderer.alpha = opacity
-                renderer.setNeedsDisplay()
+        func showFrame(_ frame: RadarFrame?, opacity: Double) {
+            guard frame != visibleFrame || opacity != visibleOpacity else { return }
+            visibleFrame = frame
+            if let radarRenderer {
+                if radarRenderer.alpha != opacity {
+                    radarRenderer.alpha = opacity
+                    radarRenderer.setNeedsDisplay()
+                }
+                radarRenderer.show(frame)
             }
-            if let previous = visibleFrameID, previous != id, let renderer = renderers[previous] {
-                renderer.alpha = 0
-                renderer.setNeedsDisplay()
-            }
-            visibleFrameID = id
             visibleOpacity = opacity
         }
 
@@ -196,16 +191,19 @@ struct RadarMapView: UIViewRepresentable {
         // MARK: MKMapViewDelegate
 
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            guard let tileOverlay = overlay as? RadarTileOverlay else {
+            guard let radarOverlay = overlay as? RadarOverlay else {
                 return MKOverlayRenderer(overlay: overlay)
             }
-            let renderer = MKTileOverlayRenderer(tileOverlay: tileOverlay)
-            renderer.alpha = tileOverlay.frame.id == visibleFrameID ? visibleOpacity : 0
-            renderers[tileOverlay.frame.id] = renderer
+            let renderer = RadarOverlayRenderer(overlay: radarOverlay, store: parent.store)
+            renderer.alpha = visibleOpacity
+            renderer.show(visibleFrame)
+            radarRenderer = renderer
             return renderer
         }
 
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            let visible = mapView.visibleMapRect
+            parent.store.setVisibleRect(minX: visible.minX, minY: visible.minY, maxX: visible.maxX, maxY: visible.maxY)
             parent.onRegionChange(mapView.centerCoordinate)
         }
 

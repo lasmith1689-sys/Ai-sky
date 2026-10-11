@@ -16,8 +16,10 @@ struct RadarTab: View {
     var body: some View {
         ZStack {
             RadarMapView(
+                store: radar.tileStore,
                 frames: radar.frames,
-                currentFrameID: radar.currentFrame?.id,
+                currentFrame: radar.currentFrame,
+                currentIndex: radar.frameIndex,
                 opacity: model.settings.radarOpacity,
                 mapStyle: model.settings.radarMapStyle,
                 pins: pins,
@@ -115,7 +117,7 @@ struct RadarTab: View {
                     Text(radar.source.displayName)
                         .lookLabel(t, size: 12, color: t.ink)
                 }
-                Text(radar.source == .noaa ? "U.S. base reflectivity" : "Global composite · past 2 hr")
+                Text(sourceSubtitle)
                     .font(t.look == .liquid ? .caption2 : t.font(.text, 11))
                     .foregroundStyle(t.ink2)
             }
@@ -164,6 +166,15 @@ struct RadarTab: View {
                 }
                 .accessibilityLabel("Reload radar")
             }
+        }
+    }
+
+    private var sourceSubtitle: String {
+        switch radar.source {
+        case .noaa:
+            return radar.timeline?.hasForecast == true ? "Past 50 min · HRRR forecast 2 hr" : "U.S. base reflectivity · past 50 min"
+        case .rainViewer:
+            return "Global composite · past 2 hr"
         }
     }
 
@@ -258,16 +269,16 @@ private struct RadarControls: View {
             }
 
             if radar.frames.count > 1 {
-                Slider(
-                    value: Binding(
-                        get: { Double(radar.frameIndex) },
-                        set: { newValue in
-                            radar.pause()
-                            radar.frameIndex = Int(newValue.rounded())
-                        }
-                    ),
-                    in: 0...Double(radar.frames.count - 1),
-                    step: 1
+                RadarScrubber(
+                    frames: radar.frames,
+                    nowIndex: radar.latestObservedIndex,
+                    readyIDs: radar.readyFrameIDs,
+                    index: radar.frameIndex,
+                    valueLabel: "\(timeLabel), \(relativeLabel)",
+                    onSelect: { index in
+                        radar.pause()
+                        radar.frameIndex = index
+                    }
                 )
             }
 
@@ -286,10 +297,125 @@ private struct RadarControls: View {
 
     private var relativeLabel: String {
         guard let frame = radar.currentFrame else { return " " }
+        if frame.isForecast {
+            // Counted from the latest radar image, so the steps read +15, +30, … whatever the clock says.
+            let from = radar.latestObservedIndex.map { radar.frames[$0].time } ?? Date()
+            let minutes = max(0, Int((frame.time.timeIntervalSince(from) / 60).rounded()))
+            return "Forecast · \(RadarScrubber.offsetText(minutes: minutes))"
+        }
         let minutes = Int((frame.time.timeIntervalSinceNow / 60).rounded())
-        if frame.isForecast { return "Forecast +\(max(0, minutes)) min" }
         if minutes >= -5 { return "Latest" }
         return "\(-minutes) min ago"
+    }
+}
+
+/// The frame timeline: past frames, then forecast frames in the rain color, each segment filled
+/// once its tiles are loaded. Tap or drag to pick a frame; VoiceOver adjusts it like a slider.
+private struct RadarScrubber: View {
+    @Environment(\.lookTokens) private var t
+    let frames: [RadarFrame]
+    let nowIndex: Int?
+    let readyIDs: Set<String>
+    let index: Int
+    let valueLabel: String
+    let onSelect: (Int) -> Void
+
+    private let thumb: CGFloat = 18
+
+    var body: some View {
+        VStack(spacing: 4) {
+            GeometryReader { geometry in
+                let slot = geometry.size.width / CGFloat(max(frames.count, 1))
+                ZStack(alignment: .leading) {
+                    HStack(spacing: 2) {
+                        ForEach(frames) { frame in
+                            Capsule()
+                                .fill(color(for: frame))
+                                .frame(height: 6)
+                        }
+                    }
+                    Circle()
+                        .fill(t.accent)
+                        .overlay(Circle().stroke(t.surface, lineWidth: 2))
+                        .frame(width: thumb, height: thumb)
+                        .offset(x: slot * (CGFloat(index) + 0.5) - thumb / 2)
+                        .animation(.easeOut(duration: 0.12), value: index)
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let picked = min(max(0, Int(value.location.x / slot)), frames.count - 1)
+                            if picked != index {
+                                onSelect(picked)
+                            }
+                        }
+                )
+            }
+            .frame(height: 24)
+
+            scale
+        }
+        .accessibilityElement()
+        .accessibilityLabel("Radar time")
+        .accessibilityValue(valueLabel)
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: onSelect(min(index + 1, frames.count - 1))
+            case .decrement: onSelect(max(index - 1, 0))
+            @unknown default: break
+            }
+        }
+    }
+
+    /// "−50 min … Now … +2 hr" under the track, with "Now" under the latest radar image.
+    private var scale: some View {
+        GeometryReader { geometry in
+            let slot = geometry.size.width / CGFloat(max(frames.count, 1))
+            ZStack(alignment: .leading) {
+                if let first = frames.first, let now = nowTime {
+                    Text("−" + Self.offsetText(minutes: Int((now.timeIntervalSince(first.time) / 60).rounded())))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                if let nowIndex, nowIndex < frames.count - 1 {
+                    Text("Now")
+                        .fixedSize()
+                        .frame(width: 60)
+                        .offset(x: slot * (CGFloat(nowIndex) + 0.5) - 30)
+                    if let last = frames.last, let now = nowTime {
+                        Text("+" + Self.offsetText(minutes: Int((last.time.timeIntervalSince(now) / 60).rounded())))
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                } else {
+                    Text("Now")
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+        }
+        .frame(height: 12)
+        .font(t.look == .liquid ? .system(size: 10, weight: .medium) : t.font(.label, 10, fixed: true))
+        .foregroundStyle(t.ink2)
+    }
+
+    private var nowTime: Date? {
+        nowIndex.map { frames[$0].time }
+    }
+
+    private func color(for frame: RadarFrame) -> Color {
+        let ready = readyIDs.contains(frame.id)
+        if frame.isForecast {
+            return ready ? t.rain : t.rain.opacity(0.3)
+        }
+        return ready ? t.ink2 : t.track
+    }
+
+    /// "25 min", "1 hr", "1 hr 15 min".
+    static func offsetText(minutes: Int) -> String {
+        if minutes < 60 { return "\(minutes) min" }
+        let hours = minutes / 60
+        let rest = minutes % 60
+        return rest == 0 ? "\(hours) hr" : "\(hours) hr \(rest) min"
     }
 }
 

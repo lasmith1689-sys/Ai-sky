@@ -26,7 +26,9 @@ A Dark Sky–style weather app for iPhone, with Precip-style rainfall tracking, 
 
 **Radar** (its own tab)
 - Animated precipitation radar with play/pause, a timeline scrubber, and a color legend
-- High-resolution **NOAA NEXRAD** over the U.S. and **RainViewer** everywhere else (chosen automatically, or pick one)
+- High-resolution **NOAA NEXRAD** over the contiguous U.S. and **RainViewer** everywhere else (chosen automatically, or pick one)
+- **Forecast radar** over the contiguous U.S.: the past 50 minutes of NEXRAD, then the NOAA **HRRR** model's forecast reflectivity every 15 minutes for the next 2 hours. The timeline marks *Now*; forecast frames are in the rain color and labeled *Forecast · 30 min*.
+- Fast: one radar layer draws the current frame from decoded tiles in memory, the tiles you're looking at load first, the other frames prefetch once the map settles, and playback waits for a frame's tiles instead of flashing an empty map. Each segment of the timeline fills in as its frame finishes loading.
 - Your saved places are pinned with their current temperatures. Tap a pin to open its forecast.
 - **Touch and hold anywhere on the map** to see that spot's rainfall history or open it in the Time Machine, or to save it to your places.
 
@@ -120,8 +122,9 @@ You can switch sources any time in **Settings ▸ Weather Data ▸ Forecast Sour
 | Air quality and pollen | Open-Meteo (Copernicus CAMS models) | Pollen covers Europe only |
 | Weather history (Time Machine, rainfall history, normals) | Open-Meteo [forecast](https://open-meteo.com/en/docs) (last 3 months) and [historical](https://open-meteo.com/en/docs/historical-weather-api) APIs (ERA5, ERA5-Land, ECMWF IFS reanalysis) | 1940 onwards; values are averages over a 9–25 km grid, not a local station's readings |
 | U.S. alerts | [National Weather Service](https://www.weather.gov/) | Used when Apple Weather is off |
-| Radar (U.S.) | NOAA NEXRAD via [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/) | Updated every 5 minutes, past 50 minutes |
-| Radar (worldwide) | [RainViewer](https://www.rainviewer.com/api.html) | Free tier: past 2 hours, native zoom up to 7 (the app enlarges tiles when you zoom in further) |
+| Radar (U.S.) | NOAA NEXRAD mosaic via [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/ogc/) | Updated every 5 minutes, past 50 minutes. Each frame is requested by its own UTC time (`ridge::USCOMP-N0Q-YYYYMMDDHHMI`), so cached tiles are never stale |
+| Forecast radar (U.S.) | NOAA HRRR simulated reflectivity via [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/GIS/model.phtml) | Every 15 minutes, next 2 hours, from the newest run the IEM has processed (about 2 hours after the run starts); skipped if that run is over 6 hours old |
+| Radar (worldwide) | [RainViewer](https://www.rainviewer.com/api.html) | Free tier since January 2026: past 2 hours, no forecast, native zoom up to 7 (the app enlarges tiles when you zoom in further), 100 requests a minute, personal use |
 
 Known limits:
 - **Background alerts are best-effort.** iOS decides how often apps refresh in the background (usually every 15–60 minutes), so a "rain soon" alert can arrive late. Keep **Background App Refresh** on for Ai Sky.

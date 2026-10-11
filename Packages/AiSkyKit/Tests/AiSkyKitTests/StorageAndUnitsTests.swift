@@ -175,26 +175,149 @@ final class AlertsAndRadarTests: XCTestCase {
         XCTAssertEqual(timeline.frames.count, 13)
         XCTAssertEqual(timeline.source, .rainViewer)
         XCTAssertTrue(timeline.frames.first!.time < timeline.frames.last!.time)
-        let url = timeline.frames.last!.tileURL(z: 5, x: 8, y: 11, highResolution: true)
+        let url = timeline.frames.last!.tileURL(z: 5, x: 8, y: 11)
         XCTAssertEqual(url?.absoluteString.hasPrefix("https://tilecache.rainviewer.com/v2/radar/"), true)
-        XCTAssertEqual(url?.absoluteString.hasSuffix("/512/5/8/11/2/1_1.png"), true)
+        XCTAssertEqual(url?.absoluteString.hasSuffix("/256/5/8/11/2/1_1.png"), true)
         XCTAssertEqual(timeline.frames.last!.maxNativeZoom, 7)
+        XCTAssertFalse(timeline.hasForecast)
+        XCTAssertEqual(timeline.latestObservedIndex, 12)
     }
 
-    func testNOAATimeline() {
+    func testNOAATimelineNamesEachFrameByItsTime() {
+        // No metadata: the mosaic is assumed 5 to 10 minutes behind (17:20Z → 17:15Z).
         let timeline = RadarService.noaaTimeline(latestValidTime: nil, now: Fixtures.now)
         XCTAssertEqual(timeline.frames.count, 11)
-        XCTAssertEqual(timeline.frames.last?.tileURLTemplate, "https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png")
-        XCTAssertEqual(timeline.frames.first?.tileURLTemplate, "https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913-m50m/{z}/{x}/{y}.png")
+        XCTAssertFalse(timeline.hasForecast)
+        XCTAssertNil(timeline.forecastRunTime)
+        XCTAssertEqual(timeline.frames.last?.time, Date(timeIntervalSince1970: 1_790_615_700))
+        XCTAssertEqual(timeline.frames.last?.tileURLTemplate, "https://mesonet{s}.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281715/{z}/{x}/{y}.png")
+        XCTAssertEqual(timeline.frames.first?.tileURLTemplate, "https://mesonet{s}.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281625/{z}/{x}/{y}.png")
         XCTAssertEqual(timeline.frames[1].time.timeIntervalSince(timeline.frames[0].time), 300)
         XCTAssertLessThan(timeline.frames.last!.time, Fixtures.now)
+        XCTAssertEqual(timeline.latestObservedIndex, 10)
+
         let metadata = Data(#"{"meta": {"valid": "2026-09-28T17:10:00Z", "product": "n0q"}}"#.utf8)
         XCTAssertEqual(RadarService.parseNOAAValidTime(metadata), Date(timeIntervalSince1970: 1_790_615_400))
+    }
+
+    func testNOAAFramesKeepTheirIDsAcrossRefreshes() {
+        // Five minutes later the timeline gains one frame and drops one; the other ten (and their
+        // cached tiles) are the same frames.
+        let earlier = RadarService.noaaTimeline(latestValidTime: Date(timeIntervalSince1970: 1_790_615_400), now: Fixtures.now)
+        let later = RadarService.noaaTimeline(latestValidTime: Date(timeIntervalSince1970: 1_790_615_700), now: Fixtures.now)
+        XCTAssertEqual(Array(earlier.frames.dropFirst()), Array(later.frames.dropLast()))
+        XCTAssertEqual(later.frames.last?.id, "noaa-202609281715")
+    }
+
+    func testTileHostShards() {
+        let frame = RadarService.noaaTimeline(latestValidTime: Date(timeIntervalSince1970: 1_790_615_400), now: Fixtures.now).frames.last!
+        XCTAssertEqual(frame.tileURL(z: 5, x: 8, y: 11)?.absoluteString, "https://mesonet3.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281710/5/8/11.png")
+        XCTAssertEqual(frame.tileURL(z: 5, x: 8, y: 12)?.absoluteString, "https://mesonet.agron.iastate.edu/c/tile.py/1.0.0/ridge::USCOMP-N0Q-202609281710/5/8/12.png")
+        XCTAssertEqual(frame.tileURL(for: RadarTileKey(z: 5, x: 9, y: 12))?.host, "mesonet1.agron.iastate.edu")
+        // The same tile always goes to the same host, so it's cached once.
+        XCTAssertEqual(frame.tileURL(z: 7, x: 32, y: 47), frame.tileURL(z: 7, x: 32, y: 47))
+    }
+
+    func testHRRRForecastFramesFollowTheLatestRadar() throws {
+        let runTime = try XCTUnwrap(RadarService.parseHRRRRunTime(Data(#"{"model_init_utc": "2026-09-28T15:00:00Z", "forecast_minute": 1080.0, "model_forecast_utc": "2026-09-29T09:00:00Z"}"#.utf8)))
+        XCTAssertEqual(runTime, Date(timeIntervalSince1970: 1_790_607_600))
+        let latest = Date(timeIntervalSince1970: 1_790_615_400) // 17:10Z
+        let timeline = RadarService.noaaTimeline(latestValidTime: latest, hrrrRunTime: runTime, now: Fixtures.now)
+        XCTAssertEqual(timeline.frames.count, 11 + 8)
+        XCTAssertTrue(timeline.hasForecast)
+        XCTAssertEqual(timeline.forecastRunTime, runTime)
+        XCTAssertEqual(timeline.latestObservedIndex, 10)
+        XCTAssertEqual(timeline.frames[10].time, latest)
+
+        let forecast = timeline.frames.filter(\.isForecast)
+        // Every 15 minutes from the next quarter hour (17:15Z) through 2 hours after the radar (19:00Z).
+        XCTAssertEqual(forecast.first?.time, Date(timeIntervalSince1970: 1_790_615_700))
+        XCTAssertEqual(forecast.last?.time, Date(timeIntervalSince1970: 1_790_622_000))
+        XCTAssertEqual(zip(forecast, forecast.dropFirst()).map { $1.time.timeIntervalSince($0.time) }, Array(repeating: 900, count: 7))
+        XCTAssertEqual(forecast.first?.tileURLTemplate, "https://mesonet{s}.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F0135-202609281500/{z}/{x}/{y}.png")
+        XCTAssertEqual(forecast.last?.tileURLTemplate, "https://mesonet{s}.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F0240-202609281500/{z}/{x}/{y}.png")
+        XCTAssertEqual(forecast.first?.id, "hrrr-202609281500-F0135")
+        XCTAssertEqual(forecast.first?.maxNativeZoom, 8)
+        XCTAssertTrue(forecast.allSatisfy { $0.time > latest })
+    }
+
+    func testHRRRForecastStartsAfterAQuarterHourRadar() {
+        let runTime = Date(timeIntervalSince1970: 1_790_607_600) // 15:00Z
+        let latest = Date(timeIntervalSince1970: 1_790_615_700) // 17:15Z, itself a quarter hour
+        let frames = RadarService.hrrrForecastFrames(runTime: runTime, after: latest)
+        XCTAssertEqual(frames.first?.time, Date(timeIntervalSince1970: 1_790_616_600)) // 17:30Z
+        XCTAssertEqual(frames.last?.time, Date(timeIntervalSince1970: 1_790_622_900)) // 19:15Z
+        XCTAssertEqual(frames.count, 8)
+    }
+
+    func testStaleOrMissingHRRRRunLeavesRadarOnly() {
+        let latest = Date(timeIntervalSince1970: 1_790_615_400) // 17:10Z
+        let oldRun = Date(timeIntervalSince1970: 1_790_589_600) // 10:00Z, over 6 hours earlier
+        XCTAssertTrue(RadarService.hrrrForecastFrames(runTime: oldRun, after: latest).isEmpty)
+        let timeline = RadarService.noaaTimeline(latestValidTime: latest, hrrrRunTime: oldRun, now: Fixtures.now)
+        XCTAssertEqual(timeline.frames.count, 11)
+        XCTAssertNil(timeline.forecastRunTime)
+        XCTAssertNil(RadarService.parseHRRRRunTime(Data("{}".utf8)))
+        XCTAssertNil(RadarService.parseHRRRRunTime(Data("not json".utf8)))
     }
 
     func testRadarSourceResolution() {
         XCTAssertEqual(RadarService.resolve(.automatic, latitude: 41.9, longitude: -87.6), .noaa)
         XCTAssertEqual(RadarService.resolve(.automatic, latitude: 51.5, longitude: -0.1), .rainViewer)
         XCTAssertEqual(RadarService.resolve(.rainViewer, latitude: 41.9, longitude: -87.6), .rainViewer)
+        // The NEXRAD mosaic and the HRRR cover the contiguous U.S. only; Honolulu gets RainViewer.
+        XCTAssertEqual(RadarService.resolve(.automatic, latitude: 21.3, longitude: -157.9), .rainViewer)
+        XCTAssertEqual(RadarService.resolve(.automatic, latitude: 40.81, longitude: -74.21), .noaa)
+    }
+}
+
+final class RadarTilingTests: XCTestCase {
+    func testZoomLevelFromZoomScale() {
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: 1), 20)
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: pow(2, -13)), 7)
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: pow(2, -13) * 1.3), 7)
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: pow(2, -13) * 1.6), 8)
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: 0), 0)
+        XCTAssertEqual(RadarTiling.zoomLevel(forZoomScale: .infinity), 0)
+    }
+
+    func testTileRectsTileTheWorld() {
+        let world = RadarTiling.worldSize
+        let tile = RadarTiling.rect(for: RadarTileKey(z: 1, x: 1, y: 0))
+        XCTAssertEqual(tile.x, world / 2)
+        XCTAssertEqual(tile.y, 0)
+        XCTAssertEqual(tile.size, world / 2)
+        XCTAssertEqual(RadarTiling.rect(for: RadarTileKey(z: 0, x: 0, y: 0)).size, world)
+    }
+
+    func testKeysCoveringARect() {
+        let half = RadarTiling.worldSize / 2
+        // The far edge is exclusive: a rectangle ending exactly on a tile border doesn't reach the next tile.
+        XCTAssertEqual(RadarTiling.keys(minX: 0, minY: 0, maxX: half, maxY: half, zoom: 1), [RadarTileKey(z: 1, x: 0, y: 0)])
+        XCTAssertEqual(
+            RadarTiling.keys(minX: half - 1, minY: half - 1, maxX: half + 1, maxY: half + 1, zoom: 1),
+            [RadarTileKey(z: 1, x: 0, y: 0), RadarTileKey(z: 1, x: 1, y: 0), RadarTileKey(z: 1, x: 0, y: 1), RadarTileKey(z: 1, x: 1, y: 1)]
+        )
+        // Outside the world is ignored.
+        XCTAssertEqual(RadarTiling.keys(minX: -10, minY: -10, maxX: 1, maxY: 1, zoom: 2), [RadarTileKey(z: 2, x: 0, y: 0)])
+        XCTAssertTrue(RadarTiling.keys(minX: 5, minY: 5, maxX: 5, maxY: 9, zoom: 3).isEmpty)
+    }
+
+    func testChicagoTileAndItsAncestors() {
+        let chicago = RadarTiling.key(latitude: 41.8781, longitude: -87.6298, zoom: 10)
+        XCTAssertEqual(chicago, RadarTileKey(z: 10, x: 262, y: 380))
+        XCTAssertEqual(chicago.ancestor(levels: 3), RadarTiling.key(latitude: 41.8781, longitude: -87.6298, zoom: 7))
+        XCTAssertEqual(chicago.ancestor(levels: 3), RadarTileKey(z: 7, x: 32, y: 47))
+        XCTAssertEqual(chicago.clamped(toMaxZoom: 8), RadarTileKey(z: 8, x: 65, y: 95))
+        XCTAssertEqual(chicago.clamped(toMaxZoom: 12), chicago)
+        XCTAssertEqual(chicago.ancestor(levels: 0), chicago)
+        XCTAssertEqual(chicago.ancestor(levels: 15), RadarTileKey(z: 0, x: 0, y: 0))
+        XCTAssertEqual(chicago.description, "10/262/380")
+
+        // The tile's rectangle in map points contains Chicago's map point, and the keys covering a
+        // small rectangle around that point are just that tile.
+        let tile = RadarTiling.rect(for: chicago)
+        let keys = RadarTiling.keys(minX: tile.x + 10, minY: tile.y + 10, maxX: tile.x + 20, maxY: tile.y + 20, zoom: 10)
+        XCTAssertEqual(keys, [chicago])
     }
 }

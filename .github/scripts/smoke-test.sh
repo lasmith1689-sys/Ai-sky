@@ -80,6 +80,10 @@ capture 13-radar-spot radarSpot 20
 capture 14-day-detail dayDetail 8
 capture 15-add-location addLocation 6
 capture 16-forecast-large-text forecast 10 -UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityM
+# Radar on its last forecast frame, and the radar renderer drawing a test pattern of tile addresses
+# (verify-screens.sh reads the grid back to check it's upright and in place).
+capture 17-radar-forecast radarForecast 25
+capture 18-radar-tiles radarTiles 12
 
 # Every look, on sample weather (rain starting in a few minutes) so each look's rain states show.
 # -AiSkyLook shows a look without saving it.
@@ -139,6 +143,35 @@ elif [ -n "$fonts" ]; then
   echo "::notice title=Fonts::Look fonts${fonts##*Look fonts}"
 else
   echo "::warning title=Fonts::No font check found in the app log"
+fi
+
+# Radar: the timeline each launch built, and the tiles that loaded or failed (RadarTileStore logs a
+# summary whenever loading goes idle). NEXRAD tiles must load; forecast tiles must load whenever the
+# timeline had forecast frames.
+radar_log=$(xcrun simctl spawn "$UDID" log show --last 120m --style compact \
+  --predicate 'subsystem == "com.lasmith1689.AiSky" AND category == "Radar"' 2>/dev/null)
+echo "::group::Radar log"
+grep -E "Radar (timeline|tiles):" <<<"$radar_log" | tail -n 40
+grep -E "Radar tile failed" <<<"$radar_log" | tail -n 20
+echo "::endgroup::"
+max_count() { grep -oE "$1" <<<"$radar_log" | grep -oE "[0-9]+" | sort -n | tail -n 1; }
+noaa_loaded=$(max_count "noaa [0-9]+ loaded")
+hrrr_loaded=$(max_count "hrrr [0-9]+ loaded")
+forecast_frames=$(max_count "[0-9]+ forecast,")
+failed_tiles=$(grep -c "Radar tile failed" <<<"$radar_log")
+echo "Radar: up to ${noaa_loaded:-0} NEXRAD and ${hrrr_loaded:-0} HRRR tiles loaded per launch, up to ${forecast_frames:-0} forecast frames, ${failed_tiles:-0} failed tile requests"
+if [ "${noaa_loaded:-0}" -eq 0 ]; then
+  echo "::error title=Radar::No NEXRAD radar tiles loaded"
+  exit 1
+fi
+if [ "${forecast_frames:-0}" -eq 0 ]; then
+  echo "::warning title=Radar::No HRRR forecast frames (the IEM's latest run may be missing or stale)"
+elif [ "${hrrr_loaded:-0}" -eq 0 ]; then
+  echo "::error title=Radar::The timeline had forecast frames but no HRRR forecast tiles loaded"
+  exit 1
+fi
+if [ "${failed_tiles:-0}" -gt 0 ]; then
+  echo "::warning title=Radar::${failed_tiles} radar tile requests failed (see the Radar log group)"
 fi
 
 echo "::group::App log (errors and faults)"
