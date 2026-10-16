@@ -36,7 +36,7 @@ struct ChromaHero: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
-                Text(context.formatter.time(context.now, timeZone: context.timeZone).uppercased())
+                Text(context.headerTime(context.formatter.time(context.now, timeZone: context.timeZone)).uppercased())
             }
             .font(mono.font(12))
             .tracking(2)

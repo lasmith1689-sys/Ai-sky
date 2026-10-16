@@ -62,7 +62,7 @@ struct ObsidianHero: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
-                Text("\(weekday) \(context.clock(context.now))")
+                Text(context.headerTime("\(weekday) \(context.clock(context.now))"))
                     .lookLabel(t, size: 11, color: t.ink2, tracking: 2)
                     .lineLimit(1)
             }

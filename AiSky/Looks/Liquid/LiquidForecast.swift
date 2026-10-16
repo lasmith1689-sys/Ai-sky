@@ -131,7 +131,7 @@ struct LiquidHero: View {
     }
 
     private var subtitle: String {
-        let time = context.formatter.time(context.now, timeZone: context.timeZone)
+        let time = context.headerTime(context.formatter.time(context.now, timeZone: context.timeZone))
         return context.location.isCurrentLocation ? "My Location · \(time)" : time
     }
 

@@ -32,6 +32,7 @@ struct AiSkyApp: App {
             case .active:
                 model.appDidBecomeActive()
             case .background:
+                model.appDidEnterBackground()
                 BackgroundRefresher.schedule()
             default:
                 break

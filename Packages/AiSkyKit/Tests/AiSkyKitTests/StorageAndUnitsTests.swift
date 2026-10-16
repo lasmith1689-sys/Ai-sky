@@ -319,3 +319,65 @@ final class RadarTilingTests: XCTestCase {
         XCTAssertEqual(keys, [chicago])
     }
 }
+
+final class CacheReuseTests: XCTestCase {
+    let now = Fixtures.now
+    var directory: URL!
+    var suite: String!
+
+    override func setUp() {
+        directory = FileManager.default.temporaryDirectory.appendingPathComponent("aisky-reuse-\(UUID().uuidString)")
+        suite = "aisky-tests-\(UUID().uuidString)"
+    }
+
+    override func tearDown() {
+        try? FileManager.default.removeItem(at: directory)
+        UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+    }
+
+    func repository(weatherKit: Bool) throws -> WeatherRepository {
+        let store = SharedStore(defaults: try XCTUnwrap(UserDefaults(suiteName: suite)), cachesDirectory: directory)
+        return WeatherRepository(cache: SnapshotCache(directory: directory), store: store, weatherKitAvailable: weatherKit)
+    }
+
+    func snapshot(_ source: WeatherDataSource, age: TimeInterval) -> WeatherSnapshot {
+        var snapshot = SampleData.snapshot(now: now.addingTimeInterval(-age))
+        snapshot.source = source
+        return snapshot
+    }
+
+    func testWidgetsReuseEitherSourceUntilItIsOld() throws {
+        let widget = try repository(weatherKit: false)
+        let settings = AppSettings(units: .metric)
+        XCTAssertTrue(widget.canReuse(snapshot(.openMeteo, age: 60), settings: settings, maxAge: 600, now: now))
+        XCTAssertTrue(widget.canReuse(snapshot(.appleWeather, age: 60), settings: settings, maxAge: 600, now: now))
+        XCTAssertFalse(widget.canReuse(snapshot(.appleWeather, age: 601), settings: settings, maxAge: 600, now: now))
+
+        // Choosing Open-Meteo in Settings retires the app's Apple Weather snapshots.
+        let openMeteo = AppSettings(units: .metric, dataSource: .openMeteo)
+        XCTAssertFalse(widget.canReuse(snapshot(.appleWeather, age: 60), settings: openMeteo, maxAge: 600, now: now))
+        XCTAssertTrue(widget.canReuse(snapshot(.openMeteo, age: 60), settings: openMeteo, maxAge: 600, now: now))
+    }
+
+    #if canImport(WeatherKit)
+    func testAppRefetchesWidgetSnapshotsWhenAppleWeatherIsOn() throws {
+        let app = try repository(weatherKit: true)
+        let settings = AppSettings(units: .metric)
+        XCTAssertFalse(app.canReuse(snapshot(.openMeteo, age: 60), settings: settings, maxAge: 600, now: now))
+        XCTAssertTrue(app.canReuse(snapshot(.appleWeather, age: 60), settings: settings, maxAge: 600, now: now))
+        XCTAssertTrue(app.canReuse(snapshot(.openMeteo, age: 60), settings: AppSettings(units: .metric, dataSource: .openMeteo), maxAge: 600, now: now))
+
+        // While Apple Weather is failing, Open-Meteo is what the app would fetch anyway.
+        app.store.set(WeatherRepository.WeatherKitFailure(date: now, message: "test"), forKey: .weatherKitFailure)
+        XCTAssertTrue(app.canReuse(snapshot(.openMeteo, age: 60), settings: settings, maxAge: 600, now: now))
+    }
+    #endif
+
+    func testReusableCacheEntryIsServedWithoutFetching() async throws {
+        let widget = try repository(weatherKit: false)
+        let stored = snapshot(.openMeteo, age: 120)
+        await widget.cache.store(stored)
+        let served = try await widget.snapshot(for: stored.location, settings: AppSettings(units: .metric), maxAge: 600, now: now)
+        XCTAssertEqual(served, stored)
+    }
+}

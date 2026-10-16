@@ -15,9 +15,16 @@ final class WeatherStore {
 
     private let repository: WeatherRepository
     @ObservationIgnored private var lastWidgetReload = Date.distantPast
+    /// Fetches under way, so a second request for the same place waits for the first instead of
+    /// being dropped.
+    @ObservationIgnored private var inFlight: [String: (location: WeatherLocation, task: Task<Void, Never>)] = [:]
 
-    /// Forecasts younger than this are shown without refetching.
-    static let freshness: TimeInterval = 10 * 60
+    /// Forecasts younger than this are shown without refetching. While the app stays open, the
+    /// forecast on screen is refetched once it's this old.
+    nonisolated static let freshness: TimeInterval = 5 * 60
+    /// Opening the app, or coming back to it, refetches the forecast on screen once it's older
+    /// than this.
+    nonisolated static let freshnessOnOpen: TimeInterval = 60
 
     #if DEBUG
     /// `-AiSkyDemoWeather`: sample weather everywhere, for deterministic screenshots of every look.
@@ -89,7 +96,8 @@ final class WeatherStore {
         if Self.usesDemoWeather { return }
         #endif
         for location in locations where snapshots[location.id] == nil {
-            if let cached = await repository.cachedSnapshot(for: location) {
+            // A fetch can finish while the cache is read; keep its newer forecast.
+            if let cached = await repository.cachedSnapshot(for: location), snapshots[location.id] == nil {
                 snapshots[location.id] = cached
             }
         }
@@ -99,7 +107,9 @@ final class WeatherStore {
         }
     }
 
-    func refresh(_ location: WeatherLocation, settings: AppSettings, force: Bool = false) async {
+    /// Fetches `location`'s forecast unless the one on hand is younger than `maxAge` and from the
+    /// right source (see ``WeatherRepository/canReuse(_:settings:maxAge:now:)``). `force` always fetches.
+    func refresh(_ location: WeatherLocation, settings: AppSettings, maxAge: TimeInterval = WeatherStore.freshness, force: Bool = false) async {
         #if DEBUG
         if Self.usesDemoWeather {
             let snapshot = Self.demoSnapshot(for: location)
@@ -109,24 +119,41 @@ final class WeatherStore {
             return
         }
         #endif
-        if !force, let existing = snapshots[location.id], existing.isFresh(maxAge: Self.freshness),
+        // A fetch already under way for this spot answers this request too. One for where the
+        // device used to be is followed by a fetch for where it is now.
+        while let running = inFlight[location.id] {
+            await running.task.value
+            if running.location.distance(toLatitude: location.latitude, longitude: location.longitude) < 3 { return }
+        }
+        if !force, let existing = snapshots[location.id],
+           repository.canReuse(existing, settings: settings, maxAge: maxAge),
            existing.location.distance(toLatitude: location.latitude, longitude: location.longitude) < 3 {
             return
         }
-        guard !loadingIDs.contains(location.id) else { return }
         loadingIDs.insert(location.id)
-        defer { loadingIDs.remove(location.id) }
+        // Not tied to the caller, so a page swiped away still finishes and caches its forecast.
+        let task = Task {
+            defer {
+                inFlight[location.id] = nil
+                loadingIDs.remove(location.id)
+            }
+            await load(location, settings: settings, maxAge: maxAge, force: force)
+        }
+        inFlight[location.id] = (location, task)
+        await task.value
+    }
 
+    private func load(_ location: WeatherLocation, settings: AppSettings, maxAge: TimeInterval, force: Bool) async {
         do {
             let snapshot = force
                 ? try await repository.fetch(for: location, settings: settings)
-                : try await repository.snapshot(for: location, settings: settings, maxAge: Self.freshness)
+                : try await repository.snapshot(for: location, settings: settings, maxAge: maxAge)
             snapshots[location.id] = snapshot
             summaries[location.id] = snapshot.summary
             errors[location.id] = nil
             reloadWidgetsIfNeeded()
         } catch is CancellationError {
-            // View went away; keep what we have.
+            // Keep what we have.
         } catch {
             if (error as? URLError)?.code == .cancelled { return }
             errors[location.id] = error.localizedDescription

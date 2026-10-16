@@ -62,7 +62,8 @@ final class AppModel {
     var debugWidgetPage: Int?
     var debugWidgetsTinted = false
 
-    @ObservationIgnored private var lastActiveRefresh: Date?
+    /// Refetches the forecast on screen as it ages, while the app is open.
+    @ObservationIgnored private var keepCurrent: Task<Void, Never>?
     private let notificationRouter = NotificationRouter()
 
     init(store: SharedStore = .shared, repository: WeatherRepository = .shared) {
@@ -170,31 +171,40 @@ final class AppModel {
 
     func start() async {
         await weather.loadCached(for: forecastLocations)
-        if locationManager.isAuthorized {
-            await locationManager.refresh()
-        }
-        await refreshSelected()
+        appDidBecomeActive()
     }
 
+    /// Launch, and every return to the app: fetch the forecast on screen unless it's under a
+    /// minute old, without waiting for a location fix (a fix that shows the device has moved
+    /// fetches again), then keep it current while the app stays open. Calls that overlap share
+    /// one fetch.
     func appDidBecomeActive() {
-        // Avoid double work right after launch; otherwise refresh anything stale.
-        if let lastActiveRefresh, Date().timeIntervalSince(lastActiveRefresh) < 60 { return }
-        lastActiveRefresh = Date()
-        Task {
-            if locationManager.isAuthorized {
-                await locationManager.refresh()
+        Task { await refreshSelected(maxAge: WeatherStore.freshnessOnOpen) }
+        if locationManager.isAuthorized {
+            Task { await locationManager.refresh() }
+        }
+        guard keepCurrent == nil else { return }
+        keepCurrent = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(60))
+                guard let self, !Task.isCancelled else { return }
+                await self.refreshSelected()
             }
-            await refreshSelected()
         }
     }
 
-    func refreshSelected(force: Bool = false) async {
-        guard let location = selectedLocation else { return }
-        await weather.refresh(location, settings: settings, force: force)
+    func appDidEnterBackground() {
+        keepCurrent?.cancel()
+        keepCurrent = nil
     }
 
-    func refresh(_ location: WeatherLocation, force: Bool = false) async {
-        await weather.refresh(location, settings: settings, force: force)
+    func refreshSelected(maxAge: TimeInterval = WeatherStore.freshness, force: Bool = false) async {
+        guard let location = selectedLocation else { return }
+        await refresh(location, maxAge: maxAge, force: force)
+    }
+
+    func refresh(_ location: WeatherLocation, maxAge: TimeInterval = WeatherStore.freshness, force: Bool = false) async {
+        await weather.refresh(location, settings: settings, maxAge: maxAge, force: force)
         if let snapshot = weather.snapshot(for: location.id) {
             learnTimeZone(snapshot)
         }

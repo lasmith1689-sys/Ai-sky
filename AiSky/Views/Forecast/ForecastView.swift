@@ -11,6 +11,8 @@ struct ForecastContext {
     let tokens: LookTokens
     let onSelectDay: (DailyForecast) -> Void
     let onTimeMachine: () -> Void
+    /// A newer forecast is loading over this one.
+    var isUpdating = false
 
     var timeZone: TimeZone { snapshot.timeZone }
     var current: CurrentConditions { snapshot.conditions(at: now) }
@@ -20,6 +22,12 @@ struct ForecastContext {
     /// Clock label in the look's style (24-hour for Instrument and Obsidian).
     func clock(_ date: Date) -> String {
         LookClock.time(date, timeZone: timeZone, tokens: tokens, formatter: formatter)
+    }
+
+    /// The header's clock, or "Updating…" while a newer forecast loads, so an old forecast is
+    /// never taken for a current one.
+    func headerTime(_ time: String) -> String {
+        isUpdating ? "Updating…" : time
     }
 
     /// "4:10" without AM/PM on a 12-hour phone, for sentences.
@@ -171,6 +179,7 @@ struct ForecastView: View {
 
     var body: some View {
         let snapshot = model.weather.snapshot(for: location.id)
+        let isUpdating = snapshot != nil && model.weather.isLoading(location.id)
         // The sky Liquid draws behind the page; its cards follow it (light glass on blue skies,
         // a dark sheen on gray ones).
         let sky = snapshot?.current.condition ?? .partlyCloudy
@@ -183,7 +192,7 @@ struct ForecastView: View {
                 ScrollView {
                     // Re-render every minute so "now" based content (next hour, updated time) stays current.
                     TimelineView(.everyMinute) { context in
-                        content(snapshot: snapshot, now: context.date)
+                        content(snapshot: snapshot, isUpdating: isUpdating, now: context.date)
                     }
                     .padding(.horizontal, t.gutter)
                     .padding(.top, pageCount > 1 ? 16 : 6)
@@ -273,7 +282,7 @@ struct ForecastView: View {
     }
 
     @ViewBuilder
-    private func content(snapshot: WeatherSnapshot?, now: Date) -> some View {
+    private func content(snapshot: WeatherSnapshot?, isUpdating: Bool, now: Date) -> some View {
         VStack(spacing: t.sectionSpacing) {
             if let snapshot {
                 let context = ForecastContext(
@@ -284,7 +293,8 @@ struct ForecastView: View {
                     settings: model.settings,
                     tokens: t.onSky(snapshot.current.condition, isDaylight: snapshot.current.isDaylight),
                     onSelectDay: { selectedDay = $0 },
-                    onTimeMachine: { presentedSheet = .timeMachine }
+                    onTimeMachine: { presentedSheet = .timeMachine },
+                    isUpdating: isUpdating
                 )
                 LookHero(context: context)
 

@@ -128,7 +128,7 @@ You can switch sources any time in **Settings ▸ Weather Data ▸ Forecast Sour
 
 Known limits:
 - **Background alerts are best-effort.** iOS decides how often apps refresh in the background (usually every 15–60 minutes), so a "rain soon" alert can arrive late. Keep **Background App Refresh** on for Ai Sky.
-- **Widgets refresh roughly every 20–60 minutes**, as iOS allows. They reuse the app's latest forecast when it's recent, and otherwise download fresh data from Open-Meteo.
+- **Widgets refresh roughly every 20–60 minutes**, as iOS allows. They reuse the app's latest forecast when it's recent, and otherwise download fresh data from Open-Meteo. The app itself fetches a new forecast whenever you open it (unless the one on screen is under a minute old), and every 5 minutes while it stays open; the time at the top reads "Updating…" until the new forecast arrives.
 - **Past rainfall totals are estimates.** Open-Meteo derives them from weather-model analyses and reanalysis, not rain gauges, so a local downpour can be under- or over-counted.
 - **Normals are downloaded once per place** (30 years of daily data, about 150 KB) and kept on your phone.
 

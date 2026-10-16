@@ -119,7 +119,7 @@ struct EditorialHero: View {
 
     private var day: String { context.formatter.fullDay(context.now, timeZone: context.timeZone) }
 
-    private var time: String { context.formatter.time(context.now, timeZone: context.timeZone) }
+    private var time: String { context.headerTime(context.formatter.time(context.now, timeZone: context.timeZone)) }
 
     private var headline: String {
         let fallback = ForecastNarrator.daySummary(hours: context.snapshot.hourly, now: context.now, timeZone: context.timeZone, formatter: context.formatter)

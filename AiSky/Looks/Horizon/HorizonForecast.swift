@@ -38,7 +38,7 @@ struct HorizonHero: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
-                Text(context.formatter.time(context.now, timeZone: context.timeZone))
+                Text(context.headerTime(context.formatter.time(context.now, timeZone: context.timeZone)))
                     .font(t.font(.text, 13))
                     .foregroundStyle(t.ink2)
             }

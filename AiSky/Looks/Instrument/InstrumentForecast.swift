@@ -56,8 +56,8 @@ struct InstrumentHero: View {
         VStack(spacing: 6) {
             InstrumentHeader(
                 location: context.location,
-                clock: clockWithZone,
-                clockLabel: "Local time \(context.formatter.time(context.now, timeZone: context.timeZone))"
+                clock: context.headerTime(clockWithZone),
+                clockLabel: context.headerTime("Local time \(context.formatter.time(context.now, timeZone: context.timeZone))")
             )
             RangeGaugeView(reading: RangeGaugeView.Reading(context: context))
                 .frame(maxWidth: .infinity)

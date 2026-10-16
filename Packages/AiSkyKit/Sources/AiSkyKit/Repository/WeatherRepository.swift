@@ -83,17 +83,31 @@ public struct WeatherRepository: Sendable {
 
     // MARK: Full forecast
 
-    /// Returns the cached snapshot when it is younger than `maxAge`, otherwise fetches a new one.
+    /// Returns the cached snapshot when ``canReuse(_:settings:maxAge:now:)`` allows it, otherwise
+    /// fetches a new one.
     public func snapshot(
         for location: WeatherLocation,
         settings: AppSettings,
         maxAge: TimeInterval = 10 * 60,
         now: Date = Date()
     ) async throws -> WeatherSnapshot {
-        if let cached = await cachedSnapshot(for: location), cached.isFresh(maxAge: maxAge, now: now) {
+        if let cached = await cachedSnapshot(for: location), canReuse(cached, settings: settings, maxAge: maxAge, now: now) {
             return cached
         }
         return try await fetch(for: location, settings: settings, now: now)
+    }
+
+    /// Whether a stored snapshot can stand in for a fetch: it's younger than `maxAge` and from a
+    /// source this process would use now. Widgets fetch only Open-Meteo and share what they fetch,
+    /// so the app refetches those snapshots when it can use Apple Weather, whose next hour is
+    /// minute by minute. Widgets take the app's Apple Weather snapshots unless Settings asks for
+    /// Open-Meteo.
+    public func canReuse(_ snapshot: WeatherSnapshot, settings: AppSettings, maxAge: TimeInterval, now: Date = Date()) -> Bool {
+        guard snapshot.isFresh(maxAge: maxAge, now: now) else { return false }
+        switch snapshot.source {
+        case .appleWeather: return settings.dataSource != .openMeteo
+        case .openMeteo: return !shouldUseWeatherKit(settings, now: now)
+        }
     }
 
     /// Cached snapshot for the location, ignoring it if the device has moved far away since.
