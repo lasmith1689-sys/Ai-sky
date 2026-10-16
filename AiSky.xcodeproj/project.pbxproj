@@ -1,0 +1,762 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1B2C3D4E5F6000000000060 /* AiSkyKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D4E5F6000000000071 /* AiSkyKit */; };
+		A1B2C3D4E5F6000000000061 /* AiSkyKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D4E5F6000000000072 /* AiSkyKit */; };
+		A1B2C3D4E5F6000000000062 /* AiSkyWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000021 /* AiSkyWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1B2C3D4E5F6000000000202 /* Barlow-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000102 /* Barlow-Light.ttf */; };
+		A1B2C3D4E5F6000000000302 /* Barlow-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000102 /* Barlow-Light.ttf */; };
+		A1B2C3D4E5F6000000000203 /* Barlow-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000103 /* Barlow-Medium.ttf */; };
+		A1B2C3D4E5F6000000000204 /* Barlow-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000104 /* Barlow-Regular.ttf */; };
+		A1B2C3D4E5F6000000000304 /* Barlow-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000104 /* Barlow-Regular.ttf */; };
+		A1B2C3D4E5F6000000000205 /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000105 /* Barlow-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000206 /* BarlowCondensed-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000106 /* BarlowCondensed-Medium.ttf */; };
+		A1B2C3D4E5F6000000000207 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000107 /* BarlowCondensed-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000307 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000107 /* BarlowCondensed-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000208 /* BricolageGrotesque-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000108 /* BricolageGrotesque-Medium.ttf */; };
+		A1B2C3D4E5F6000000000209 /* BricolageGrotesque-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000109 /* BricolageGrotesque-Regular.ttf */; };
+		A1B2C3D4E5F6000000000309 /* BricolageGrotesque-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000109 /* BricolageGrotesque-Regular.ttf */; };
+		A1B2C3D4E5F600000000020A /* BricolageGrotesque-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010A /* BricolageGrotesque-SemiBold.ttf */; };
+		A1B2C3D4E5F600000000030A /* BricolageGrotesque-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010A /* BricolageGrotesque-SemiBold.ttf */; };
+		A1B2C3D4E5F600000000020B /* BricolageGrotesqueDisplay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010B /* BricolageGrotesqueDisplay-Medium.ttf */; };
+		A1B2C3D4E5F600000000030B /* BricolageGrotesqueDisplay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010B /* BricolageGrotesqueDisplay-Medium.ttf */; };
+		A1B2C3D4E5F600000000020C /* DMMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010C /* DMMono-Medium.ttf */; };
+		A1B2C3D4E5F600000000020D /* DMMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010D /* DMMono-Regular.ttf */; };
+		A1B2C3D4E5F600000000030D /* DMMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010D /* DMMono-Regular.ttf */; };
+		A1B2C3D4E5F600000000020E /* Geist-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010E /* Geist-ExtraLight.ttf */; };
+		A1B2C3D4E5F600000000030E /* Geist-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010E /* Geist-ExtraLight.ttf */; };
+		A1B2C3D4E5F600000000020F /* Geist-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000010F /* Geist-Light.ttf */; };
+		A1B2C3D4E5F6000000000210 /* Geist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */; };
+		A1B2C3D4E5F6000000000211 /* Geist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */; };
+		A1B2C3D4E5F6000000000311 /* Geist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */; };
+		A1B2C3D4E5F6000000000213 /* GeistMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */; };
+		A1B2C3D4E5F6000000000313 /* GeistMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */; };
+		A1B2C3D4E5F6000000000214 /* InstrumentSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */; };
+		A1B2C3D4E5F6000000000215 /* InstrumentSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */; };
+		A1B2C3D4E5F6000000000315 /* InstrumentSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */; };
+		A1B2C3D4E5F6000000000216 /* InstrumentSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000116 /* InstrumentSans-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000316 /* InstrumentSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000116 /* InstrumentSans-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000217 /* Manrope-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000117 /* Manrope-Bold.ttf */; };
+		A1B2C3D4E5F6000000000317 /* Manrope-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000117 /* Manrope-Bold.ttf */; };
+		A1B2C3D4E5F6000000000218 /* Manrope-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000118 /* Manrope-Light.ttf */; };
+		A1B2C3D4E5F6000000000318 /* Manrope-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000118 /* Manrope-Light.ttf */; };
+		A1B2C3D4E5F6000000000219 /* Manrope-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000119 /* Manrope-Medium.ttf */; };
+		A1B2C3D4E5F600000000021A /* Manrope-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011A /* Manrope-Regular.ttf */; };
+		A1B2C3D4E5F600000000031A /* Manrope-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011A /* Manrope-Regular.ttf */; };
+		A1B2C3D4E5F600000000021B /* Manrope-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011B /* Manrope-SemiBold.ttf */; };
+		A1B2C3D4E5F600000000031B /* Manrope-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011B /* Manrope-SemiBold.ttf */; };
+		A1B2C3D4E5F600000000021C /* NewsreaderDisplay-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */; };
+		A1B2C3D4E5F600000000031C /* NewsreaderDisplay-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */; };
+		A1B2C3D4E5F600000000021D /* NewsreaderHeadline-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */; };
+		A1B2C3D4E5F600000000021E /* NewsreaderText-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */; };
+		A1B2C3D4E5F600000000031E /* NewsreaderText-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */; };
+		A1B2C3D4E5F6000000000220 /* NewsreaderText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */; };
+		A1B2C3D4E5F6000000000320 /* NewsreaderText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */; };
+		A1B2C3D4E5F6000000000502 /* Barlow-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000402 /* Barlow-OFL.txt */; };
+		A1B2C3D4E5F6000000000503 /* BarlowCondensed-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000403 /* BarlowCondensed-OFL.txt */; };
+		A1B2C3D4E5F6000000000504 /* BricolageGrotesque-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000404 /* BricolageGrotesque-OFL.txt */; };
+		A1B2C3D4E5F6000000000505 /* DMMono-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000405 /* DMMono-OFL.txt */; };
+		A1B2C3D4E5F6000000000506 /* Geist-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000406 /* Geist-OFL.txt */; };
+		A1B2C3D4E5F6000000000507 /* GeistMono-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000407 /* GeistMono-OFL.txt */; };
+		A1B2C3D4E5F6000000000508 /* InstrumentSans-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000408 /* InstrumentSans-OFL.txt */; };
+		A1B2C3D4E5F6000000000509 /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000409 /* Manrope-OFL.txt */; };
+		A1B2C3D4E5F600000000050A /* Newsreader-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F600000000040A /* Newsreader-OFL.txt */; };
+		A1B2C3D4E5F6000000000305 /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000105 /* Barlow-SemiBold.ttf */; };
+		A1B2C3D4E5F6000000000310 /* Geist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */; };
+		A1B2C3D4E5F6000000000319 /* Manrope-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000119 /* Manrope-Medium.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1B2C3D4E5F6000000000080 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1B2C3D4E5F6000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1B2C3D4E5F6000000000031;
+			remoteInfo = AiSkyWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1B2C3D4E5F6000000000043 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A1B2C3D4E5F6000000000062 /* AiSkyWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A1B2C3D4E5F6000000000020 /* AiSky.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AiSky.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6000000000021 /* AiSkyWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AiSkyWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6000000000022 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000023 /* AiSky-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AiSky-Info.plist"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000024 /* AiSkyWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AiSkyWidgets-Info.plist"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000025 /* AiSky.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AiSky.entitlements; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000026 /* AiSky-WeatherKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AiSky-WeatherKit.entitlements"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000027 /* AiSkyWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AiSkyWidgets.entitlements; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000028 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000102 /* Barlow-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Light.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000103 /* Barlow-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000104 /* Barlow-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000105 /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000106 /* BarlowCondensed-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000107 /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-SemiBold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000108 /* BricolageGrotesque-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BricolageGrotesque-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000109 /* BricolageGrotesque-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BricolageGrotesque-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010A /* BricolageGrotesque-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BricolageGrotesque-SemiBold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010B /* BricolageGrotesqueDisplay-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BricolageGrotesqueDisplay-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010C /* DMMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMMono-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010D /* DMMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMMono-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010E /* Geist-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-ExtraLight.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000010F /* Geist-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Light.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Geist-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeistMono-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000116 /* InstrumentSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000117 /* Manrope-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Bold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000118 /* Manrope-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Light.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000119 /* Manrope-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000011A /* Manrope-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000011B /* Manrope-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-SemiBold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderDisplay-Light.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderHeadline-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderText-Italic.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewsreaderText-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000402 /* Barlow-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Barlow-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000403 /* BarlowCondensed-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "BarlowCondensed-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000404 /* BricolageGrotesque-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "BricolageGrotesque-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000405 /* DMMono-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DMMono-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000406 /* Geist-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Geist-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000407 /* GeistMono-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "GeistMono-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000408 /* InstrumentSans-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "InstrumentSans-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000409 /* Manrope-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Manrope-OFL.txt"; sourceTree = "<group>"; };
+		A1B2C3D4E5F600000000040A /* Newsreader-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Newsreader-OFL.txt"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A1B2C3D4E5F6000000000010 /* AiSky */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AiSky;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000011 /* AiSkyWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AiSkyWidgets;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000012 /* WidgetViews */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WidgetViews;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1B2C3D4E5F6000000000041 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F6000000000060 /* AiSkyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F6000000000051 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F6000000000061 /* AiSkyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1B2C3D4E5F6000000000002 = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000028 /* README.md */,
+				A1B2C3D4E5F6000000000010 /* AiSky */,
+				A1B2C3D4E5F6000000000011 /* AiSkyWidgets */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
+				A1B2C3D4E5F6000000000004 /* Config */,
+				A1B2C3D4E5F6000000000100 /* Fonts */,
+				A1B2C3D4E5F6000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000004 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000022 /* Shared.xcconfig */,
+				A1B2C3D4E5F6000000000023 /* AiSky-Info.plist */,
+				A1B2C3D4E5F6000000000024 /* AiSkyWidgets-Info.plist */,
+				A1B2C3D4E5F6000000000025 /* AiSky.entitlements */,
+				A1B2C3D4E5F6000000000026 /* AiSky-WeatherKit.entitlements */,
+				A1B2C3D4E5F6000000000027 /* AiSkyWidgets.entitlements */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000020 /* AiSky.app */,
+				A1B2C3D4E5F6000000000021 /* AiSkyWidgetsExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000100 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000102 /* Barlow-Light.ttf */,
+				A1B2C3D4E5F6000000000103 /* Barlow-Medium.ttf */,
+				A1B2C3D4E5F6000000000104 /* Barlow-Regular.ttf */,
+				A1B2C3D4E5F6000000000105 /* Barlow-SemiBold.ttf */,
+				A1B2C3D4E5F6000000000106 /* BarlowCondensed-Medium.ttf */,
+				A1B2C3D4E5F6000000000107 /* BarlowCondensed-SemiBold.ttf */,
+				A1B2C3D4E5F6000000000108 /* BricolageGrotesque-Medium.ttf */,
+				A1B2C3D4E5F6000000000109 /* BricolageGrotesque-Regular.ttf */,
+				A1B2C3D4E5F600000000010A /* BricolageGrotesque-SemiBold.ttf */,
+				A1B2C3D4E5F600000000010B /* BricolageGrotesqueDisplay-Medium.ttf */,
+				A1B2C3D4E5F600000000010C /* DMMono-Medium.ttf */,
+				A1B2C3D4E5F600000000010D /* DMMono-Regular.ttf */,
+				A1B2C3D4E5F600000000010E /* Geist-ExtraLight.ttf */,
+				A1B2C3D4E5F600000000010F /* Geist-Light.ttf */,
+				A1B2C3D4E5F6000000000110 /* Geist-Medium.ttf */,
+				A1B2C3D4E5F6000000000111 /* Geist-Regular.ttf */,
+				A1B2C3D4E5F6000000000113 /* GeistMono-Regular.ttf */,
+				A1B2C3D4E5F6000000000114 /* InstrumentSans-Medium.ttf */,
+				A1B2C3D4E5F6000000000115 /* InstrumentSans-Regular.ttf */,
+				A1B2C3D4E5F6000000000116 /* InstrumentSans-SemiBold.ttf */,
+				A1B2C3D4E5F6000000000117 /* Manrope-Bold.ttf */,
+				A1B2C3D4E5F6000000000118 /* Manrope-Light.ttf */,
+				A1B2C3D4E5F6000000000119 /* Manrope-Medium.ttf */,
+				A1B2C3D4E5F600000000011A /* Manrope-Regular.ttf */,
+				A1B2C3D4E5F600000000011B /* Manrope-SemiBold.ttf */,
+				A1B2C3D4E5F600000000011C /* NewsreaderDisplay-Light.ttf */,
+				A1B2C3D4E5F600000000011D /* NewsreaderHeadline-Regular.ttf */,
+				A1B2C3D4E5F600000000011E /* NewsreaderText-Italic.ttf */,
+				A1B2C3D4E5F6000000000120 /* NewsreaderText-Regular.ttf */,
+				A1B2C3D4E5F6000000000101 /* Licenses */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000101 /* Licenses */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000402 /* Barlow-OFL.txt */,
+				A1B2C3D4E5F6000000000403 /* BarlowCondensed-OFL.txt */,
+				A1B2C3D4E5F6000000000404 /* BricolageGrotesque-OFL.txt */,
+				A1B2C3D4E5F6000000000405 /* DMMono-OFL.txt */,
+				A1B2C3D4E5F6000000000406 /* Geist-OFL.txt */,
+				A1B2C3D4E5F6000000000407 /* GeistMono-OFL.txt */,
+				A1B2C3D4E5F6000000000408 /* InstrumentSans-OFL.txt */,
+				A1B2C3D4E5F6000000000409 /* Manrope-OFL.txt */,
+				A1B2C3D4E5F600000000040A /* Newsreader-OFL.txt */,
+			);
+			path = Licenses;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1B2C3D4E5F6000000000030 /* AiSky */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F6000000000091 /* Build configuration list for PBXNativeTarget "AiSky" */;
+			buildPhases = (
+				A1B2C3D4E5F6000000000040 /* Sources */,
+				A1B2C3D4E5F6000000000041 /* Frameworks */,
+				A1B2C3D4E5F6000000000042 /* Resources */,
+				A1B2C3D4E5F6000000000043 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1B2C3D4E5F6000000000081 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1B2C3D4E5F6000000000010 /* AiSky */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
+			);
+			name = AiSky;
+			packageProductDependencies = (
+				A1B2C3D4E5F6000000000071 /* AiSkyKit */,
+			);
+			productName = AiSky;
+			productReference = A1B2C3D4E5F6000000000020 /* AiSky.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1B2C3D4E5F6000000000031 /* AiSkyWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F6000000000092 /* Build configuration list for PBXNativeTarget "AiSkyWidgetsExtension" */;
+			buildPhases = (
+				A1B2C3D4E5F6000000000050 /* Sources */,
+				A1B2C3D4E5F6000000000051 /* Frameworks */,
+				A1B2C3D4E5F6000000000052 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A1B2C3D4E5F6000000000011 /* AiSkyWidgets */,
+				A1B2C3D4E5F6000000000012 /* WidgetViews */,
+			);
+			name = AiSkyWidgetsExtension;
+			packageProductDependencies = (
+				A1B2C3D4E5F6000000000072 /* AiSkyKit */,
+			);
+			productName = AiSkyWidgetsExtension;
+			productReference = A1B2C3D4E5F6000000000021 /* AiSkyWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1B2C3D4E5F6000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					A1B2C3D4E5F6000000000030 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					A1B2C3D4E5F6000000000031 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A1B2C3D4E5F6000000000090 /* Build configuration list for PBXProject "AiSky" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1B2C3D4E5F6000000000002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A1B2C3D4E5F6000000000070 /* XCLocalSwiftPackageReference "Packages/AiSkyKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A1B2C3D4E5F6000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1B2C3D4E5F6000000000030 /* AiSky */,
+				A1B2C3D4E5F6000000000031 /* AiSkyWidgetsExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1B2C3D4E5F6000000000042 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F6000000000202 /* Barlow-Light.ttf in Resources */,
+				A1B2C3D4E5F6000000000203 /* Barlow-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000204 /* Barlow-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000205 /* Barlow-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000206 /* BarlowCondensed-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000207 /* BarlowCondensed-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000208 /* BricolageGrotesque-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000209 /* BricolageGrotesque-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000020A /* BricolageGrotesque-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F600000000020B /* BricolageGrotesqueDisplay-Medium.ttf in Resources */,
+				A1B2C3D4E5F600000000020C /* DMMono-Medium.ttf in Resources */,
+				A1B2C3D4E5F600000000020D /* DMMono-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000020E /* Geist-ExtraLight.ttf in Resources */,
+				A1B2C3D4E5F600000000020F /* Geist-Light.ttf in Resources */,
+				A1B2C3D4E5F6000000000210 /* Geist-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000211 /* Geist-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000213 /* GeistMono-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000214 /* InstrumentSans-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000215 /* InstrumentSans-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000216 /* InstrumentSans-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000217 /* Manrope-Bold.ttf in Resources */,
+				A1B2C3D4E5F6000000000218 /* Manrope-Light.ttf in Resources */,
+				A1B2C3D4E5F6000000000219 /* Manrope-Medium.ttf in Resources */,
+				A1B2C3D4E5F600000000021A /* Manrope-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000021B /* Manrope-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F600000000021C /* NewsreaderDisplay-Light.ttf in Resources */,
+				A1B2C3D4E5F600000000021D /* NewsreaderHeadline-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000021E /* NewsreaderText-Italic.ttf in Resources */,
+				A1B2C3D4E5F6000000000220 /* NewsreaderText-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000502 /* Barlow-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000503 /* BarlowCondensed-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000504 /* BricolageGrotesque-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000505 /* DMMono-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000506 /* Geist-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000507 /* GeistMono-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000508 /* InstrumentSans-OFL.txt in Resources */,
+				A1B2C3D4E5F6000000000509 /* Manrope-OFL.txt in Resources */,
+				A1B2C3D4E5F600000000050A /* Newsreader-OFL.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F6000000000052 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F6000000000305 /* Barlow-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000310 /* Geist-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000319 /* Manrope-Medium.ttf in Resources */,
+				A1B2C3D4E5F6000000000302 /* Barlow-Light.ttf in Resources */,
+				A1B2C3D4E5F6000000000304 /* Barlow-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000307 /* BarlowCondensed-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000309 /* BricolageGrotesque-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000030A /* BricolageGrotesque-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F600000000030B /* BricolageGrotesqueDisplay-Medium.ttf in Resources */,
+				A1B2C3D4E5F600000000030D /* DMMono-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000030E /* Geist-ExtraLight.ttf in Resources */,
+				A1B2C3D4E5F6000000000311 /* Geist-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000313 /* GeistMono-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000315 /* InstrumentSans-Regular.ttf in Resources */,
+				A1B2C3D4E5F6000000000316 /* InstrumentSans-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F6000000000317 /* Manrope-Bold.ttf in Resources */,
+				A1B2C3D4E5F6000000000318 /* Manrope-Light.ttf in Resources */,
+				A1B2C3D4E5F600000000031A /* Manrope-Regular.ttf in Resources */,
+				A1B2C3D4E5F600000000031B /* Manrope-SemiBold.ttf in Resources */,
+				A1B2C3D4E5F600000000031C /* NewsreaderDisplay-Light.ttf in Resources */,
+				A1B2C3D4E5F600000000031E /* NewsreaderText-Italic.ttf in Resources */,
+				A1B2C3D4E5F6000000000320 /* NewsreaderText-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1B2C3D4E5F6000000000040 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D4E5F6000000000050 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1B2C3D4E5F6000000000081 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1B2C3D4E5F6000000000031 /* AiSkyWidgetsExtension */;
+			targetProxy = A1B2C3D4E5F6000000000080 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A1B2C3D4E5F60000000000A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1B2C3D4E5F6000000000022 /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60000000000A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1B2C3D4E5F6000000000022 /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1B2C3D4E5F60000000000A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "$(AISKY_APP_ENTITLEMENTS)";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/AiSky-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ai Sky";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ai Sky uses your location to show the weather, rain alerts and radar where you are.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AISKY_APP_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60000000000A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "$(AISKY_APP_ENTITLEMENTS)";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/AiSky-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ai Sky";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ai Sky uses your location to show the weather, rain alerts and radar where you are.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AISKY_APP_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A1B2C3D4E5F60000000000A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = Config/AiSkyWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/AiSkyWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ai Sky";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ai Sky uses your location to show the weather, rain alerts and radar where you are.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AISKY_WIDGET_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60000000000A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = Config/AiSkyWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/AiSkyWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ai Sky";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ai Sky uses your location to show the weather, rain alerts and radar where you are.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AISKY_WIDGET_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1B2C3D4E5F6000000000090 /* Build configuration list for PBXProject "AiSky" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60000000000A0 /* Debug */,
+				A1B2C3D4E5F60000000000A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F6000000000091 /* Build configuration list for PBXNativeTarget "AiSky" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60000000000A2 /* Debug */,
+				A1B2C3D4E5F60000000000A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F6000000000092 /* Build configuration list for PBXNativeTarget "AiSkyWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60000000000A4 /* Debug */,
+				A1B2C3D4E5F60000000000A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A1B2C3D4E5F6000000000070 /* XCLocalSwiftPackageReference "Packages/AiSkyKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/AiSkyKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1B2C3D4E5F6000000000071 /* AiSkyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AiSkyKit;
+		};
+		A1B2C3D4E5F6000000000072 /* AiSkyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AiSkyKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A1B2C3D4E5F6000000000001 /* Project object */;
+}
