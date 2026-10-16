@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import XCTest
 @testable import AiSkyKit
 
@@ -372,6 +375,26 @@ final class CacheReuseTests: XCTestCase {
         XCTAssertTrue(app.canReuse(snapshot(.openMeteo, age: 60), settings: settings, maxAge: 600, now: now))
     }
     #endif
+
+    func testCancelledRequestsDontPauseAppleWeather() async throws {
+        let app = try repository(weatherKit: true)
+        func paused() -> Bool { app.store.value(WeatherRepository.WeatherKitFailure.self, forKey: .weatherKitFailure) != nil }
+
+        app.recordWeatherKitFailure(CancellationError())
+        app.recordWeatherKitFailure(URLError(.cancelled))
+        // Any error raised while the task is being cancelled, e.g. iOS ending a background refresh.
+        let cancelled = Task {
+            while !Task.isCancelled { await Task.yield() }
+            app.recordWeatherKitFailure(WeatherServiceError.noData)
+        }
+        cancelled.cancel()
+        await cancelled.value
+        XCTAssertFalse(paused())
+
+        // Real failures, including network ones (a slow Apple Weather would hold up every refresh).
+        app.recordWeatherKitFailure(URLError(.timedOut))
+        XCTAssertTrue(paused())
+    }
 
     func testReusableCacheEntryIsServedWithoutFetching() async throws {
         let widget = try repository(weatherKit: false)

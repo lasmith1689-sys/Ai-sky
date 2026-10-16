@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Single entry point for weather data used by the app, widgets and background tasks.
 ///
@@ -72,7 +75,11 @@ public struct WeatherRepository: Sendable {
         return nil
     }
 
-    private func recordWeatherKitFailure(_ error: Error) {
+    /// Starts the backoff, unless the request was only cancelled (iOS ending a background refresh,
+    /// say). That says nothing about Apple Weather, and backing off for it would leave the app on
+    /// Open-Meteo's coarser next hour for 15 minutes.
+    func recordWeatherKitFailure(_ error: Error) {
+        guard !Task.isCancelled, !(error is CancellationError), (error as? URLError)?.code != .cancelled else { return }
         let message = (error as? LocalizedError)?.errorDescription ?? String(describing: error)
         store.set(WeatherKitFailure(date: Date(), message: String(message.prefix(120))), forKey: .weatherKitFailure)
     }
