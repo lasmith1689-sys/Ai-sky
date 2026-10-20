@@ -30,6 +30,11 @@ top-level folder.
 - How often it bites depends on how long iOS keeps the widget extension process alive, which this
   audit did not measure. The unit-level behaviour is deterministic.
 - Test: `SharedCacheAuditTests.testWidgetSeesTheAppsNewerSnapshot`.
+- Seen failing: CI run 39361633998 (commit `3fd1ec0`).
+- **Fix status: fixed on `claude/hq-pr1-audit`, pending CI.** Each in-memory snapshot now records
+  the version of its file (modification date plus file number; atomic writes change both) when it
+  was read or written. `snapshot(for:)` does one `stat` per call and re-reads the file when its
+  version differs; with no file on disk the memory copy still stands (as before).
 
 ### B2. Summaries written by one process are erased by the other (lost update)
 
@@ -42,8 +47,15 @@ top-level folder.
   extra network work is the main cost.
 - Same root cause as B1 (per-process memory never revalidated against disk).
 - Test: `SharedCacheAuditTests.testSummaryStoredByTheOtherProcessSurvivesALaterWrite`.
+- Seen failing: CI run 39361633998 (commit `3fd1ec0`).
+- **Fix status: fixed on `claude/hq-pr1-audit`, pending CI.** `summaries.json` is version-checked the
+  same way on every read, and every write goes through `updateSummaries`, which starts from the
+  current file, changes only this process's keys, and writes atomically. The "never replace a newer
+  entry" check now compares against the file. Residual: the read-merge-write is not locked across
+  processes, so two writes within the same instant can still lose one entry (would need
+  `NSFileCoordinator` or a file lock); the window is now one write instead of the process lifetime.
 
-## Risks and questions (no test added)
+## Risks and questions (no test added unless noted)
 
 ### WeatherRepository pause logic
 
@@ -52,6 +64,11 @@ top-level folder.
   which is also true for any negative interval, and `:84` stamps the failure with the wall clock
   `Date()`. If the device clock moves backwards after a failure, Apple Weather stays paused until the
   clock catches up, not for 15 minutes. Needs a large backward clock change, so listed as a risk.
+  Re-checked against the code: the reading holds. Test added:
+  `WeatherKitPauseAuditTests.testPauseEndsWhenTheClockMovedBackwards` (pushed alone first, commit
+  `fe1b8e2`, expected to fail). **Fixed, pending CI**: the pause now applies only while the elapsed
+  time is in `0..<15 min`; `weatherKitStatusMessage` uses the same range so it doesn't report a
+  pause that `shouldUseWeatherKit` no longer applies.
 - R2. `weatherKitStatusMessage` (`Repository/WeatherRepository.swift:61-76`) ignores both the
   `weatherKitAvailable` override (it reads `BuildConfiguration.isWeatherKitEnabled` at `:63`) and the
   injected `now` (it uses `Date()` at `:72`), while `shouldUseWeatherKit` honours both. In production
@@ -87,6 +104,12 @@ top-level folder.
   (`:153`, `:196`), nothing flags it: the timeline's "now" frame and the following "forecast" frames
   can all be in the past. No staleness check on `latestValidTime` exists. Whether the UI exposes
   the frame times clearly enough was not verified.
+  Re-checked against the code: the reading holds, but narrowly. `noaaTimeline` receives `now` and
+  only uses it for `fetchedAt` and when the metadata is missing; when the IEM metadata is fresh
+  (the normal case) measuring against the latest frame is equivalent to measuring against `now`.
+  It only matters when the IEM mosaic itself has stalled, and then there is no newer radar to show
+  anyway. No test added: the right behaviour (a staleness threshold, and whether to drop the
+  forecast, flag the timeline, or fall back to RainViewer) is a product decision, not a contained fix.
 - R8. `RadarTiling.keys` (`Providers/Radar/RadarTiling.swift:63-67`) converts `Double` to `Int`
   without checking for non-finite values; e.g. `minX = -infinity` with a finite `maxX` passes the
   guard at `:63` and traps at `:64`. The only caller passes a MapKit draw rect

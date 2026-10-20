@@ -47,8 +47,10 @@ public struct WeatherRepository: Sendable {
     public func shouldUseWeatherKit(_ settings: AppSettings, now: Date = Date()) -> Bool {
         guard weatherKitAvailable, settings.dataSource != .openMeteo else { return false }
         #if canImport(WeatherKit)
+        // A failure dated after `now` means the clock moved backwards since it was recorded; the
+        // pause ends then rather than lasting until the clock catches up.
         if let failure = store.value(WeatherKitFailure.self, forKey: .weatherKitFailure),
-           now.timeIntervalSince(failure.date) < Self.weatherKitBackoff {
+           (0..<Self.weatherKitBackoff).contains(now.timeIntervalSince(failure.date)) {
             return false
         }
         return true
@@ -69,7 +71,7 @@ public struct WeatherRepository: Sendable {
         // nothing to report here.
         guard weatherKitAvailable else { return nil }
         if let failure = store.value(WeatherKitFailure.self, forKey: .weatherKitFailure),
-           Date().timeIntervalSince(failure.date) < Self.weatherKitBackoff {
+           (0..<Self.weatherKitBackoff).contains(Date().timeIntervalSince(failure.date)) {
             return "Apple Weather is temporarily unavailable (\(failure.message)). Using Open-Meteo."
         }
         return nil
